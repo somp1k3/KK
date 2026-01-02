@@ -1,0 +1,2285 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KiraKi - Разработчик</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👨‍💻</text></svg>">
+    <style>
+        /* Основные стили */
+        :root {
+            --primary-hue: 220;
+            --saturation: 70%;
+            --lightness: 50%;
+            --text-color: #f0f0f0;
+            --bg-color: rgba(20, 20, 30, 0.9);
+            --panel-color: rgba(40, 40, 60, 0.7);
+            --border-color: rgba(255, 255, 255, 0.15);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            --transition: all 0.3s ease;
+            --border-radius: 16px;
+            --glass-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            --animations-enabled: 1;
+            --glass-effect: 1;
+            --gradient-bg: 1;
+        }
+
+        .light-theme {
+            --text-color: #222;
+            --bg-color: rgba(240, 245, 255, 0.95);
+            --panel-color: rgba(255, 255, 255, 0.85);
+            --border-color: rgba(0, 0, 0, 0.1);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --glass-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.8));
+        }
+
+        .no-animations * {
+            animation: none !important;
+            transition: none !important;
+        }
+
+        .no-glass-effect .widget,
+        .no-glass-effect .navbar,
+        .no-glass-effect .footer,
+        .no-glass-effect .welcome-message {
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+            background: var(--panel-color) !important;
+        }
+
+        .no-gradient-bg .rgb-gradient-bg {
+            animation: none !important;
+            opacity: 0.3 !important;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #0a0a14;
+            color: var(--text-color);
+            min-height: 100vh;
+            background-attachment: fixed;
+            transition: var(--transition);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .rgb-gradient-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                45deg,
+                hsl(calc(var(--primary-hue) + 0), var(--saturation), 15%) 0%,
+                hsl(calc(var(--primary-hue) + 60), var(--saturation), 15%) 25%,
+                hsl(calc(var(--primary-hue) + 120), var(--saturation), 15%) 50%,
+                hsl(calc(var(--primary-hue) + 180), var(--saturation), 15%) 75%,
+                hsl(calc(var(--primary-hue) + 240), var(--saturation), 15%) 100%
+            );
+            background-size: 400% 400%;
+            animation: rgbFlow 15s ease infinite;
+            z-index: -2;
+            opacity: 0.7;
+        }
+
+        .glass-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            background: rgba(10, 10, 20, 0.6);
+            z-index: -1;
+        }
+
+        .light-theme .glass-overlay {
+            background: rgba(240, 245, 255, 0.7);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Приветственное сообщение */
+        .welcome-message {
+            position: fixed;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--panel-color);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            padding: 25px 30px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            z-index: 1000;
+            animation: slideDown 0.5s ease;
+            max-width: 500px;
+            width: 90%;
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+        }
+
+        .welcome-content {
+            flex: 1;
+        }
+
+        .welcome-content h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            font-size: 1.4rem;
+            background: linear-gradient(
+                90deg,
+                hsl(calc(var(--primary-hue) + 0), var(--saturation), 65%),
+                hsl(calc(var(--primary-hue) + 60), var(--saturation), 65%)
+            );
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .welcome-content p {
+            line-height: 1.6;
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+
+        .timer-bar {
+            height: 4px;
+            background: linear-gradient(
+                90deg,
+                hsl(calc(var(--primary-hue) + 120), var(--saturation), 65%),
+                hsl(calc(var(--primary-hue) + 180), var(--saturation), 65%)
+            );
+            border-radius: 2px;
+            width: 100%;
+            animation: timerCountdown 10s linear forwards;
+        }
+
+        .close-welcome {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: var(--transition);
+            line-height: 1;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .close-welcome:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(90deg);
+        }
+
+        /* Панель навигации */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            background: var(--panel-color);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            padding: 15px 25px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: fadeIn 1s ease;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(
+                90deg,
+                hsl(calc(var(--primary-hue) + 0), var(--saturation), 65%),
+                hsl(calc(var(--primary-hue) + 60), var(--saturation), 65%),
+                hsl(calc(var(--primary-hue) + 120), var(--saturation), 65%),
+                hsl(calc(var(--primary-hue) + 180), var(--saturation), 65%),
+                hsl(calc(var(--primary-hue) + 240), var(--saturation), 65%)
+            );
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            background-size: 300% 300%;
+            animation: gradient 6s ease infinite;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .settings-panel {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .settings-btn {
+            background: var(--glass-bg);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1.3rem;
+        }
+
+        .settings-btn:hover {
+            transform: rotate(30deg);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Верхние виджеты в строку (3 штуки) */
+        .top-widgets {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+            animation: slideDown 1s ease;
+        }
+
+        .widget {
+            background: var(--panel-color);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .widget::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(
+                90deg,
+                hsl(calc(var(--primary-hue) + 0), var(--saturation), 65%),
+                hsl(calc(var(--primary-hue) + 60), var(--saturation), 65%),
+                hsl(calc(var(--primary-hue) + 120), var(--saturation), 65%)
+            );
+            background-size: 300% 100%;
+            animation: gradient 6s ease infinite;
+        }
+
+        .widget:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .time-widget {
+            text-align: center;
+        }
+
+        .date {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            opacity: 0.9;
+        }
+
+        .time {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(
+                90deg,
+                hsl(calc(var(--primary-hue) + 0), var(--saturation), 65%),
+                hsl(calc(var(--primary-hue) + 60), var(--saturation), 65%)
+            );
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 1px;
+        }
+
+        .word-widget {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .word-of-day {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(
+                90deg,
+                hsl(calc(var(--primary-hue) + 120), var(--saturation), 65%),
+                hsl(calc(var(--primary-hue) + 180), var(--saturation), 65%)
+            );
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-top: 10px;
+        }
+
+        /* Виджет посетителей */
+        .visitor-widget {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .visitor-stat {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .visitor-stat i {
+            font-size: 2.5rem;
+            background: linear-gradient(
+                90deg,
+                hsl(calc(var(--primary-hue) + 240), var(--saturation), 65%),
+                hsl(calc(var(--primary-hue) + 300), var(--saturation), 65%)
+            );
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .visitor-count {
+            font-size: 2.2rem;
+            font-weight: 700;
+            background: linear-gradient(
+                90deg,
+                hsl(calc(var(--primary-hue) + 240), var(--saturation), 65%),
+                hsl(calc(var(--primary-hue) + 300), var(--saturation), 65%)
+            );
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .visitor-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .visitor-chart {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            height: 60px;
+            gap: 5px;
+        }
+
+        .chart-bar {
+            flex: 1;
+            background: linear-gradient(
+                to top,
+                hsl(calc(var(--primary-hue) + 180), var(--saturation), 65%),
+                hsl(calc(var(--primary-hue) + 240), var(--saturation), 65%)
+            );
+            border-radius: 4px 4px 0 0;
+            min-width: 8px;
+            animation: chartGrow 1s ease-out;
+        }
+
+        /* Основное содержимое */
+        .main-content {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeIn 1.5s ease;
+        }
+
+        .nickname-container {
+            margin-bottom: 30px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .nickname {
+            font-size: 4.5rem;
+            font-weight: 900;
+            background: linear-gradient(
+                90deg,
+                hsl(calc(var(--primary-hue) + 0), var(--saturation), 65%),
+                hsl(calc(var(--primary-hue) + 60), var(--saturation), 65%),
+                hsl(calc(var(--primary-hue) + 120), var(--saturation), 65%),
+                hsl(calc(var(--primary-hue) + 180), var(--saturation), 65%),
+                hsl(calc(var(--primary-hue) + 240), var(--saturation), 65%)
+            );
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            background-size: 300% 300%;
+            animation: gradient 8s ease infinite;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .nickname:hover {
+            transform: scale(1.05);
+            text-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Нижние виджеты */
+        .bottom-widgets {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .widget-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+        }
+
+        .widget-title i {
+            background: linear-gradient(
+                90deg,
+                hsl(calc(var(--primary-hue) + 0), var(--saturation), 65%),
+                hsl(calc(var(--primary-hue) + 60), var(--saturation), 65%)
+            );
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* Виджет с ссылками */
+        .links-widget {
+            grid-column: 1 / -1;
+        }
+
+        .link-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .link-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px;
+            background: var(--glass-bg);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: var(--transition);
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--text-color);
+        }
+
+        .link-item:hover {
+            transform: translateX(5px);
+            border-color: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .link-icon {
+            font-size: 1.8rem;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .tg .link-icon { color: #0088cc; background: rgba(0, 136, 204, 0.1); }
+        .github .link-icon { color: #ffffff; background: rgba(255, 255, 255, 0.1); }
+        .portfolio .link-icon { color: #06d6a0; background: rgba(6, 214, 160, 0.1); }
+        .steam .link-icon { color: #1b2838; background: rgba(27, 40, 56, 0.1); }
+        .friend .link-icon { color: #ff6b8b; background: rgba(255, 107, 139, 0.1); }
+
+        .link-info h4 {
+            font-size: 1.1rem;
+            margin-bottom: 4px;
+        }
+
+        .link-info p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Футер */
+        .footer {
+            text-align: center;
+            padding: 25px;
+            background: var(--panel-color);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            margin-top: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .copyright {
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .warning {
+            font-size: 0.85rem;
+            opacity: 0.7;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+
+        .warning-link {
+            color: hsl(calc(var(--primary-hue) + 0), var(--saturation), 65%);
+            cursor: pointer;
+            text-decoration: underline;
+            transition: var(--transition);
+            font-weight: 600;
+        }
+
+        .warning-link:hover {
+            text-decoration: none;
+            opacity: 0.9;
+        }
+
+        /* Cookie уведомление */
+        .cookie-notice {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background: var(--panel-color);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            padding: 20px 25px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: none;
+            z-index: 999;
+            animation: slideUp 0.5s ease;
+        }
+
+        .cookie-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .cookie-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .cookie-btn {
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+        }
+
+        .accept-btn {
+            background: linear-gradient(
+                90deg,
+                hsl(calc(var(--primary-hue) + 120), var(--saturation), 65%),
+                hsl(calc(var(--primary-hue) + 180), var(--saturation), 65%)
+            );
+            color: white;
+            border: none;
+        }
+
+        .decline-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+        }
+
+        /* Модальные окна */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: var(--panel-color);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 700px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            animation: slideUp 0.5s ease;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: var(--transition);
+            background: transparent;
+            border: none;
+            color: var(--text-color);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-modal:hover {
+            transform: rotate(90deg);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-title {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            background: linear-gradient(
+                90deg,
+                hsl(calc(var(--primary-hue) + 0), var(--saturation), 65%),
+                hsl(calc(var(--primary-hue) + 60), var(--saturation), 65%)
+            );
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* Стили для модального окна настроек */
+        .settings-content {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .settings-section {
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .settings-section h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .settings-section h3 i {
+            background: linear-gradient(
+                90deg,
+                hsl(calc(var(--primary-hue) + 0), var(--saturation), 65%),
+                hsl(calc(var(--primary-hue) + 60), var(--saturation), 65%)
+            );
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* Цветовые пресеты */
+        .color-presets {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .color-preset {
+            position: relative;
+            height: 100px;
+            border-radius: 12px;
+            cursor: pointer;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+            overflow: hidden;
+            display: flex;
+            align-items: flex-end;
+            padding: 10px;
+        }
+
+        .color-preset:hover {
+            transform: translateY(-3px);
+            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .color-preset.active {
+            border-color: hsl(calc(var(--primary-hue) + 0), var(--saturation), 65%);
+            border-width: 3px;
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+        }
+
+        .preset-label {
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            backdrop-filter: blur(5px);
+        }
+
+        .preset-blue { background: linear-gradient(135deg, #4a6fa5, #118ab2); }
+        .preset-purple { background: linear-gradient(135deg, #6d5ac9, #9d4edd); }
+        .preset-green { background: linear-gradient(135deg, #06d6a0, #2a9d8f); }
+        .preset-red { background: linear-gradient(135deg, #ff6b8b, #ef476f); }
+        .preset-orange { background: linear-gradient(135deg, #ffd166, #fb8500); }
+
+        .color-picker-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .color-picker-container label {
+            font-weight: 600;
+        }
+
+        #colorPicker {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            background: transparent;
+        }
+
+        /* Языковые опции */
+        .language-options {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .language-option {
+            flex: 1;
+            min-width: 120px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .language-option:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .language-option.active {
+            background: linear-gradient(
+                90deg,
+                hsl(calc(var(--primary-hue) + 120), var(--saturation), 65%),
+                hsl(calc(var(--primary-hue) + 180), var(--saturation), 65%)
+            );
+            border-color: transparent;
+            color: white;
+        }
+
+        .language-option .flag {
+            font-size: 1.5rem;
+        }
+
+        /* Опции темы */
+        .theme-options {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .theme-option {
+            flex: 1;
+            min-width: 120px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .theme-option:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .theme-option.active {
+            background: linear-gradient(
+                90deg,
+                hsl(calc(var(--primary-hue) + 60), var(--saturation), 65%),
+                hsl(calc(var(--primary-hue) + 120), var(--saturation), 65%)
+            );
+            border-color: transparent;
+            color: white;
+        }
+
+        .theme-option i {
+            font-size: 1.2rem;
+        }
+
+        /* Дополнительные настройки */
+        .additional-settings {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .switch {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+        }
+
+        .switch input {
+            display: none;
+        }
+
+        .slider {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .slider:before {
+            content: '';
+            position: absolute;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: white;
+            top: 2px;
+            left: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .switch input:checked + .slider {
+            background: linear-gradient(
+                90deg,
+                hsl(calc(var(--primary-hue) + 120), var(--saturation), 65%),
+                hsl(calc(var(--primary-hue) + 180), var(--saturation), 65%)
+            );
+        }
+
+        .switch input:checked + .slider:before {
+            transform: translateX(30px);
+        }
+
+        .switch-label {
+            font-weight: 600;
+            flex: 1;
+        }
+
+        /* Кнопки настроек */
+        .settings-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(
+                90deg,
+                hsl(calc(var(--primary-hue) + 0), var(--saturation), 65%),
+                hsl(calc(var(--primary-hue) + 60), var(--saturation), 65%)
+            );
+            color: white;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text-color);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(
+                90deg,
+                hsl(calc(var(--primary-hue) + 60), var(--saturation), 65%),
+                hsl(calc(var(--primary-hue) + 120), var(--saturation), 65%)
+            );
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Анимации */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-100px) translateX(-50%); opacity: 0; }
+            to { transform: translateY(0) translateX(-50%); opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes rgbFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @keyframes timerCountdown {
+            from { width: 100%; }
+            to { width: 0%; }
+        }
+
+        @keyframes chartGrow {
+            from { height: 0%; }
+            to { height: 100%; }
+        }
+
+        /* Адаптивность */
+        @media (max-width: 1100px) {
+            .top-widgets {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .bottom-widgets {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .top-widgets {
+                grid-template-columns: 1fr;
+            }
+            
+            .nickname {
+                font-size: 3rem;
+            }
+            
+            .link-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .navbar {
+                flex-direction: column;
+                gap: 15px;
+                padding: 20px;
+            }
+            
+            .settings-panel {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .cookie-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .welcome-message {
+                top: 80px;
+                width: 95%;
+                padding: 20px;
+            }
+            
+            .welcome-content h3 {
+                font-size: 1.2rem;
+            }
+            
+            .settings-buttons {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- RGB градиентный фон -->
+    <div class="rgb-gradient-bg"></div>
+    <div class="glass-overlay"></div>
+
+    <!-- Приветственное сообщение -->
+    <div class="welcome-message" id="welcomeMessage">
+        <div class="welcome-content">
+            <h3><i class="fas fa-hand-wave"></i> Добро пожаловать!</h3>
+            <p>Спасибо что выбрали нас! Мы вас ценим и будем благодарны если вы оставите отзыв и комментарий.</p>
+            <div class="timer-bar" id="timerBar"></div>
+        </div>
+        <button class="close-welcome" id="closeWelcome">&times;</button>
+    </div>
+
+    <div class="container">
+        <!-- Навигация -->
+        <nav class="navbar">
+            <div class="logo" id="logo">KiraKi</div>
+            <div class="settings-panel">
+                <!-- Кнопка настроек -->
+                <div class="settings-btn" id="settingsBtn">
+                    <i class="fas fa-cog"></i>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Верхние виджеты (3 в строку) -->
+        <div class="top-widgets">
+            <div class="widget time-widget">
+                <div class="date" id="currentDate">Загрузка...</div>
+                <div class="time" id="currentTime">00:00:00</div>
+            </div>
+            
+            <div class="widget word-widget">
+                <div>Слово дня:</div>
+                <div class="word-of-day" id="wordOfDay">Креативность</div>
+            </div>
+            
+            <div class="widget visitor-widget">
+                <div class="visitor-stat">
+                    <i class="fas fa-users"></i>
+                    <div>
+                        <div class="visitor-count">0</div>
+                        <div class="visitor-label">Посетителей сегодня</div>
+                    </div>
+                </div>
+                <div class="visitor-chart">
+                    <div class="chart-bar" style="height: 70%"></div>
+                    <div class="chart-bar" style="height: 90%"></div>
+                    <div class="chart-bar" style="height: 60%"></div>
+                    <div class="chart-bar" style="height: 80%"></div>
+                    <div class="chart-bar" style="height: 50%"></div>
+                    <div class="chart-bar" style="height: 95%"></div>
+                    <div class="chart-bar" style="height: 40%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Основное содержимое -->
+        <div class="main-content">
+            <div class="nickname-container">
+                <div class="nickname" id="nickname">KiraKi</div>
+                <div class="tagline" id="tagline">Разработчик | Геймер | Создатель цифровых миров</div>
+            </div>
+        </div>
+
+        <!-- Нижние виджеты -->
+        <div class="bottom-widgets">
+            <div class="widget">
+                <div class="widget-title">
+                    <i class="fas fa-code"></i>
+                    <h3>Обо мне</h3>
+                </div>
+                <p>Привет! Я KiraKi - разработчик с многолетним опытом в создании цифровых проектов.</p>
+                <p>Специализируюсь на веб-технологиях, Python и игровой разработке.</p>
+                <p>Мои проекты всегда сочетают в себе качественный код, современный дизайн и интуитивный интерфейс.</p>
+            </div>
+            
+            <div class="widget">
+                <div class="widget-title">
+                    <i class="fas fa-gamepad"></i>
+                    <h3>Геймерский подход</h3>
+                </div>
+                <p>Как геймер, я уделяю особое внимание плавности анимаций, отзывчивости интерфейсов и общему пользовательскому опыту.</p>
+                <p>Каждая деталь продумана для максимального удобства пользователя.</p>
+            </div>
+            
+            <div class="widget">
+                <div class="widget-title">
+                    <i class="fas fa-rocket"></i>
+                    <h3>Технологии</h3>
+                </div>
+                <p>Веб: HTML5, CSS3, JavaScript, React, Vue.js</p>
+                <p>Бэкенд: Python, Django, Flask, Node.js</p>
+                <p>Игры: Unity, C#, Godot</p>
+            </div>
+            
+            <div class="widget links-widget">
+                <div class="widget-title">
+                    <i class="fas fa-link"></i>
+                    <h3>Мои ссылки</h3>
+                </div>
+                <div class="link-grid">
+                    <a href="https://t.me/testuhipis" target="_blank" class="link-item tg">
+                        <div class="link-icon">
+                            <i class="fab fa-telegram"></i>
+                        </div>
+                        <div class="link-info">
+                            <h4>Telegram</h4>
+                            <p>@testuhipis</p>
+                        </div>
+                    </a>
+                    <a href="https://github.com/somp1k3/smp3" target="_blank" class="link-item github">
+                        <div class="link-icon">
+                            <i class="fab fa-github"></i>
+                        </div>
+                        <div class="link-info">
+                            <h4>GitHub</h4>
+                            <p>somp1k3/smp3</p>
+                        </div>
+                    </a>
+                    <a href="https://somp1k3.github.io/smp3/pr/" target="_blank" class="link-item portfolio">
+                        <div class="link-icon">
+                            <i class="fas fa-briefcase"></i>
+                        </div>
+                        <div class="link-info">
+                            <h4>Портфолио</h4>
+                            <p>Мои проекты</p>
+                        </div>
+                    </a>
+                    <a href="https://steamcommunity.com/id/KiraKi1/" target="_blank" class="link-item steam">
+                        <div class="link-icon">
+                            <i class="fab fa-steam"></i>
+                        </div>
+                        <div class="link-info">
+                            <h4>Steam</h4>
+                            <p>KiraKi1</p>
+                        </div>
+                    </a>
+                    <a href="https://l1ratch.ru/" target="_blank" class="link-item friend">
+                        <div class="link-icon">
+                            <i class="fas fa-user-friends"></i>
+                        </div>
+                        <div class="link-info">
+                            <h4>Сайт друга</h4>
+                            <p>l1ratch.ru</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Футер -->
+        <footer class="footer">
+            <div class="copyright">
+                Все права защищены © KK 2025-2026/7/8/9/30.
+            </div>
+            <div class="warning" id="warningText">
+                Все данные не сохраняются и любое копирование сайта в целях создать копию сайта преследуется законом <span class="warning-link" id="warningLink">тыкни!</span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Модальное окно настроек -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <button class="close-modal" id="closeSettingsModal">&times;</button>
+            <h2 class="modal-title">Настройки сайта</h2>
+            <div class="settings-content">
+                <div class="settings-section">
+                    <h3><i class="fas fa-palette"></i> Цветовая тема</h3>
+                    <div class="color-presets">
+                        <div class="color-preset preset-blue" data-hue="220" title="Синяя">
+                            <div class="preset-label">Синяя</div>
+                        </div>
+                        <div class="color-preset preset-purple" data-hue="270" title="Фиолетовая">
+                            <div class="preset-label">Фиолетовая</div>
+                        </div>
+                        <div class="color-preset preset-green" data-hue="160" title="Зеленая">
+                            <div class="preset-label">Зеленая</div>
+                        </div>
+                        <div class="color-preset preset-red" data-hue="340" title="Красная">
+                            <div class="preset-label">Красная</div>
+                        </div>
+                        <div class="color-preset preset-orange" data-hue="40" title="Оранжевая">
+                            <div class="preset-label">Оранжевая</div>
+                        </div>
+                    </div>
+                    <div class="color-picker-container">
+                        <label for="colorPicker">Выбрать свой цвет:</label>
+                        <input type="color" id="colorPicker" value="#4a6fa5">
+                    </div>
+                </div>
+                
+                <div class="settings-section">
+                    <h3><i class="fas fa-globe"></i> Язык</h3>
+                    <div class="language-options">
+                        <button class="language-option active" data-lang="ru">
+                            <span class="flag">🇷🇺</span>
+                            <span>Русский</span>
+                        </button>
+                        <button class="language-option" data-lang="en">
+                            <span class="flag">🇺🇸</span>
+                            <span>English</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="settings-section">
+                    <h3><i class="fas fa-moon"></i> Тема оформления</h3>
+                    <div class="theme-options">
+                        <button class="theme-option active" data-theme="dark">
+                            <i class="fas fa-moon"></i>
+                            <span>Темная</span>
+                        </button>
+                        <button class="theme-option" data-theme="light">
+                            <i class="fas fa-sun"></i>
+                            <span>Светлая</span>
+                        </button>
+                        <button class="theme-option" data-theme="auto">
+                            <i class="fas fa-adjust"></i>
+                            <span>Авто</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="settings-section">
+                    <h3><i class="fas fa-sliders-h"></i> Дополнительно</h3>
+                    <div class="additional-settings">
+                        <label class="switch">
+                            <input type="checkbox" id="animationsToggle" checked>
+                            <span class="slider"></span>
+                            <span class="switch-label">Анимации</span>
+                        </label>
+                        
+                        <label class="switch">
+                            <input type="checkbox" id="glassEffectToggle" checked>
+                            <span class="slider"></span>
+                            <span class="switch-label">Стеклянный эффект</span>
+                        </label>
+                        
+                        <label class="switch">
+                            <input type="checkbox" id="gradientBgToggle" checked>
+                            <span class="slider"></span>
+                            <span class="switch-label">Анимированный фон</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="settings-buttons">
+                    <button class="btn btn-primary" id="applySettings">Применить</button>
+                    <button class="btn btn-secondary" id="resetSettings">Сбросить</button>
+                    <button class="btn btn-outline" id="closeSettings">Закрыть</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно "Обо мне" -->
+    <div class="modal" id="aboutModal">
+        <div class="modal-content">
+            <button class="close-modal" id="closeAboutModal">&times;</button>
+            <h2 class="modal-title" id="aboutModalTitle">Обо мне</h2>
+            <div class="modal-text" id="aboutModalText">
+                <p>Привет! Я <strong>KiraKi</strong> - разработчик с многолетним опытом в создании цифровых проектов. Специализируюсь на веб-технологиях, Python и игровой разработке.</p>
+                <p>Мои проекты всегда сочетают в себе качественный код, современный дизайн и интуитивный интерфейс. Каждая деталь продумана для максимального удобства пользователя.</p>
+                <p>Как геймер, я уделяю особое внимание плавности анимаций, отзывчивости интерфейсов и общему пользовательскому опыту.</p>
+                <p>В работе использую современный стек технологий: HTML5, CSS3, JavaScript, React, Vue.js, Python, Django, Flask, Unity, C# и многое другое.</p>
+                <p>Посетите мой сайт для просмотра последних проектов и информации.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно с предупреждением -->
+    <div class="modal" id="warningModal">
+        <div class="modal-content">
+            <button class="close-modal" id="closeWarningModal">&times;</button>
+            <h2 class="modal-title" id="warningModalTitle">Правовая информация</h2>
+            <div class="modal-text" id="warningModalText">
+                <p>Сайт и его элементы являются объектом авторского права (ст. 1259 ГК РФ). Использование произведений или их составляющих без согласия владельца запрещено (ст. 1229 ГК РФ).</p>
+                <p>За незаконное копирование сайта грозит гражданско-правовая, административная или уголовная ответственность. Некоторые меры, которые могут быть приняты:</p>
+                <ul>
+                    <li><strong>Претензии от правообладателя.</strong> Владелец оригинального сайта может направить претензию с требованием удалить скопированный контент или прекратить использование дизайна.</li>
+                    <li><strong>Судебные иски.</strong> В случае отказа добровольно устранить нарушение, правообладатель может обратиться в суд.</li>
+                    <li><strong>Блокировка сайта.</strong> В некоторых случаях, по решению суда, сайт-нарушитель может быть заблокирован.</li>
+                    <li><strong>Возмещение убытков.</strong> Суд может обязать нарушителя выплатить компенсацию за причинённый ущерб, который может включать упущенную выгоду, расходы на восстановление репутации и т. д.</li>
+                    <li><strong>Уголовная ответственность.</strong> В случае крупного ущерба или систематических нарушений, может наступить уголовная ответственность.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cookie уведомление -->
+    <div class="cookie-notice" id="cookieNotice">
+        <div class="cookie-content">
+            <div id="cookieText">Этот сайт использует файлы cookie для улучшения работы. Продолжая использование сайта, вы соглашаетесь с этим.</div>
+            <div class="cookie-buttons">
+                <button class="cookie-btn accept-btn" id="acceptCookies">Принять</button>
+                <button class="cookie-btn decline-btn" id="declineCookies">Отклонить</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // КОНФИГУРАЦИЯ И ПЕРЕМЕННЫЕ
+        // ============================================
+        
+        // Тексты для разных языков
+        const translations = {
+            ru: {
+                tagline: "Разработчик | Геймер | Создатель цифровых миров",
+                wordOfDay: "Креативность",
+                aboutTitle: "Обо мне",
+                aboutText: `
+                    <p>Привет! Я <strong>KiraKi</strong> - разработчик с многолетним опытом в создании цифровых проектов. Специализируюсь на веб-технологиях, Python и игровой разработке.</p>
+                    <p>Мои проекты всегда сочетают в себе качественный код, современный дизайн и интуитивный интерфейс. Каждая деталь продумана для максимального удобства пользователя.</p>
+                    <p>Как геймер, я уделяю особое внимание плавности анимаций, отзывчивости интерфейсов и общему пользовательскому опыту.</p>
+                    <p>В работе использую современный стек технологий: HTML5, CSS3, JavaScript, React, Vue.js, Python, Django, Flask, Unity, C# и многое другое.</p>
+                    <p>Посетите мой сайт для просмотра последних проектов и информации.</p>
+                `,
+                gamerTitle: "Геймерский подход",
+                gamerText: "Как геймер, я уделяю особое внимание плавности анимаций, отзывчивости интерфейсов и общему пользовательскому опыту.",
+                techTitle: "Технологии",
+                linksTitle: "Мои ссылки",
+                warningText: "Все данные не сохраняются и любое копирование сайта в целях создать копию сайта преследуется законом <span class='warning-link' id='warningLink'>тыкни!</span>",
+                warningModalTitle: "Правовая информация",
+                warningModalText: `
+                    <p>Сайт и его элементы являются объектом авторского права (ст. 1259 ГК РФ). Использование произведений или их составляющих без согласия владельца запрещено (ст. 1229 ГК РФ).</p>
+                    <p>За незаконное копирование сайта грозит гражданско-правовая, административная или уголовная ответственность. Некоторые меры, которые могут быть приняты:</p>
+                    <ul>
+                        <li><strong>Претензии от правообладателя.</strong> Владелец оригинального сайта может направить претензию с требованием удалить скопированный контент или прекратить использование дизайна.</li>
+                        <li><strong>Судебные иски.</strong> В случае отказа добровольно устранить нарушение, правообладатель может обратиться в суд.</li>
+                        <li><strong>Блокировка сайта.</strong> В некоторых случаях, по решению суда, сайт-нарушитель может быть заблокирован.</li>
+                        <li><strong>Возмещение убытков.</strong> Суд может обязать нарушителя выплатить компенсацию за причинённый ущерб, который может включать упущенную выгоду, расходы на восстановление репутации и т. д.</li>
+                        <li><strong>Уголовная ответственность.</strong> В случае крупного ущерба или систематических нарушений, может наступить уголовная ответственность.</li>
+                    </ul>
+                `,
+                cookieText: "Этот сайт использует файлы cookie для улучшения работы. Продолжая использование сайта, вы соглашаетесь с этим.",
+                acceptCookies: "Принять",
+                declineCookies: "Отклонить",
+                settingsTitle: "Настройки сайта",
+                colorTheme: "Цветовая тема",
+                chooseColor: "Выбрать свой цвет:",
+                language: "Язык",
+                appearanceTheme: "Тема оформления",
+                dark: "Темная",
+                light: "Светлая",
+                auto: "Авто",
+                additional: "Дополнительно",
+                animations: "Анимации",
+                glassEffect: "Стеклянный эффект",
+                animatedBg: "Анимированный фон",
+                apply: "Применить",
+                reset: "Сбросить",
+                close: "Закрыть",
+                welcomeMessage: "Спасибо что выбрали нас! Мы вас ценим и будем благодарны если вы оставите отзыв и комментарий."
+            },
+            en: {
+                tagline: "Developer | Gamer | Digital Worlds Creator",
+                wordOfDay: "Creativity",
+                aboutTitle: "About Me",
+                aboutText: `
+                    <p>Hello! I'm <strong>KiraKi</strong> - a developer with years of experience in creating digital projects. I specialize in web technologies, Python, and game development.</p>
+                    <p>My projects always combine quality code, modern design, and intuitive interfaces. Every detail is thought out for maximum user convenience.</p>
+                    <p>As a gamer, I pay special attention to animation smoothness, interface responsiveness, and overall user experience.</p>
+                    <p>In my work, I use modern technology stack: HTML5, CSS3, JavaScript, React, Vue.js, Python, Django, Flask, Unity, C#, and much more.</p>
+                    <p>Visit my website to view the latest projects and information.</p>
+                `,
+                gamerTitle: "Gamer Approach",
+                gamerText: "As a gamer, I pay special attention to animation smoothness, interface responsiveness, and overall user experience.",
+                techTitle: "Technologies",
+                linksTitle: "My Links",
+                warningText: "All data is not saved and any copying of the site for the purpose of creating a copy of the site is prosecuted by law <span class='warning-link' id='warningLink'>click!</span>",
+                warningModalTitle: "Legal Information",
+                warningModalText: `
+                    <p>The site and its elements are subject to copyright (Article 1259 of the Civil Code of the Russian Federation). Use of works or their components without the owner's consent is prohibited (Article 1229 of the Civil Code of the Russian Federation).</p>
+                    <p>Illegal copying of the site entails civil, administrative or criminal liability. Some measures that may be taken:</p>
+                    <ul>
+                        <li><strong>Claims from the copyright holder.</strong> The owner of the original site may send a claim demanding the removal of copied content or cessation of use of the design.</li>
+                        <li><strong>Lawsuits.</strong> In case of refusal to voluntarily eliminate the violation, the copyright holder may apply to the court.</li>
+                        <li><strong>Site blocking.</strong> In some cases, by court decision, the infringing site may be blocked.</li>
+                        <li><strong>Compensation for damages.</strong> The court may oblige the violator to pay compensation for the damage caused, which may include lost profits, costs of restoring reputation, etc.</li>
+                        <li><strong>Criminal liability.</strong> In case of major damage or systematic violations, criminal liability may arise.</li>
+                    </ul>
+                `,
+                cookieText: "This site uses cookies to improve performance. By continuing to use the site, you agree to this.",
+                acceptCookies: "Accept",
+                declineCookies: "Decline",
+                settingsTitle: "Site Settings",
+                colorTheme: "Color Theme",
+                chooseColor: "Choose your color:",
+                language: "Language",
+                appearanceTheme: "Appearance Theme",
+                dark: "Dark",
+                light: "Light",
+                auto: "Auto",
+                additional: "Additional",
+                animations: "Animations",
+                glassEffect: "Glass Effect",
+                animatedBg: "Animated Background",
+                apply: "Apply",
+                reset: "Reset",
+                close: "Close",
+                welcomeMessage: "Thank you for choosing us! We appreciate you and would be grateful if you leave a review and comment."
+            }
+        };
+
+        // Слова дня для разных языков
+        const wordsOfDay = {
+            ru: [
+                "Креативность", "Инновации", "Код", "Дизайн", "Геймдев", 
+                "Технологии", "Вдохновение", "Проект", "Интерфейс", "Анимация",
+                "Оптимизация", "Функциональность", "Эстетика", "Интуиция", "Интерактив"
+            ],
+            en: [
+                "Creativity", "Innovation", "Code", "Design", "GameDev",
+                "Technology", "Inspiration", "Project", "Interface", "Animation",
+                "Optimization", "Functionality", "Aesthetics", "Intuition", "Interactive"
+            ]
+        };
+
+        // Конфигурация по умолчанию
+        const defaultConfig = {
+            hue: 220,
+            language: 'ru',
+            theme: 'dark',
+            animations: true,
+            glassEffect: true,
+            gradientBg: true
+        };
+
+        // Глобальные переменные
+        let currentLang = 'ru';
+        let currentConfig = { ...defaultConfig };
+
+        // ============================================
+        // ФУНКЦИИ УТИЛИТЫ
+        // ============================================
+
+        // Обновление текста элемента
+        function updateElementText(id, text) {
+            const element = document.getElementById(id);
+            if (element) element.textContent = text;
+        }
+
+        // Обновление HTML элемента
+        function updateElementHTML(id, html) {
+            const element = document.getElementById(id);
+            if (element) element.innerHTML = html;
+        }
+
+        // Вспомогательные функции для работы с цветом
+        function hexToRgb(hex) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : null;
+        }
+
+        function rgbToHsl(r, g, b) {
+            r /= 255;
+            g /= 255;
+            b /= 255;
+            
+            const max = Math.max(r, g, b);
+            const min = Math.min(r, g, b);
+            let h, s, l = (max + min) / 2;
+            
+            if (max === min) {
+                h = s = 0;
+            } else {
+                const d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                
+                switch (max) {
+                    case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                    case g: h = (b - r) / d + 2; break;
+                    case b: h = (r - g) / d + 4; break;
+                }
+                
+                h /= 6;
+            }
+            
+            return {
+                h: Math.round(h * 360),
+                s: Math.round(s * 100),
+                l: Math.round(l * 100)
+            };
+        }
+
+        function hslToHex(h, s, l) {
+            s /= 100;
+            l /= 100;
+            
+            const c = (1 - Math.abs(2 * l - 1)) * s;
+            const x = c * (1 - Math.abs((h / 60) % 2 - 1));
+            const m = l - c / 2;
+            
+            let r = 0, g = 0, b = 0;
+            
+            if (h >= 0 && h < 60) {
+                r = c; g = x; b = 0;
+            } else if (h >= 60 && h < 120) {
+                r = x; g = c; b = 0;
+            } else if (h >= 120 && h < 180) {
+                r = 0; g = c; b = x;
+            } else if (h >= 180 && h < 240) {
+                r = 0; g = x; b = c;
+            } else if (h >= 240 && h < 300) {
+                r = x; g = 0; b = c;
+            } else if (h >= 300 && h < 360) {
+                r = c; g = 0; b = x;
+            }
+            
+            r = Math.round((r + m) * 255);
+            g = Math.round((g + m) * 255);
+            b = Math.round((b + m) * 255);
+            
+            return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
+        }
+
+        // Анимация счетчика
+        function animateCounter(element, start, end, duration) {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const current = Math.floor(progress * (end - start) + start);
+                element.textContent = current;
+                
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        // Обновление активного пресета
+        function updateActivePreset(hue) {
+            const colorPresets = document.querySelectorAll('.color-preset');
+            colorPresets.forEach(preset => {
+                const presetHue = parseInt(preset.getAttribute('data-hue'));
+                preset.classList.remove('active');
+                
+                // Находим ближайший пресет
+                if (Math.abs(presetHue - hue) <= 30) {
+                    preset.classList.add('active');
+                }
+            });
+        }
+
+        // Обновление активной опции
+        function updateActiveOption(options, activeOption) {
+            options.forEach(option => option.classList.remove('active'));
+            activeOption.classList.add('active');
+        }
+
+        // ============================================
+        // ФУНКЦИИ ТЕМЫ И НАСТРОЕК
+        // ============================================
+
+        // Загрузка конфигурации из localStorage
+        function loadConfig() {
+            const savedConfig = localStorage.getItem('siteConfig');
+            if (savedConfig) {
+                return JSON.parse(savedConfig);
+            }
+            return { ...defaultConfig };
+        }
+
+        // Сохранение конфигурации в localStorage
+        function saveConfig(config) {
+            localStorage.setItem('siteConfig', JSON.stringify(config));
+        }
+
+        // Установка цвета сайта
+        function setColor(hue) {
+            document.documentElement.style.setProperty('--primary-hue', hue);
+            localStorage.setItem('siteHue', hue);
+        }
+
+        // Установка темы
+        function setTheme(theme) {
+            if (theme === 'auto') {
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                theme = prefersDark ? 'dark' : 'light';
+            }
+            
+            if (theme === 'light') {
+                document.body.classList.add('light-theme');
+            } else {
+                document.body.classList.remove('light-theme');
+            }
+            localStorage.setItem('theme', theme);
+        }
+
+        // Управление анимациями
+        function setAnimations(enabled) {
+            if (enabled) {
+                document.body.classList.remove('no-animations');
+                document.documentElement.style.setProperty('--animations-enabled', '1');
+            } else {
+                document.body.classList.add('no-animations');
+                document.documentElement.style.setProperty('--animations-enabled', '0');
+            }
+            localStorage.setItem('animations', enabled.toString());
+        }
+
+        // Управление стеклянным эффектом
+        function setGlassEffect(enabled) {
+            if (enabled) {
+                document.body.classList.remove('no-glass-effect');
+                document.documentElement.style.setProperty('--glass-effect', '1');
+            } else {
+                document.body.classList.add('no-glass-effect');
+                document.documentElement.style.setProperty('--glass-effect', '0');
+            }
+            localStorage.setItem('glassEffect', enabled.toString());
+        }
+
+        // Управление градиентным фоном
+        function setGradientBg(enabled) {
+            if (enabled) {
+                document.body.classList.remove('no-gradient-bg');
+                document.documentElement.style.setProperty('--gradient-bg', '1');
+            } else {
+                document.body.classList.add('no-gradient-bg');
+                document.documentElement.style.setProperty('--gradient-bg', '0');
+            }
+            localStorage.setItem('gradientBg', enabled.toString());
+        }
+
+        // Применение конфигурации
+        function applyConfig(config) {
+            setColor(config.hue);
+            setTheme(config.theme);
+            setAnimations(config.animations);
+            setGlassEffect(config.glassEffect);
+            setGradientBg(config.gradientBg);
+        }
+
+        // ============================================
+        // ФУНКЦИИ ЯЗЫКА
+        // ============================================
+
+        // Обновление языка на странице
+        function updateLanguage() {
+            const texts = translations[currentLang];
+            
+            // Обновляем текст на странице
+            updateElementText('tagline', texts.tagline);
+            updateElementText('wordOfDay', texts.wordOfDay);
+            
+            // Обновляем приветственное сообщение
+            const welcomeText = document.querySelector('.welcome-content p');
+            if (welcomeText) welcomeText.textContent = texts.welcomeMessage;
+            
+            // Обновляем заголовки виджетов
+            const widgetTitles = document.querySelectorAll('.widget-title h3');
+            if (widgetTitles[0]) widgetTitles[0].textContent = texts.aboutTitle;
+            if (widgetTitles[1]) widgetTitles[1].textContent = texts.gamerTitle;
+            if (widgetTitles[2]) widgetTitles[2].textContent = texts.techTitle;
+            if (widgetTitles[3]) widgetTitles[3].textContent = texts.linksTitle;
+            
+            // Обновляем предупреждение в футере
+            updateElementHTML('warningText', texts.warningText);
+            
+            // Обновляем текст cookie
+            updateElementText('cookieText', texts.cookieText);
+            updateElementText('acceptCookies', texts.acceptCookies);
+            updateElementText('declineCookies', texts.declineCookies);
+            
+            // Обновляем модальные окна
+            updateElementText('aboutModalTitle', texts.aboutTitle);
+            updateElementHTML('aboutModalText', texts.aboutText);
+            updateElementText('warningModalTitle', texts.warningModalTitle);
+            updateElementHTML('warningModalText', texts.warningModalText);
+            
+            // Обновляем настройки
+            updateSettingsModalText(texts);
+            
+            // Перепривязываем обработчик для кнопки "тыкни!"
+            const warningLink = document.getElementById('warningLink');
+            if (warningLink) {
+                warningLink.addEventListener('click', () => {
+                    const warningModal = document.getElementById('warningModal');
+                    if (warningModal) warningModal.style.display = 'flex';
+                });
+            }
+            
+            // Обновляем дату и время
+            updateDateTime();
+            
+            // Устанавливаем слово дня
+            setWordOfDay();
+        }
+
+        // Обновление текста в модальном окне настроек
+        function updateSettingsModalText(texts) {
+            // Заголовки секций
+            const sectionTitles = document.querySelectorAll('.settings-section h3');
+            if (sectionTitles[0]) sectionTitles[0].innerHTML = `<i class="fas fa-palette"></i> ${texts.colorTheme}`;
+            if (sectionTitles[1]) sectionTitles[1].innerHTML = `<i class="fas fa-globe"></i> ${texts.language}`;
+            if (sectionTitles[2]) sectionTitles[2].innerHTML = `<i class="fas fa-moon"></i> ${texts.appearanceTheme}`;
+            if (sectionTitles[3]) sectionTitles[3].innerHTML = `<i class="fas fa-sliders-h"></i> ${texts.additional}`;
+            
+            // Лейблы
+            const colorPickerLabel = document.querySelector('.color-picker-container label');
+            if (colorPickerLabel) colorPickerLabel.textContent = texts.chooseColor;
+            
+            // Названия тем
+            const themeOptions = document.querySelectorAll('.theme-option span');
+            if (themeOptions[0]) themeOptions[0].textContent = texts.dark;
+            if (themeOptions[1]) themeOptions[1].textContent = texts.light;
+            if (themeOptions[2]) themeOptions[2].textContent = texts.auto;
+            
+            // Лейблы переключателей
+            const switchLabels = document.querySelectorAll('.switch-label');
+            if (switchLabels[0]) switchLabels[0].textContent = texts.animations;
+            if (switchLabels[1]) switchLabels[1].textContent = texts.glassEffect;
+            if (switchLabels[2]) switchLabels[2].textContent = texts.animatedBg;
+            
+            // Кнопки
+            const buttons = document.querySelectorAll('.btn');
+            if (buttons[0]) buttons[0].textContent = texts.apply;
+            if (buttons[1]) buttons[1].textContent = texts.reset;
+            if (buttons[2]) buttons[2].textContent = texts.close;
+        }
+
+        // ============================================
+        // ФУНКЦИИ ВИДЖЕТОВ
+        // ============================================
+
+        // Установка слова дня
+        function setWordOfDay() {
+            const wordElement = document.getElementById('wordOfDay');
+            if (!wordElement) return;
+            
+            const today = new Date();
+            const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24);
+            const wordIndex = dayOfYear % wordsOfDay[currentLang].length;
+            wordElement.textContent = wordsOfDay[currentLang][wordIndex];
+        }
+
+        // Обновление даты и времени
+        function updateDateTime() {
+            const dateElement = document.getElementById('currentDate');
+            const timeElement = document.getElementById('currentTime');
+            
+            if (!dateElement || !timeElement) return;
+            
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            };
+            
+            dateElement.textContent = now.toLocaleDateString(currentLang === 'ru' ? 'ru-RU' : 'en-US', options);
+            timeElement.textContent = now.toLocaleTimeString(currentLang === 'ru' ? 'ru-RU' : 'en-US');
+        }
+
+        // Инициализация виджетов
+        function initWidgets() {
+            updateDateTime();
+            setWordOfDay();
+            setInterval(updateDateTime, 1000);
+        }
+
+        // Инициализация приветственного сообщения
+        function initWelcomeMessage() {
+            const welcomeMessage = document.getElementById('welcomeMessage');
+            const closeWelcome = document.getElementById('closeWelcome');
+            const timerBar = document.getElementById('timerBar');
+            
+            // Проверяем, было ли уже показано сообщение
+            const welcomeShown = sessionStorage.getItem('welcomeShown');
+            
+            if (!welcomeShown && welcomeMessage) {
+                // Показываем сообщение
+                welcomeMessage.style.display = 'flex';
+                
+                // Запускаем таймер на 10 секунд
+                setTimeout(() => {
+                    if (welcomeMessage.style.display !== 'none') {
+                        welcomeMessage.style.opacity = '0';
+                        welcomeMessage.style.transform = 'translateY(-20px) translateX(-50%)';
+                        welcomeMessage.style.transition = 'all 0.5s ease';
+                        
+                        setTimeout(() => {
+                            welcomeMessage.style.display = 'none';
+                        }, 500);
+                    }
+                }, 10000);
+                
+                // Сохраняем в sessionStorage, что сообщение было показано
+                sessionStorage.setItem('welcomeShown', 'true');
+            } else if (welcomeMessage) {
+                welcomeMessage.style.display = 'none';
+            }
+            
+            // Закрытие сообщения по клику
+            if (closeWelcome && welcomeMessage) {
+                closeWelcome.addEventListener('click', () => {
+                    welcomeMessage.style.opacity = '0';
+                    welcomeMessage.style.transform = 'translateY(-20px) translateX(-50%)';
+                    welcomeMessage.style.transition = 'all 0.5s ease';
+                    
+                    setTimeout(() => {
+                        welcomeMessage.style.display = 'none';
+                    }, 500);
+                });
+            }
+        }
+
+        // Инициализация счетчика посетителей
+        function initVisitorCounter() {
+            const visitorCount = document.querySelector('.visitor-count');
+            
+            if (!visitorCount) return;
+            
+            // Получаем текущую дату для уникального ключа
+            const today = new Date().toDateString();
+            const storageKey = `visitorCount_${today}`;
+            
+            // Получаем количество посетителей за сегодня
+            let count = localStorage.getItem(storageKey);
+            
+            if (!count) {
+                // Первый посетитель сегодня
+                count = 1;
+            } else {
+                // Увеличиваем счетчик
+                count = parseInt(count) + 1;
+            }
+            
+            // Сохраняем новое значение
+            localStorage.setItem(storageKey, count.toString());
+            
+            // Анимируем увеличение счетчика
+            animateCounter(visitorCount, 0, count, 2000);
+        }
+
+        // ============================================
+        // ФУНКЦИИ МОДАЛЬНЫХ ОКОН
+        // ============================================
+
+        // Инициализация модальных окон
+        function initModals() {
+            const nickname = document.getElementById('nickname');
+            const logo = document.getElementById('logo');
+            const aboutModal = document.getElementById('aboutModal');
+            const closeAboutModal = document.getElementById('closeAboutModal');
+            const warningModal = document.getElementById('warningModal');
+            const closeWarningModal = document.getElementById('closeWarningModal');
+            const warningLink = document.getElementById('warningLink');
+            
+            // Открытие модального окна "Обо мне"
+            if (nickname && aboutModal) {
+                nickname.addEventListener('click', () => {
+                    aboutModal.style.display = 'flex';
+                });
+            }
+            
+            if (logo && aboutModal) {
+                logo.addEventListener('click', () => {
+                    aboutModal.style.display = 'flex';
+                });
+            }
+            
+            // Закрытие модального окна "Обо мне"
+            if (closeAboutModal && aboutModal) {
+                closeAboutModal.addEventListener('click', () => {
+                    aboutModal.style.display = 'none';
+                });
+            }
+            
+            // Открытие модального окна с предупреждением
+            if (warningLink && warningModal) {
+                warningLink.addEventListener('click', () => {
+                    warningModal.style.display = 'flex';
+                });
+            }
+            
+            // Закрытие модального окна с предупреждением
+            if (closeWarningModal && warningModal) {
+                closeWarningModal.addEventListener('click', () => {
+                    warningModal.style.display = 'none';
+                });
+            }
+            
+            // Закрытие модальных окон при клике вне их
+            window.addEventListener('click', (e) => {
+                if (e.target === aboutModal) {
+                    aboutModal.style.display = 'none';
+                }
+                if (e.target === warningModal) {
+                    warningModal.style.display = 'none';
+                }
+            });
+        }
+
+        // ============================================
+        // ФУНКЦИИ НАСТРОЕК
+        // ============================================
+
+        // Обновление формы настроек
+        function updateSettingsForm(config) {
+            const colorPresets = document.querySelectorAll('.color-preset');
+            const themeOptions = document.querySelectorAll('.theme-option');
+            const languageOptions = document.querySelectorAll('.language-option');
+            const colorPicker = document.getElementById('colorPicker');
+            const animationsToggle = document.getElementById('animationsToggle');
+            const glassEffectToggle = document.getElementById('glassEffectToggle');
+            const gradientBgToggle = document.getElementById('gradientBgToggle');
+            
+            // Обновляем цвет
+            updateActivePreset(config.hue);
+            
+            // Обновляем цвет в пикере
+            const hex = hslToHex(config.hue, 70, 50);
+            if (colorPicker) colorPicker.value = hex;
+            
+            // Обновляем тему
+            themeOptions.forEach(option => {
+                if (option.getAttribute('data-theme') === config.theme) {
+                    updateActiveOption(themeOptions, option);
+                }
+            });
+            
+            // Обновляем язык
+            languageOptions.forEach(option => {
+                if (option.getAttribute('data-lang') === config.language) {
+                    updateActiveOption(languageOptions, option);
+                }
+            });
+            
+            // Обновляем переключатели
+            if (animationsToggle) animationsToggle.checked = config.animations;
+            if (glassEffectToggle) glassEffectToggle.checked = config.glassEffect;
+            if (gradientBgToggle) gradientBgToggle.checked = config.gradientBg;
+        }
+
+        // Инициализация настроек
+        function initSettings() {
+            const settingsBtn = document.getElementById('settingsBtn');
+            const settingsModal = document.getElementById('settingsModal');
+            const closeSettingsModal = document.getElementById('closeSettingsModal');
+            const closeSettings = document.getElementById('closeSettings');
+            const applySettings = document.getElementById('applySettings');
+            const resetSettings = document.getElementById('resetSettings');
+            const colorPicker = document.getElementById('colorPicker');
+            const colorPresets = document.querySelectorAll('.color-preset');
+            const themeOptions = document.querySelectorAll('.theme-option');
+            const languageOptions = document.querySelectorAll('.language-option');
+            const animationsToggle = document.getElementById('animationsToggle');
+            const glassEffectToggle = document.getElementById('glassEffectToggle');
+            const gradientBgToggle = document.getElementById('gradientBgToggle');
+            
+            // Обновляем форму настроек
+            updateSettingsForm(currentConfig);
+            
+            // Открытие модального окна настроек
+            if (settingsBtn && settingsModal) {
+                settingsBtn.addEventListener('click', () => {
+                    settingsModal.style.display = 'flex';
+                    updateSettingsForm(currentConfig);
+                });
+            }
+            
+            // Закрытие модального окна настроек
+            [closeSettingsModal, closeSettings].forEach(btn => {
+                if (btn) {
+                    btn.addEventListener('click', () => {
+                        settingsModal.style.display = 'none';
+                    });
+                }
+            });
+            
+            // Закрытие при клике вне окна
+            window.addEventListener('click', (e) => {
+                if (e.target === settingsModal) {
+                    settingsModal.style.display = 'none';
+                }
+            });
+            
+            // Выбор цвета из пикера
+            if (colorPicker) {
+                colorPicker.addEventListener('input', (e) => {
+                    const hex = e.target.value;
+                    const rgb = hexToRgb(hex);
+                    const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+                    currentConfig.hue = hsl.h;
+                    
+                    // Обновляем активный пресет
+                    updateActivePreset(hsl.h);
+                });
+            }
+            
+            // Выбор цвета из пресетов
+            colorPresets.forEach(preset => {
+                preset.addEventListener('click', () => {
+                    const hue = parseInt(preset.getAttribute('data-hue'));
+                    currentConfig.hue = hue;
+                    
+                    // Обновляем цвет в пикере
+                    const hex = hslToHex(hue, 70, 50);
+                    if (colorPicker) colorPicker.value = hex;
+                    
+                    // Обновляем активный пресет
+                    updateActivePreset(hue);
+                });
+            });
+            
+            // Выбор темы
+            themeOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    const theme = option.getAttribute('data-theme');
+                    currentConfig.theme = theme;
+                    
+                    // Обновляем активную опцию
+                    updateActiveOption(themeOptions, option);
+                });
+            });
+            
+            // Выбор языка
+            languageOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    const lang = option.getAttribute('data-lang');
+                    currentConfig.language = lang;
+                    currentLang = lang;
+                    
+                    // Обновляем активную опцию
+                    updateActiveOption(languageOptions, option);
+                    
+                    // Обновляем язык на странице
+                    updateLanguage();
+                });
+            });
+            
+            // Переключатели
+            if (animationsToggle) {
+                animationsToggle.checked = currentConfig.animations;
+                animationsToggle.addEventListener('change', (e) => {
+                    currentConfig.animations = e.target.checked;
+                });
+            }
+            
+            if (glassEffectToggle) {
+                glassEffectToggle.checked = currentConfig.glassEffect;
+                glassEffectToggle.addEventListener('change', (e) => {
+                    currentConfig.glassEffect = e.target.checked;
+                });
+            }
+            
+            if (gradientBgToggle) {
+                gradientBgToggle.checked = currentConfig.gradientBg;
+                gradientBgToggle.addEventListener('change', (e) => {
+                    currentConfig.gradientBg = e.target.checked;
+                });
+            }
+            
+            // Применение настроек
+            if (applySettings) {
+                applySettings.addEventListener('click', () => {
+                    applyConfig(currentConfig);
+                    saveConfig(currentConfig);
+                    settingsModal.style.display = 'none';
+                    updateLanguage();
+                });
+            }
+            
+            // Сброс настроек
+            if (resetSettings) {
+                resetSettings.addEventListener('click', () => {
+                    currentConfig = { ...defaultConfig };
+                    currentLang = currentConfig.language;
+                    updateSettingsForm(currentConfig);
+                    applyConfig(currentConfig);
+                    saveConfig(currentConfig);
+                    updateLanguage();
+                });
+            }
+        }
+
+        // ============================================
+        // ФУНКЦИИ COOKIE
+        // ============================================
+
+        // Инициализация Cookie
+        function initCookies() {
+            const cookieNotice = document.getElementById('cookieNotice');
+            const acceptCookies = document.getElementById('acceptCookies');
+            const declineCookies = document.getElementById('declineCookies');
+            
+            // Проверяем, было ли уже принято решение о cookies
+            const cookiesAccepted = localStorage.getItem('cookiesAccepted');
+            
+            if (!cookiesAccepted) {
+                setTimeout(() => {
+                    if (cookieNotice) cookieNotice.style.display = 'block';
+                }, 3000); // Показываем через 3 секунды после приветственного сообщения
+            }
+            
+            // Обработка принятия cookies
+            if (acceptCookies) {
+                acceptCookies.addEventListener('click', () => {
+                    localStorage.setItem('cookiesAccepted', 'true');
+                    if (cookieNotice) cookieNotice.style.display = 'none';
+                });
+            }
+            
+            // Обработка отклонения cookies
+            if (declineCookies) {
+                declineCookies.addEventListener('click', () => {
+                    localStorage.setItem('cookiesAccepted', 'false');
+                    if (cookieNotice) cookieNotice.style.display = 'none';
+                });
+            }
+        }
+
+        // ============================================
+        // ИНИЦИАЛИЗАЦИЯ
+        // ============================================
+
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('Инициализация сайта KiraKi...');
+            
+            // Плавное появление
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.5s ease';
+            
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 100);
+            
+            // Загружаем конфигурацию
+            currentConfig = loadConfig();
+            currentLang = currentConfig.language;
+            
+            // Применяем настройки
+            applyConfig(currentConfig);
+            updateLanguage();
+            
+            // Инициализируем виджеты
+            initWidgets();
+            
+            // Инициализируем приветственное сообщение
+            initWelcomeMessage();
+            
+            // Инициализируем счетчик посетителей
+            initVisitorCounter();
+            
+            // Инициализируем модальные окна
+            initModals();
+            
+            // Инициализируем настройки
+            initSettings();
+            
+            // Инициализируем Cookie
+            initCookies();
+            
+            console.log('Сайт KiraKi успешно инициализирован!');
+        });
+
+    </script>
+</body>
+</html>
