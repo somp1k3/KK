@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Портфолио | Somp1k3</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Raleway:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Raleway', sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Анимированный фон */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        .bg-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(120, 119, 198, 0.2);
+            filter: blur(60px);
+        }
+
+        .circle-1 {
+            width: 300px;
+            height: 300px;
+            top: 10%;
+            left: 10%;
+            animation: float 25s infinite linear;
+        }
+
+        .circle-2 {
+            width: 400px;
+            height: 400px;
+            bottom: 10%;
+            right: 10%;
+            animation: float 30s infinite linear reverse;
+        }
+
+        .circle-3 {
+            width: 200px;
+            height: 200px;
+            top: 50%;
+            left: 80%;
+            animation: float 20s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            100% {
+                transform: translate(100px, 100px) rotate(360deg);
+            }
+        }
+
+        /* Заголовок */
+        .header {
+            text-align: center;
+            margin: 40px 0 60px;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(255, 126, 95, 0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Основной контент */
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+            max-width: 1400px;
+            width: 100%;
+            margin-bottom: 60px;
+        }
+
+        /* Виджеты */
+        .widget {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 30px;
+            transition: all 0.4s ease;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .widget::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+        }
+
+        .widget:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .widget-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .widget-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            font-size: 1.8rem;
+            color: #ff7e5f;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .widget-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .widget-description {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.6;
+            margin-bottom: 25px;
+            flex-grow: 1;
+        }
+
+        .widget-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+            text-decoration: none;
+            padding: 12px 25px;
+            border-radius: 12px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .widget-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.3));
+            transition: left 0.4s ease;
+            z-index: -1;
+        }
+
+        .widget-link:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .widget-link:hover::before {
+            left: 0;
+        }
+
+        .widget-link i {
+            margin-right: 10px;
+            font-size: 1.1rem;
+        }
+
+        /* Футер */
+        .footer {
+            text-align: center;
+            padding: 30px 0;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            width: 100%;
+            max-width: 1200px;
+            margin-top: auto;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                padding: 0 15px;
+            }
+
+            .widget {
+                padding: 25px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+
+            .widget-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .widget-icon {
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Анимированный фон -->
+    <div class="bg-animation">
+        <div class="bg-circle circle-1"></div>
+        <div class="bg-circle circle-2"></div>
+        <div class="bg-circle circle-3"></div>
+    </div>
+
+    <!-- Заголовок -->
+    <header class="header">
+        <h1>Somp1k3</h1>
+        <p class="subtitle">Добро пожаловать в моё портфолио. Здесь вы найдете ссылки на мои проекты и профили в различных сервисах.</p>
+    </header>
+
+    <!-- Основной контент -->
+    <main class="container">
+        <!-- Виджет портфолио -->
+        <div class="widget">
+            <div class="widget-header">
+                <div class="widget-icon">
+                    <i class="fas fa-briefcase"></i>
+                </div>
+                <h2 class="widget-title">Портфолио</h2>
+            </div>
+            <p class="widget-description">Коллекция моих работ и проектов, демонстрирующая навыки в веб-разработке и дизайне.</p>
+            <a href="https://somp1k3.github.io/smp3/portfolio/" target="_blank" class="widget-link">
+                <i class="fas fa-external-link-alt"></i> Перейти к портфолио
+            </a>
+        </div>
+
+        <!-- Виджет погоды -->
+        <div class="widget">
+            <div class="widget-header">
+                <div class="widget-icon">
+                    <i class="fas fa-cloud-sun"></i>
+                </div>
+                <h2 class="widget-title">Погода</h2>
+            </div>
+            <p class="widget-description">Виджет погоды с прогнозом на несколько дней и подробной информацией о текущих условиях.</p>
+            <a href="https://somp1k3.github.io/smp3/weather/" target="_blank" class="widget-link">
+                <i class="fas fa-external-link-alt"></i> Посмотреть погоду
+            </a>
+        </div>
+
+        <!-- Виджет карты -->
+        <div class="widget">
+            <div class="widget-header">
+                <div class="widget-icon">
+                    <i class="fas fa-map-marked-alt"></i>
+                </div>
+                <h2 class="widget-title">Карта</h2>
+            </div>
+            <p class="widget-description">Интерактивная карта с различными функциями и возможностями для навигации и просмотра мест.</p>
+            <a href="https://somp1k3.github.io/smp3/maps/" target="_blank" class="widget-link">
+                <i class="fas fa-external-link-alt"></i> Открыть карту
+            </a>
+        </div>
+
+        <!-- Виджет Telegram -->
+        <div class="widget">
+            <div class="widget-header">
+                <div class="widget-icon">
+                    <i class="fab fa-telegram"></i>
+                </div>
+                <h2 class="widget-title">Telegram</h2>
+            </div>
+            <p class="widget-description">Свяжитесь со мной в Telegram для обсуждения проектов или сотрудничества.</p>
+            <a href="https://t.me/testuhipis" target="_blank" class="widget-link">
+                <i class="fab fa-telegram"></i> Написать в Telegram
+            </a>
+        </div>
+
+        <!-- Виджет Steam -->
+        <div class="widget">
+            <div class="widget-header">
+                <div class="widget-icon">
+                    <i class="fab fa-steam"></i>
+                </div>
+                <h2 class="widget-title">Steam</h2>
+            </div>
+            <p class="widget-description">Мой профиль в Steam. Добавляйтесь в друзья для совместных игр и общения.</p>
+            <a href="https://steamcommunity.com/id/somp1k3/" target="_blank" class="widget-link">
+                <i class="fab fa-steam"></i> Профиль Steam
+            </a>
+        </div>
+
+        <!-- Виджет GitHub -->
+        <div class="widget">
+            <div class="widget-header">
+                <div class="widget-icon">
+                    <i class="fab fa-github"></i>
+                </div>
+                <h2 class="widget-title">GitHub</h2>
+            </div>
+            <p class="widget-description">Мой GitHub профиль с исходным кодом проектов, которые я разрабатываю и поддерживаю.</p>
+            <a href="https://github.com/somp1k3" target="_blank" class="widget-link">
+                <i class="fab fa-github"></i> Профиль на GitHub
+            </a>
+        </div>
+    </main>
+
+    <!-- Футер -->
+    <footer class="footer">
+        <p>&copy; 2023 Somp1k3. Все права защищены.</p>
+        <p>Свяжитесь со мной через Telegram или просмотрите мои проекты на GitHub.</p>
+    </footer>
+
+    <script>
+        // Добавляем небольшие анимации при загрузке
+        document.addEventListener('DOMContentLoaded', function() {
+            const widgets = document.querySelectorAll('.widget');
+            
+            // Анимация появления виджетов с задержкой
+            widgets.forEach((widget, index) => {
+                widget.style.opacity = '0';
+                widget.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    widget.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    widget.style.opacity = '1';
+                    widget.style.transform = 'translateY(0)';
+                }, 100 + index * 100);
+            });
+            
+            // Эффект параллакса для фона
+            document.addEventListener('mousemove', function(e) {
+                const circles = document.querySelectorAll('.bg-circle');
+                const x = e.clientX / window.innerWidth;
+                const y = e.clientY / window.innerHeight;
+                
+                circles.forEach((circle, index) => {
+                    const speed = 0.5 + index * 0.2;
+                    const moveX = x * 50 * speed;
+                    const moveY = y * 50 * speed;
+                    
+                    circle.style.transform = `translate(${moveX}px, ${moveY}px)`;
+                });
+            });
+        });
+    </script>
+</body>
+</html>
