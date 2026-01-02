@@ -1,0 +1,1552 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Somp3-Maps - Интерактивная карта мира</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #1a73e8;
+            --primary-dark: #0d47a1;
+            --secondary-color: #ffd700;
+            --bg-color: #f0f2f5;
+            --sidebar-color: #ffffff;
+            --text-color: #333333;
+            --border-color: #dddddd;
+            --header-gradient: linear-gradient(135deg, #1a73e8, #0d47a1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            height: 100vh;
+            overflow: hidden;
+            background: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        .header {
+            background: var(--header-gradient);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .logo i {
+            font-size: 28px;
+        }
+        
+        .logo h1 {
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .logo span {
+            color: var(--secondary-color);
+        }
+        
+        .controls {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+            backdrop-filter: blur(5px);
+        }
+        
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+        }
+        
+        .btn-primary {
+            background: var(--secondary-color);
+            color: var(--primary-dark);
+        }
+        
+        .btn-primary:hover {
+            background: #ffed4e;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        
+        .container {
+            display: flex;
+            height: calc(100vh - 70px);
+        }
+        
+        .sidebar {
+            width: 350px;
+            background: var(--sidebar-color);
+            padding: 20px;
+            overflow-y: auto;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+            z-index: 500;
+            transition: background-color 0.3s;
+        }
+        
+        .sidebar h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-color);
+        }
+        
+        .search-container {
+            margin-bottom: 25px;
+        }
+        
+        .search-box {
+            display: flex;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .search-box input {
+            flex: 1;
+            padding: 12px 15px;
+            border: none;
+            outline: none;
+            font-size: 16px;
+            background: var(--sidebar-color);
+            color: var(--text-color);
+        }
+        
+        .search-box button {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0 20px;
+            cursor: pointer;
+        }
+        
+        .location-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .location-info h3 {
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .coordinates {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-family: monospace;
+            color: #555;
+        }
+        
+        .places-list {
+            margin-top: 25px;
+        }
+        
+        .place-item {
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .place-item:hover {
+            background: #f0f7ff;
+            border-color: var(--primary-color);
+        }
+        
+        .place-item h4 {
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+        
+        .place-item p {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        #map {
+            flex: 1;
+            height: 100%;
+            z-index: 1;
+        }
+        
+        .footer {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px 15px;
+            border-radius: 8px 0 0 0;
+            font-size: 14px;
+            color: #555;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 5px;
+        }
+        
+        .footer-links a {
+            color: var(--primary-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 500;
+        }
+        
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+        
+        .map-attribution {
+            font-size: 12px;
+            color: #888;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 2000;
+            transform: translateX(120%);
+            transition: transform 0.3s ease;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification i {
+            color: var(--primary-color);
+            font-size: 20px;
+        }
+        
+        .notification.error i {
+            color: #e53935;
+        }
+        
+        .notification.success i {
+            color: #43a047;
+        }
+        
+        /* Модальное окно настроек */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-header h2 {
+            color: var(--primary-color);
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #777;
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
+        
+        .settings-section {
+            margin-bottom: 25px;
+        }
+        
+        .settings-section h3 {
+            margin-bottom: 15px;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .map-styles {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        
+        .map-style-btn {
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .map-style-btn:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+        
+        .map-style-btn.active {
+            border-color: var(--primary-color);
+            background: #f0f7ff;
+        }
+        
+        .map-style-btn i {
+            font-size: 24px;
+            color: var(--primary-color);
+        }
+        
+        .color-schemes {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .color-scheme {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.2s;
+        }
+        
+        .color-scheme.active {
+            border-color: #333;
+            transform: scale(1.1);
+        }
+        
+        .color-scheme.blue { background: linear-gradient(135deg, #1a73e8, #0d47a1); }
+        .color-scheme.green { background: linear-gradient(135deg, #4caf50, #2e7d32); }
+        .color-scheme.purple { background: linear-gradient(135deg, #9c27b0, #6a1b9a); }
+        .color-scheme.red { background: linear-gradient(135deg, #f44336, #c62828); }
+        .color-scheme.dark { background: linear-gradient(135deg, #333333, #000000); }
+        .color-scheme.ocean { background: linear-gradient(135deg, #00bcd4, #006064); }
+        
+        /* Окно согласия на куки */
+        .cookie-consent {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 600px;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            z-index: 4000;
+            display: none;
+        }
+        
+        .cookie-consent.show {
+            display: block;
+            animation: slideUp 0.5s ease;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+        
+        .cookie-content {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .cookie-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .cookie-header i {
+            color: var(--primary-color);
+            font-size: 24px;
+        }
+        
+        .cookie-header h3 {
+            color: var(--primary-color);
+        }
+        
+        .cookie-text {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .cookie-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 10px;
+        }
+        
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 300px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                position: absolute;
+                width: 100%;
+                height: 40%;
+                bottom: 0;
+                left: 0;
+                z-index: 1000;
+                border-radius: 20px 20px 0 0;
+                box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.1);
+            }
+            
+            .container {
+                height: calc(100vh - 70px);
+            }
+            
+            .controls {
+                display: none;
+            }
+            
+            .footer {
+                display: none;
+            }
+            
+            .cookie-consent {
+                bottom: 10px;
+                width: 95%;
+            }
+            
+            .cookie-buttons {
+                flex-direction: column;
+            }
+        }
+        
+        .leaflet-control-zoom {
+            margin-left: 20px !important;
+            margin-top: 80px !important;
+        }
+        
+        .leaflet-control-attribution {
+            font-size: 10px !important;
+        }
+        
+        .leaflet-popup-content {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .custom-marker {
+            background: var(--primary-color);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            border: 3px solid white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .user-marker {
+            background: #ff5722;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            border: 3px solid white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+        }
+        
+        /* Темная тема */
+        body.dark-theme {
+            --primary-color: #64b5f6;
+            --primary-dark: #1976d2;
+            --secondary-color: #ffca28;
+            --bg-color: #121212;
+            --sidebar-color: #1e1e1e;
+            --text-color: #e0e0e0;
+            --border-color: #444444;
+            --header-gradient: linear-gradient(135deg, #0d47a1, #000000);
+        }
+        
+        body.dark-theme .location-info {
+            background: #2d2d2d;
+        }
+        
+        body.dark-theme .place-item {
+            background: #2d2d2d;
+            border-color: #444;
+        }
+        
+        body.dark-theme .place-item:hover {
+            background: #3d3d3d;
+        }
+        
+        body.dark-theme .place-item p {
+            color: #aaa;
+        }
+        
+        body.dark-theme .search-box input {
+            background: #2d2d2d;
+            color: #e0e0e0;
+        }
+        
+        body.dark-theme .cookie-consent {
+            background: #2d2d2d;
+            color: #e0e0e0;
+        }
+        
+        body.dark-theme .cookie-text {
+            color: #aaa;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <i class="fas fa-map-marked-alt"></i>
+            <h1>Somp3<span>-Maps</span></h1>
+        </div>
+        <div class="controls">
+            <button class="btn" id="geoBtn">
+                <i class="fas fa-location-arrow"></i> Моё местоположение
+            </button>
+            <button class="btn" id="settingsBtn">
+                <i class="fas fa-cog"></i> Настройки
+            </button>
+            <button class="btn btn-primary" id="themeBtn">
+                <i class="fas fa-moon"></i> Тёмная тема
+            </button>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="sidebar">
+            <h2><i class="fas fa-search-location"></i> Поиск мест</h2>
+            
+            <div class="search-container">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Введите город, адрес или координаты...">
+                    <button id="searchBtn"><i class="fas fa-search"></i></button>
+                </div>
+            </div>
+            
+            <div class="location-info">
+                <h3><i class="fas fa-info-circle"></i> Информация о местоположении</h3>
+                <p id="locationText">Нажмите на карту или используйте поиск, чтобы увидеть информацию о местоположении.</p>
+                <div class="coordinates">
+                    <span id="latText">Широта: --</span>
+                    <span id="lngText">Долгота: --</span>
+                </div>
+            </div>
+            
+            <div class="places-list">
+                <h3><i class="fas fa-map-marker-alt"></i> Популярные места</h3>
+                <div class="place-item" data-lat="55.7558" data-lng="37.6173" data-title="Москва, Россия">
+                    <h4>Москва, Россия</h4>
+                    <p>Столица России, Красная площадь, Кремль</p>
+                </div>
+                <div class="place-item" data-lat="40.7128" data-lng="-74.0060" data-title="Нью-Йорк, США">
+                    <h4>Нью-Йорк, США</h4>
+                    <p>Статуя Свободы, Центральный парк, Таймс-сквер</p>
+                </div>
+                <div class="place-item" data-lat="48.8566" data-lng="2.3522" data-title="Париж, Франция">
+                    <h4>Париж, Франция</h4>
+                    <p>Эйфелева башня, Лувр, Собор Парижской Богоматери</p>
+                </div>
+                <div class="place-item" data-lat="35.6762" data-lng="139.6503" data-title="Токио, Япония">
+                    <h4>Токио, Япония</h4>
+                    <p>Императорский дворец, токийская башня, Сибуя</p>
+                </div>
+            </div>
+        </div>
+        
+        <div id="map"></div>
+        
+        <div class="footer">
+            <div>Somp3-Maps © 2023 | Интерактивная карта мира</div>
+            <div class="footer-links">
+                <a href="https://somp1k3.github.io/smp3/" target="_blank">
+                    <i class="fas fa-external-link-alt"></i> Основной сайт SMP3
+                </a>
+                <a href="#" id="cookieSettingsBtn">
+                    <i class="fas fa-cookie-bite"></i> Настройки куки
+                </a>
+                <a href="#" id="privacyPolicyBtn">
+                    <i class="fas fa-shield-alt"></i> Политика конфиденциальности
+                </a>
+            </div>
+            <div class="map-attribution" id="mapAttribution">Картографические данные © OpenStreetMap contributors</div>
+        </div>
+    </div>
+    
+    <!-- Модальное окно настроек -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-cog"></i> Настройки карты</h2>
+                <button class="close-modal" id="closeModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-section">
+                    <h3><i class="fas fa-layer-group"></i> Стиль карты</h3>
+                    <div class="map-styles">
+                        <div class="map-style-btn active" data-style="standard" id="styleStandard">
+                            <i class="fas fa-map"></i>
+                            <span>Стандартная</span>
+                        </div>
+                        <div class="map-style-btn" data-style="satellite" id="styleSatellite">
+                            <i class="fas fa-satellite"></i>
+                            <span>Спутник</span>
+                        </div>
+                        <div class="map-style-btn" data-style="topographic" id="styleTopographic">
+                            <i class="fas fa-mountain"></i>
+                            <span>Топографическая</span>
+                        </div>
+                        <div class="map-style-btn" data-style="hydro" id="styleHydro">
+                            <i class="fas fa-water"></i>
+                            <span>Гидрографическая</span>
+                        </div>
+                        <div class="map-style-btn" data-style="dark" id="styleDark">
+                            <i class="fas fa-moon"></i>
+                            <span>Тёмная</span>
+                        </div>
+                        <div class="map-style-btn" data-style="monochrome" id="styleMonochrome">
+                            <i class="fas fa-adjust"></i>
+                            <span>Монохромная</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="settings-section">
+                    <h3><i class="fas fa-palette"></i> Цветовая схема сайта</h3>
+                    <div class="color-schemes">
+                        <div class="color-scheme blue active" data-scheme="blue"></div>
+                        <div class="color-scheme green" data-scheme="green"></div>
+                        <div class="color-scheme purple" data-scheme="purple"></div>
+                        <div class="color-scheme red" data-scheme="red"></div>
+                        <div class="color-scheme dark" data-scheme="dark"></div>
+                        <div class="color-scheme ocean" data-scheme="ocean"></div>
+                    </div>
+                </div>
+                
+                <div class="settings-section">
+                    <h3><i class="fas fa-map-marked-alt"></i> Другие настройки</h3>
+                    <div style="display: flex; flex-direction: column; gap: 15px;">
+                        <div>
+                            <label for="markerSize">Размер маркеров:</label>
+                            <input type="range" id="markerSize" min="10" max="30" value="20" style="width: 100%; margin-top: 5px;">
+                        </div>
+                        <div>
+                            <label>
+                                <input type="checkbox" id="showScale" checked> Показывать масштаб на карте
+                            </label>
+                        </div>
+                        <div>
+                            <label>
+                                <input type="checkbox" id="showGrid" checked> Показывать координатную сетку
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="settings-section">
+                    <h3><i class="fas fa-link"></i> Ссылки</h3>
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <a href="https://somp1k3.github.io/smp3/" target="_blank" style="display: flex; align-items: center; gap: 10px; color: var(--primary-color); text-decoration: none; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px;">
+                            <i class="fas fa-home"></i>
+                            <div>
+                                <strong>Основной сайт SMP3</strong>
+                                <div style="font-size: 14px; color: #666;">somp1k3.github.io/smp3/</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Окно согласия на использование куки -->
+    <div class="cookie-consent" id="cookieConsent">
+        <div class="cookie-content">
+            <div class="cookie-header">
+                <i class="fas fa-cookie-bite"></i>
+                <h3>Использование файлов cookie</h3>
+            </div>
+            <div class="cookie-text">
+                Мы используем файлы cookie для улучшения работы сайта, сохранения ваших настроек и анализа трафика. 
+                Нажимая "Принять все", вы соглашаетесь на использование всех файлов cookie. 
+                Вы можете настроить предпочтения в любое время.
+            </div>
+            <div class="cookie-buttons">
+                <button class="btn btn-secondary" id="cookieRejectBtn">Отклонить</button>
+                <button class="btn" id="cookieSettingsBtn2">Настроить</button>
+                <button class="btn btn-primary" id="cookieAcceptBtn">Принять все</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Модальное окно политики конфиденциальности -->
+    <div class="modal" id="privacyModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-shield-alt"></i> Политика конфиденциальности</h2>
+                <button class="close-modal" id="closePrivacyModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <h3>Использование файлов cookie на Somp3-Maps</h3>
+                <p>Мы используем файлы cookie для:</p>
+                <ul style="margin: 10px 0 10px 20px; line-height: 1.6;">
+                    <li>Сохранения ваших настроек карты (стиль, цветовая схема)</li>
+                    <li>Запоминания выбранного местоположения</li>
+                    <li>Сохранения предпочтений отображения (масштаб, сетка)</li>
+                    <li>Улучшения пользовательского опыта</li>
+                </ul>
+                
+                <h3>Типы используемых cookie</h3>
+                <p><strong>Необходимые:</strong> Для работы основных функций сайта.</p>
+                <p><strong>Настройки:</strong> Для сохранения ваших предпочтений.</p>
+                <p><strong>Аналитические:</strong> Для анализа использования сайта (анонимно).</p>
+                
+                <h3>Управление cookie</h3>
+                <p>Вы можете управлять настройками cookie в любое время, нажав на ссылку "Настройки куки" в нижней части страницы.</p>
+                
+                <h3>Связь с нами</h3>
+                <p>Посетите наш основной сайт: <a href="https://somp1k3.github.io/smp3/" target="_blank">somp1k3.github.io/smp3/</a></p>
+                
+                <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid var(--primary-color);">
+                    <p><strong>Примечание:</strong> Somp3-Maps не собирает личную информацию. Все данные сохраняются только в вашем браузере.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="notification" id="notification">
+        <i class="fas fa-info-circle"></i>
+        <span id="notificationText">Уведомление</span>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Инициализация карты
+        let map = L.map('map').setView([51.505, -0.09], 3);
+        
+        // Стили карты
+        const mapStyles = {
+            standard: {
+                url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            },
+            satellite: {
+                url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+                attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+            },
+            topographic: {
+                url: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+                attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
+            },
+            hydro: {
+                url: 'https://{s}.tile.openstreetmap.fr/hydda/{z}/{x}/{y}.png',
+                attribution: '&copy; OpenStreetMap contributors, Tiles courtesy of <a href="http://hot.openstreetmap.org/" target="_blank">Humanitarian OpenStreetMap Team</a>'
+            },
+            dark: {
+                url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+            },
+            monochrome: {
+                url: 'https://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png',
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }
+        };
+        
+        // Текущий слой карты
+        let currentTileLayer = L.tileLayer(mapStyles.standard.url, {
+            attribution: mapStyles.standard.attribution,
+            maxZoom: 18
+        }).addTo(map);
+        
+        // Цветовые схемы
+        const colorSchemes = {
+            blue: {
+                primary: '#1a73e8',
+                primaryDark: '#0d47a1',
+                secondary: '#ffd700',
+                bg: '#f0f2f5',
+                sidebar: '#ffffff',
+                text: '#333333',
+                border: '#dddddd',
+                gradient: 'linear-gradient(135deg, #1a73e8, #0d47a1)'
+            },
+            green: {
+                primary: '#4caf50',
+                primaryDark: '#2e7d32',
+                secondary: '#ffeb3b',
+                bg: '#f1f8e9',
+                sidebar: '#ffffff',
+                text: '#333333',
+                border: '#c8e6c9',
+                gradient: 'linear-gradient(135deg, #4caf50, #2e7d32)'
+            },
+            purple: {
+                primary: '#9c27b0',
+                primaryDark: '#6a1b9a',
+                secondary: '#ffca28',
+                bg: '#f3e5f5',
+                sidebar: '#ffffff',
+                text: '#333333',
+                border: '#e1bee7',
+                gradient: 'linear-gradient(135deg, #9c27b0, #6a1b9a)'
+            },
+            red: {
+                primary: '#f44336',
+                primaryDark: '#c62828',
+                secondary: '#ffeb3b',
+                bg: '#ffebee',
+                sidebar: '#ffffff',
+                text: '#333333',
+                border: '#ffcdd2',
+                gradient: 'linear-gradient(135deg, #f44336, #c62828)'
+            },
+            dark: {
+                primary: '#333333',
+                primaryDark: '#000000',
+                secondary: '#ffca28',
+                bg: '#121212',
+                sidebar: '#1e1e1e',
+                text: '#e0e0e0',
+                border: '#444444',
+                gradient: 'linear-gradient(135deg, #333333, #000000)'
+            },
+            ocean: {
+                primary: '#00bcd4',
+                primaryDark: '#006064',
+                secondary: '#ffd740',
+                bg: '#e0f7fa',
+                sidebar: '#ffffff',
+                text: '#333333',
+                border: '#b2ebf2',
+                gradient: 'linear-gradient(135deg, #00bcd4, #006064)'
+            }
+        };
+        
+        // Переменные для хранения маркеров
+        let userMarker = null;
+        let currentMarker = null;
+        let gridLayer = null;
+        
+        // Элементы DOM
+        const geoBtn = document.getElementById('geoBtn');
+        const themeBtn = document.getElementById('themeBtn');
+        const settingsBtn = document.getElementById('settingsBtn');
+        const closeModal = document.getElementById('closeModal');
+        const settingsModal = document.getElementById('settingsModal');
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+        const locationText = document.getElementById('locationText');
+        const latText = document.getElementById('latText');
+        const lngText = document.getElementById('lngText');
+        const notification = document.getElementById('notification');
+        const notificationText = document.getElementById('notificationText');
+        const placeItems = document.querySelectorAll('.place-item');
+        const mapAttribution = document.getElementById('mapAttribution');
+        const cookieConsent = document.getElementById('cookieConsent');
+        const cookieAcceptBtn = document.getElementById('cookieAcceptBtn');
+        const cookieRejectBtn = document.getElementById('cookieRejectBtn');
+        const cookieSettingsBtn = document.getElementById('cookieSettingsBtn');
+        const cookieSettingsBtn2 = document.getElementById('cookieSettingsBtn2');
+        const privacyPolicyBtn = document.getElementById('privacyPolicyBtn');
+        const privacyModal = document.getElementById('privacyModal');
+        const closePrivacyModal = document.getElementById('closePrivacyModal');
+        
+        // Стили карты кнопки
+        const styleButtons = document.querySelectorAll('.map-style-btn');
+        const colorSchemeButtons = document.querySelectorAll('.color-scheme');
+        
+        // Настройки
+        const markerSize = document.getElementById('markerSize');
+        const showScale = document.getElementById('showScale');
+        const showGrid = document.getElementById('showGrid');
+        
+        // Управление куки
+        function setCookie(name, value, days) {
+            let expires = "";
+            if (days) {
+                const date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + (value || "") + expires + "; path=/; SameSite=Lax";
+        }
+        
+        function getCookie(name) {
+            const nameEQ = name + "=";
+            const ca = document.cookie.split(';');
+            for(let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+            }
+            return null;
+        }
+        
+        function eraseCookie(name) {   
+            document.cookie = name + '=; Max-Age=-99999999; path=/; SameSite=Lax';
+        }
+        
+        function checkCookies() {
+            const cookiesAccepted = getCookie('cookiesAccepted');
+            
+            if (!cookiesAccepted) {
+                // Показать окно согласия через 1 секунду
+                setTimeout(() => {
+                    cookieConsent.classList.add('show');
+                }, 1000);
+            } else {
+                // Куки уже приняты
+                if (cookiesAccepted === 'all') {
+                    // Все куки приняты, можно загружать аналитику если нужно
+                } else if (cookiesAccepted === 'necessary') {
+                    // Только необходимые куки
+                    // Отключаем сохранение настроек
+                    localStorage.clear();
+                }
+            }
+        }
+        
+        function acceptAllCookies() {
+            setCookie('cookiesAccepted', 'all', 365);
+            cookieConsent.classList.remove('show');
+            showNotification('Настройки cookie сохранены. Все cookie приняты.', 'success');
+            
+            // Сохраняем текущие настройки
+            saveSettingsToLocalStorage();
+        }
+        
+        function rejectCookies() {
+            setCookie('cookiesAccepted', 'none', 365);
+            cookieConsent.classList.remove('show');
+            
+            // Удаляем все сохраненные настройки
+            eraseCookie('cookiesAccepted');
+            localStorage.clear();
+            
+            // Сбрасываем настройки к значениям по умолчанию
+            resetToDefaultSettings();
+            
+            showNotification('Cookie отключены. Все настройки сброшены.', 'info');
+        }
+        
+        function saveSettingsToLocalStorage() {
+            // Сохраняем текущие настройки в localStorage
+            localStorage.setItem('mapTheme', document.body.classList.contains('dark-theme') ? 'dark' : 'light');
+            
+            // Сохраняем стиль карты
+            const activeStyle = document.querySelector('.map-style-btn.active');
+            if (activeStyle) {
+                localStorage.setItem('mapStyle', activeStyle.dataset.style);
+            }
+            
+            // Сохраняем цветовую схему
+            const activeScheme = document.querySelector('.color-scheme.active');
+            if (activeScheme) {
+                localStorage.setItem('colorScheme', activeScheme.dataset.scheme);
+            }
+            
+            // Сохраняем другие настройки
+            localStorage.setItem('markerSize', markerSize.value);
+            localStorage.setItem('showScale', showScale.checked);
+            localStorage.setItem('showGrid', showGrid.checked);
+        }
+        
+        function resetToDefaultSettings() {
+            // Сбрасываем настройки к значениям по умолчанию
+            document.body.classList.remove('dark-theme');
+            themeBtn.innerHTML = '<i class="fas fa-moon"></i> Тёмная тема';
+            
+            // Сбрасываем стиль карты
+            changeMapStyle('standard');
+            
+            // Сбрасываем цветовую схему
+            changeColorScheme('blue');
+            
+            // Сбрасываем другие настройки
+            markerSize.value = 20;
+            showScale.checked = true;
+            showGrid.checked = true;
+            
+            // Обновляем карту
+            if (showScale.checked) {
+                L.control.scale({ imperial: false }).addTo(map);
+            }
+            toggleGrid(showGrid.checked);
+        }
+        
+        // Показать уведомление
+        function showNotification(message, type = 'info') {
+            notificationText.textContent = message;
+            notification.className = 'notification';
+            notification.classList.add('show');
+            
+            // Изменить иконку в зависимости от типа
+            const icon = notification.querySelector('i');
+            icon.className = 'fas fa-info-circle';
+            
+            if (type === 'error') {
+                icon.className = 'fas fa-exclamation-circle error';
+            } else if (type === 'success') {
+                icon.className = 'fas fa-check-circle success';
+            }
+            
+            // Скрыть уведомление через 4 секунды
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 4000);
+        }
+        
+        // Обновить информацию о местоположении
+        function updateLocationInfo(lat, lng, title = 'Выбранное местоположение') {
+            locationText.textContent = title;
+            latText.textContent = `Широта: ${lat.toFixed(6)}`;
+            lngText.textContent = `Долгота: ${lng.toFixed(6)}`;
+            
+            // Добавить маркер на карту
+            if (currentMarker) {
+                map.removeLayer(currentMarker);
+            }
+            
+            const markerIcon = L.divIcon({
+                className: 'custom-marker',
+                iconSize: [parseInt(markerSize.value), parseInt(markerSize.value)]
+            });
+            
+            currentMarker = L.marker([lat, lng], { icon: markerIcon }).addTo(map);
+            
+            // Показать всплывающее окно
+            currentMarker.bindPopup(`<b>${title}</b><br>Координаты: ${lat.toFixed(6)}, ${lng.toFixed(6)}`).openPopup();
+            
+            // Центрировать карту на маркере
+            map.setView([lat, lng], 10);
+            
+            showNotification(`Местоположение обновлено: ${title}`, 'success');
+        }
+        
+        // Определить местоположение пользователя
+        function getUserLocation() {
+            if (!navigator.geolocation) {
+                showNotification('Геолокация не поддерживается вашим браузером', 'error');
+                return;
+            }
+            
+            showNotification('Определяем ваше местоположение...', 'info');
+            
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    
+                    // Обновить информацию
+                    updateLocationInfo(lat, lng, 'Ваше текущее местоположение');
+                    
+                    // Добавить маркер пользователя
+                    if (userMarker) {
+                        map.removeLayer(userMarker);
+                    }
+                    
+                    const userIcon = L.divIcon({
+                        className: 'user-marker',
+                        html: '<i class="fas fa-user"></i>',
+                        iconSize: [30, 30]
+                    });
+                    
+                    userMarker = L.marker([lat, lng], { icon: userIcon }).addTo(map);
+                    userMarker.bindPopup('<b>Вы здесь</b><br>Ваше текущее местоположение');
+                    
+                    showNotification('Местоположение определено успешно!', 'success');
+                },
+                (error) => {
+                    let message = 'Не удалось определить ваше местоположение';
+                    
+                    switch(error.code) {
+                        case error.PERMISSION_DENIED:
+                            message = 'Доступ к геолокации запрещен. Разрешите доступ в настройках браузера.';
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            message = 'Информация о местоположении недоступна.';
+                            break;
+                        case error.TIMEOUT:
+                            message = 'Время ожидания запроса на геолокацию истекло.';
+                            break;
+                    }
+                    
+                    showNotification(message, 'error');
+                }
+            );
+        }
+        
+        // Поиск местоположения
+        function searchLocation() {
+            const query = searchInput.value.trim();
+            
+            if (!query) {
+                showNotification('Введите запрос для поиска', 'error');
+                return;
+            }
+            
+            // Проверка на координаты
+            const coordRegex = /^(-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?)$/;
+            if (coordRegex.test(query)) {
+                const [_, lat, __, lng] = query.match(coordRegex);
+                updateLocationInfo(parseFloat(lat), parseFloat(lng), `Координаты: ${lat}, ${lng}`);
+                return;
+            }
+            
+            // Используем Nominatim API для поиска
+            showNotification(`Ищем "${query}"...`, 'info');
+            
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.length > 0) {
+                        const result = data[0];
+                        const lat = parseFloat(result.lat);
+                        const lng = parseFloat(result.lon);
+                        const title = result.display_name;
+                        
+                        updateLocationInfo(lat, lng, title);
+                        showNotification(`Найдено: ${title}`, 'success');
+                    } else {
+                        showNotification('Местоположение не найдено', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Ошибка при поиске:', error);
+                    showNotification('Ошибка при поиске местоположения', 'error');
+                });
+        }
+        
+        // Обработчик клика по карте
+        map.on('click', function(e) {
+            const lat = e.latlng.lat;
+            const lng = e.latlng.lng;
+            
+            // Используем обратное геокодирование для получения названия места
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=10`)
+                .then(response => response.json())
+                .then(data => {
+                    const title = data.display_name || `Координаты: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+                    updateLocationInfo(lat, lng, title);
+                })
+                .catch(() => {
+                    updateLocationInfo(lat, lng, `Координаты: ${lat.toFixed(6)}, ${lng.toFixed(6)}`);
+                });
+        });
+        
+        // Переключение темы
+        function toggleTheme() {
+            const isDark = document.body.classList.toggle('dark-theme');
+            
+            if (isDark) {
+                themeBtn.innerHTML = '<i class="fas fa-sun"></i> Светлая тема';
+                themeBtn.title = 'Переключить на светлую тему';
+                showNotification('Тёмная тема включена', 'success');
+            } else {
+                themeBtn.innerHTML = '<i class="fas fa-moon"></i> Тёмная тема';
+                themeBtn.title = 'Переключить на тёмную тему';
+                showNotification('Светлая тема включена', 'success');
+            }
+            
+            // Сохранить выбор в localStorage
+            localStorage.setItem('mapTheme', isDark ? 'dark' : 'light');
+        }
+        
+        // Изменить стиль карты
+        function changeMapStyle(style) {
+            // Удалить текущий слой
+            map.removeLayer(currentTileLayer);
+            
+            // Добавить новый слой
+            currentTileLayer = L.tileLayer(mapStyles[style].url, {
+                attribution: mapStyles[style].attribution,
+                maxZoom: 18
+            }).addTo(map);
+            
+            // Обновить информацию об атрибуции
+            mapAttribution.innerHTML = mapStyles[style].attribution;
+            
+            // Обновить активную кнопку
+            styleButtons.forEach(btn => {
+                if (btn.dataset.style === style) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            
+            // Сохранить выбор в localStorage
+            localStorage.setItem('mapStyle', style);
+            
+            showNotification(`Стиль карты изменен на: ${getStyleName(style)}`, 'success');
+        }
+        
+        // Получить название стиля
+        function getStyleName(style) {
+            const names = {
+                standard: 'Стандартная',
+                satellite: 'Спутник',
+                topographic: 'Топографическая',
+                hydro: 'Гидрографическая',
+                dark: 'Тёмная',
+                monochrome: 'Монохромная'
+            };
+            return names[style] || style;
+        }
+        
+        // Изменить цветовую схему
+        function changeColorScheme(scheme) {
+            const colors = colorSchemes[scheme];
+            
+            // Обновить CSS переменные
+            document.documentElement.style.setProperty('--primary-color', colors.primary);
+            document.documentElement.style.setProperty('--primary-dark', colors.primaryDark);
+            document.documentElement.style.setProperty('--secondary-color', colors.secondary);
+            document.documentElement.style.setProperty('--bg-color', colors.bg);
+            document.documentElement.style.setProperty('--sidebar-color', colors.sidebar);
+            document.documentElement.style.setProperty('--text-color', colors.text);
+            document.documentElement.style.setProperty('--border-color', colors.border);
+            document.documentElement.style.setProperty('--header-gradient', colors.gradient);
+            
+            // Обновить активную кнопку
+            colorSchemeButtons.forEach(btn => {
+                if (btn.dataset.scheme === scheme) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            
+            // Сохранить выбор в localStorage
+            localStorage.setItem('colorScheme', scheme);
+            
+            showNotification(`Цветовая схема изменена`, 'success');
+        }
+        
+        // Включить/выключить координатную сетку
+        function toggleGrid(show) {
+            if (gridLayer) {
+                map.removeLayer(gridLayer);
+                gridLayer = null;
+            }
+            
+            if (show) {
+                // Создаем координатную сетку
+                gridLayer = L.layerGroup().addTo(map);
+                
+                // Рисуем линии широты и долготы
+                for (let lat = -80; lat <= 80; lat += 10) {
+                    const line = L.polyline([
+                        [lat, -180],
+                        [lat, 180]
+                    ], {
+                        color: 'rgba(0, 0, 0, 0.2)',
+                        weight: 1,
+                        dashArray: '5, 5'
+                    }).addTo(gridLayer);
+                    
+                    // Добавляем подписи
+                    if (lat !== 0) {
+                        const label = L.marker([lat, -175], {
+                            icon: L.divIcon({
+                                className: 'grid-label',
+                                html: `<div style="background: rgba(255,255,255,0.7); padding: 2px 5px; border-radius: 3px; font-size: 10px;">${lat}°</div>`,
+                                iconSize: [40, 20]
+                            })
+                        }).addTo(gridLayer);
+                    }
+                }
+                
+                for (let lng = -180; lng <= 180; lng += 20) {
+                    const line = L.polyline([
+                        [-80, lng],
+                        [80, lng]
+                    ], {
+                        color: 'rgba(0, 0, 0, 0.2)',
+                        weight: 1,
+                        dashArray: '5, 5'
+                    }).addTo(gridLayer);
+                    
+                    // Добавляем подписи
+                    if (lng !== 0) {
+                        const label = L.marker([-75, lng], {
+                            icon: L.divIcon({
+                                className: 'grid-label',
+                                html: `<div style="background: rgba(255,255,255,0.7); padding: 2px 5px; border-radius: 3px; font-size: 10px;">${lng}°</div>`,
+                                iconSize: [40, 20]
+                            })
+                        }).addTo(gridLayer);
+                    }
+                }
+            }
+        }
+        
+        // Инициализация из localStorage
+        function initFromLocalStorage() {
+            // Проверяем согласие на куки
+            const cookiesAccepted = getCookie('cookiesAccepted');
+            
+            if (cookiesAccepted === 'none') {
+                // Пользователь отклонил куки, не загружаем настройки
+                return;
+            }
+            
+            // Тема
+            const savedTheme = localStorage.getItem('mapTheme');
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-theme');
+                themeBtn.innerHTML = '<i class="fas fa-sun"></i> Светлая тема';
+            }
+            
+            // Стиль карты
+            const savedStyle = localStorage.getItem('mapStyle');
+            if (savedStyle && mapStyles[savedStyle]) {
+                changeMapStyle(savedStyle);
+            }
+            
+            // Цветовая схема
+            const savedScheme = localStorage.getItem('colorScheme');
+            if (savedScheme && colorSchemes[savedScheme]) {
+                changeColorScheme(savedScheme);
+            }
+            
+            // Размер маркеров
+            const savedMarkerSize = localStorage.getItem('markerSize');
+            if (savedMarkerSize) {
+                markerSize.value = savedMarkerSize;
+            }
+            
+            // Показывать масштаб
+            const savedShowScale = localStorage.getItem('showScale');
+            if (savedShowScale !== null) {
+                showScale.checked = savedShowScale === 'true';
+                if (showScale.checked) {
+                    L.control.scale({ imperial: false }).addTo(map);
+                }
+            }
+            
+            // Показывать сетку
+            const savedShowGrid = localStorage.getItem('showGrid');
+            if (savedShowGrid !== null) {
+                showGrid.checked = savedShowGrid === 'true';
+                toggleGrid(showGrid.checked);
+            }
+        }
+        
+        // Добавить обработчики событий
+        geoBtn.addEventListener('click', getUserLocation);
+        themeBtn.addEventListener('click', toggleTheme);
+        settingsBtn.addEventListener('click', () => {
+            settingsModal.style.display = 'flex';
+        });
+        
+        closeModal.addEventListener('click', () => {
+            settingsModal.style.display = 'none';
+        });
+        
+        // Куки обработчики
+        cookieAcceptBtn.addEventListener('click', acceptAllCookies);
+        cookieRejectBtn.addEventListener('click', rejectCookies);
+        cookieSettingsBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            cookieConsent.classList.add('show');
+        });
+        cookieSettingsBtn2.addEventListener('click', () => {
+            cookieConsent.classList.remove('show');
+            settingsModal.style.display = 'flex';
+        });
+        
+        // Политика конфиденциальности
+        privacyPolicyBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            privacyModal.style.display = 'flex';
+        });
+        
+        closePrivacyModal.addEventListener('click', () => {
+            privacyModal.style.display = 'none';
+        });
+        
+        // Закрыть модальные окна при клике вне их
+        window.addEventListener('click', (e) => {
+            if (e.target === settingsModal) {
+                settingsModal.style.display = 'none';
+            }
+            if (e.target === privacyModal) {
+                privacyModal.style.display = 'none';
+            }
+        });
+        
+        searchBtn.addEventListener('click', searchLocation);
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchLocation();
+            }
+        });
+        
+        // Обработчики для популярных мест
+        placeItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const lat = parseFloat(this.dataset.lat);
+                const lng = parseFloat(this.dataset.lng);
+                const title = this.dataset.title;
+                
+                updateLocationInfo(lat, lng, title);
+                searchInput.value = title;
+            });
+        });
+        
+        // Обработчики для стилей карты
+        styleButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                changeMapStyle(this.dataset.style);
+                saveSettingsToLocalStorage();
+            });
+        });
+        
+        // Обработчики для цветовых схем
+        colorSchemeButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                changeColorScheme(this.dataset.scheme);
+                saveSettingsToLocalStorage();
+            });
+        });
+        
+        // Обработчики для других настроек
+        markerSize.addEventListener('input', function() {
+            localStorage.setItem('markerSize', this.value);
+            // Обновить существующие маркеры
+            if (currentMarker) {
+                const newIcon = L.divIcon({
+                    className: 'custom-marker',
+                    iconSize: [parseInt(this.value), parseInt(this.value)]
+                });
+                currentMarker.setIcon(newIcon);
+            }
+        });
+        
+        showScale.addEventListener('change', function() {
+            localStorage.setItem('showScale', this.checked);
+            // Удалить или добавить масштаб
+            if (this.checked) {
+                L.control.scale({ imperial: false }).addTo(map);
+            } else {
+                document.querySelector('.leaflet-control-scale')?.remove();
+            }
+        });
+        
+        showGrid.addEventListener('change', function() {
+            localStorage.setItem('showGrid', this.checked);
+            toggleGrid(this.checked);
+        });
+        
+        // Инициализация
+        checkCookies();
+        initFromLocalStorage();
+        
+        // Показать приветственное сообщение
+        setTimeout(() => {
+            showNotification('Добро пожаловать в Somp3-Maps! Используйте настройки для выбора стиля карты и цветовой схемы.', 'info');
+        }, 1000);
+    </script>
+</body>
+</html>
