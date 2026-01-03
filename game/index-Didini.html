@@ -1,0 +1,1592 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ди: Побег из мелового периода</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0a0e1a 0%, #1a1f2e 100%);
+            font-family: 'Courier New', monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            color: #f0f0f0;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 800px;
+        }
+        
+        .title {
+            font-size: 3.2rem;
+            background: linear-gradient(90deg, #ff6b6b, #ffd166, #ff6b6b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 15px rgba(255, 107, 107, 0.5);
+            margin-bottom: 10px;
+            letter-spacing: 3px;
+            font-weight: bold;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 25%;
+            width: 50%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #ff6b6b, transparent);
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            color: #ffd166;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(255, 209, 102, 0.5);
+        }
+        
+        .game-container {
+            position: relative;
+            width: 800px;
+            height: 400px;
+            margin: 0 auto;
+            border: 6px solid #ff6b6b;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 
+                0 0 30px rgba(255, 107, 107, 0.6),
+                inset 0 0 20px rgba(255, 107, 107, 0.2);
+            background: linear-gradient(to bottom, #1a3a5f 0%, #2a5a8a 30%, #4a9ae9 100%);
+        }
+        
+        #gameCanvas {
+            display: block;
+        }
+        
+        .ui-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        
+        .score-container, .health-container {
+            position: absolute;
+            font-size: 1.6rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 8px;
+            background: rgba(26, 31, 46, 0.7);
+            border: 2px solid;
+            backdrop-filter: blur(5px);
+        }
+        
+        .score-container {
+            top: 15px;
+            right: 15px;
+            color: #ffd166;
+            border-color: #ffd166;
+        }
+        
+        .health-container {
+            top: 15px;
+            left: 15px;
+            color: #ff6b6b;
+            border-color: #ff6b6b;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 25px;
+            width: 100%;
+            max-width: 800px;
+        }
+        
+        button {
+            background: linear-gradient(145deg, #2a3450, #1a2338);
+            color: #ff6b6b;
+            border: 3px solid #ff6b6b;
+            border-radius: 8px;
+            padding: 12px 25px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 6px 0 #0a0e1a;
+            text-shadow: 0 0 5px rgba(255, 107, 107, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 107, 107, 0.2), transparent);
+            transition: 0.5s;
+        }
+        
+        button:hover {
+            background: linear-gradient(145deg, #3a4560, #2a3450);
+            transform: translateY(-3px);
+            box-shadow: 0 9px 0 #0a0e1a;
+        }
+        
+        button:hover::before {
+            left: 100%;
+        }
+        
+        button:active {
+            transform: translateY(3px);
+            box-shadow: 0 3px 0 #0a0e1a;
+        }
+        
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: 0 6px 0 #0a0e1a;
+        }
+        
+        .instructions {
+            max-width: 800px;
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(26, 31, 46, 0.9);
+            border-radius: 12px;
+            border: 3px solid #ff6b6b;
+            backdrop-filter: blur(10px);
+        }
+        
+        .instructions h3 {
+            color: #ffd166;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 1.5rem;
+            text-shadow: 0 0 10px rgba(255, 209, 102, 0.5);
+        }
+        
+        .instructions p {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+        
+        .instructions ul {
+            padding-left: 25px;
+            margin-top: 15px;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+            padding-left: 5px;
+        }
+        
+        .key {
+            display: inline-block;
+            background: linear-gradient(145deg, #2a3450, #1a2338);
+            border: 2px solid #ff6b6b;
+            border-radius: 5px;
+            padding: 4px 10px;
+            font-weight: bold;
+            color: #ffd166;
+            text-shadow: 0 0 3px rgba(255, 209, 102, 0.5);
+            margin: 0 3px;
+            min-width: 40px;
+            text-align: center;
+        }
+        
+        .game-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(10, 14, 26, 0.95);
+            padding: 40px;
+            border-radius: 15px;
+            border: 4px solid #ff6b6b;
+            text-align: center;
+            width: 85%;
+            max-width: 550px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.5s;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 40px rgba(255, 107, 107, 0.4);
+        }
+        
+        .game-message h2 {
+            color: #ffd166;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px rgba(255, 209, 102, 0.5);
+        }
+        
+        .game-message p {
+            font-size: 1.3rem;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+        
+        .game-message button {
+            pointer-events: auto;
+            font-size: 1.3rem;
+            padding: 15px 30px;
+        }
+        
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            color: #ff6b6b;
+            font-size: 1rem;
+            text-shadow: 0 0 5px rgba(255, 107, 107, 0.5);
+        }
+        
+        .dino-display {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+        }
+        
+        .pixel-dino {
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+        }
+        
+        .keys-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .key-large {
+            display: inline-block;
+            background: linear-gradient(145deg, #2a3450, #1a2338);
+            border: 3px solid #ff6b6b;
+            border-radius: 8px;
+            padding: 12px 20px;
+            font-weight: bold;
+            color: #ffd166;
+            font-size: 1.4rem;
+            min-width: 60px;
+            text-align: center;
+            text-shadow: 0 0 5px rgba(255, 209, 102, 0.5);
+            box-shadow: 0 4px 0 #0a0e1a;
+        }
+        
+        .key-label {
+            display: block;
+            font-size: 0.9rem;
+            color: #ff6b6b;
+            margin-top: 8px;
+            text-shadow: 0 0 3px rgba(255, 107, 107, 0.5);
+        }
+        
+        .sound-control {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            z-index: 100;
+        }
+        
+        .sound-btn {
+            width: 50px;
+            height: 50px;
+            padding: 0;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .high-score {
+            position: absolute;
+            top: 80px;
+            right: 15px;
+            font-size: 1.4rem;
+            color: #ffd166;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            background: rgba(26, 31, 46, 0.7);
+            padding: 8px 15px;
+            border-radius: 8px;
+            border: 2px solid #ffd166;
+        }
+        
+        @media (max-width: 850px) {
+            .game-container, .controls, .instructions, .header {
+                width: 95%;
+                max-width: 95%;
+            }
+            
+            .game-container {
+                height: 350px;
+            }
+            
+            .title {
+                font-size: 2.5rem;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .game-container {
+                height: 300px;
+            }
+            
+            .title {
+                font-size: 2rem;
+            }
+            
+            .controls {
+                flex-wrap: wrap;
+            }
+            
+            .game-message {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1 class="title">Ди: Побег из мелового периода</h1>
+        <p class="subtitle">Помоги динозаврику Ди убежать от метеорита!</p>
+    </div>
+    
+    <div class="game-container">
+        <canvas id="gameCanvas" width="800" height="400"></canvas>
+        
+        <div class="ui-overlay">
+            <div class="health-container">
+                ❤️ <span id="health">3</span>
+            </div>
+            <div class="score-container">
+                ⭐ <span id="score">0</span>
+            </div>
+            <div class="high-score">
+                🏆 <span id="highScore">0</span>
+            </div>
+        </div>
+        
+        <div class="game-message" id="startScreen">
+            <h2>Ди: Побег из мелового периода</h2>
+            <p>Метеорит приближается! Помоги Ди убежать как можно дальше, перепрыгивая препятствия и собирая звёзды.</p>
+            <div class="keys-container">
+                <div>
+                    <div class="key-large">W</div>
+                    <div class="key-label">Прыжок</div>
+                </div>
+                <div>
+                    <div class="key-large">SPACE</div>
+                    <div class="key-label">Прыжок</div>
+                </div>
+                <div>
+                    <div class="key-large">S</div>
+                    <div class="key-label">Присесть</div>
+                </div>
+                <div>
+                    <div class="key-large">SHIFT</div>
+                    <div class="key-label">Присесть</div>
+                </div>
+            </div>
+            <p>Нажми ПРОБЕЛ, W или кнопку ниже, чтобы начать игру!</p>
+            <button id="startButton">Начать игру</button>
+        </div>
+        
+        <div class="game-message" id="gameOverScreen">
+            <h2>Конец игры!</h2>
+            <p>Ваш результат: <span id="finalScore">0</span> очков</p>
+            <p>Метеорит догнал Ди... Попробуйте снова!</p>
+            <button id="restartButton">Играть снова</button>
+        </div>
+    </div>
+    
+    <div class="controls">
+        <button id="jumpButton">Прыжок (ПРОБЕЛ/W)</button>
+        <button id="duckButton">Присесть (S/SHIFT)</button>
+        <button id="pauseButton">Пауза (P)</button>
+        <button id="soundButton" class="sound-btn" title="Вкл/Выкл звук">🔊</button>
+    </div>
+    
+    <div class="instructions">
+        <h3>Управление</h3>
+        <p>Цель: пробежать как можно дальше, избегая препятствий и собирая звёзды.</p>
+        <ul>
+            <li><span class="key">ПРОБЕЛ</span> или <span class="key">W</span> - прыжок</li>
+            <li><span class="key">S</span> или <span class="key">SHIFT</span> - присесть</li>
+            <li><span class="key">P</span> - пауза</li>
+            <li>Избегайте кактусов и летающих птеродактилей</li>
+            <li>Собирайте звёзды для получения очков</li>
+            <li>Каждые 100 очков вы получаете дополнительную жизнь (максимум 5)</li>
+            <li>После 50 очков появляется опасный метеорит!</li>
+        </ul>
+    </div>
+    
+    <div class="footer">
+        <p>Игра "Ди: Побег из мелового периода" • Создано с любовью к пиксельным играм</p>
+    </div>
+
+    <!-- Аудио элементы -->
+    <audio id="jumpSound" preload="auto">
+        <source src="data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=" type="audio/wav">
+    </audio>
+    
+    <audio id="starSound" preload="auto">
+        <source src="data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=" type="audio/wav">
+    </audio>
+    
+    <audio id="hurtSound" preload="auto">
+        <source src="data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=" type="audio/wav">
+    </audio>
+    
+    <audio id="gameOverSound" preload="auto">
+        <source src="data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=" type="audio/wav">
+    </audio>
+    
+    <audio id="backgroundMusic" loop preload="auto">
+        <source src="data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=" type="audio/wav">
+    </audio>
+    
+    <audio id="meteorSound" preload="auto">
+        <source src="data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=" type="audio/wav">
+    </audio>
+
+    <script>
+        // Инициализация игры
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Аудио элементы
+        const jumpSound = document.getElementById('jumpSound');
+        const starSound = document.getElementById('starSound');
+        const hurtSound = document.getElementById('hurtSound');
+        const gameOverSound = document.getElementById('gameOverSound');
+        const backgroundMusic = document.getElementById('backgroundMusic');
+        const meteorSound = document.getElementById('meteorSound');
+        const soundButton = document.getElementById('soundButton');
+        
+        // Элементы UI
+        const healthElement = document.getElementById('health');
+        const scoreElement = document.getElementById('score');
+        const highScoreElement = document.getElementById('highScore');
+        const startScreen = document.getElementById('startScreen');
+        const gameOverScreen = document.getElementById('gameOverScreen');
+        const finalScoreElement = document.getElementById('finalScore');
+        const startButton = document.getElementById('startButton');
+        const restartButton = document.getElementById('restartButton');
+        const jumpButton = document.getElementById('jumpButton');
+        const duckButton = document.getElementById('duckButton');
+        const pauseButton = document.getElementById('pauseButton');
+        
+        // Настройки звука
+        let soundEnabled = true;
+        let backgroundMusicStarted = false;
+        
+        // Игровые переменные
+        let game = {
+            running: false,
+            paused: false,
+            score: 0,
+            health: 3,
+            highScore: localStorage.getItem('dinoHighScore') || 0,
+            speed: 5,
+            gameOver: false,
+            animationFrame: 0
+        };
+        
+        // Игровые объекты
+        const dino = {
+            x: 80,
+            y: 290,
+            width: 50,
+            height: 60,
+            jumping: false,
+            ducking: false,
+            jumpVelocity: 0,
+            gravity: 0.5,
+            jumpPower: -14,
+            groundY: 290,
+            duckHeight: 35,
+            normalHeight: 60,
+            frame: 0,
+            runAnimationSpeed: 0.2
+        };
+        
+        let obstacles = [];
+        let stars = [];
+        let clouds = [];
+        let particles = [];
+        let backgroundElements = [];
+        let meteor = {
+            x: 850,
+            y: 50,
+            size: 40,
+            speed: 3,
+            visible: false,
+            rotation: 0
+        };
+        
+        // Создаем улучшенные спрайты
+        const createPixelSprite = (color, size, shape, frame = 0) => {
+            const spriteCanvas = document.createElement('canvas');
+            const spriteCtx = spriteCanvas.getContext('2d');
+            spriteCanvas.width = size;
+            spriteCanvas.height = size;
+            
+            spriteCtx.imageSmoothingEnabled = false;
+            spriteCtx.fillStyle = color;
+            
+            if (shape === 'dino') {
+                // Улучшенный спрайт динозавра Ди
+                spriteCtx.fillStyle = '#ff6b6b';
+                
+                // Тело (изменяется в зависимости от кадра для анимации бега)
+                const bodyOffset = frame === 1 ? 2 : 0;
+                spriteCtx.fillRect(10 + bodyOffset, 15, 30, 25);
+                
+                // Спина и хвост
+                spriteCtx.fillRect(40 + bodyOffset, 18, 10, 10);
+                spriteCtx.fillRect(50 + bodyOffset, 20, 8, 6);
+                
+                // Ноги (анимированные)
+                if (frame === 0) {
+                    spriteCtx.fillRect(12, 40, 10, 15);
+                    spriteCtx.fillRect(28, 40, 10, 12);
+                } else {
+                    spriteCtx.fillRect(12, 40, 10, 12);
+                    spriteCtx.fillRect(28, 40, 10, 15);
+                }
+                
+                // Шея
+                spriteCtx.fillRect(5, 12, 8, 15);
+                
+                // Голова
+                spriteCtx.fillRect(0, 8, 12, 12);
+                
+                // Гребень на спине
+                spriteCtx.fillStyle = '#ff8e8e';
+                for(let i = 0; i < 5; i++) {
+                    const height = i % 2 === 0 ? 12 : 8;
+                    spriteCtx.fillRect(15 + i*6 + bodyOffset, 8, 4, height);
+                }
+                
+                // Глаз
+                spriteCtx.fillStyle = '#000';
+                spriteCtx.fillRect(3, 12, 4, 4);
+                
+                // Улыбка
+                spriteCtx.fillRect(6, 17, 6, 2);
+                
+                // Буква "Д" на боку
+                spriteCtx.fillStyle = '#ffd166';
+                spriteCtx.fillRect(20 + bodyOffset, 20, 12, 4);
+                spriteCtx.fillRect(20 + bodyOffset, 20, 4, 12);
+                spriteCtx.fillRect(28 + bodyOffset, 20, 4, 12);
+                spriteCtx.fillRect(20 + bodyOffset, 28, 12, 4);
+                
+                // Тени для объема
+                spriteCtx.fillStyle = '#d94c4c';
+                spriteCtx.fillRect(10 + bodyOffset, 15, 2, 25);
+                spriteCtx.fillRect(10 + bodyOffset, 15, 30, 2);
+                
+            } else if (shape === 'cactus') {
+                // Улучшенный кактус
+                spriteCtx.fillStyle = '#2ecc71';
+                
+                // Основной стебель
+                spriteCtx.fillRect(12, 5, 8, 40);
+                
+                // Боковые отростки
+                spriteCtx.fillRect(8, 12, 16, 6);
+                spriteCtx.fillRect(5, 22, 22, 6);
+                spriteCtx.fillRect(10, 32, 12, 6);
+                
+                // Колючки
+                spriteCtx.fillStyle = '#27ae60';
+                for (let i = 0; i < 4; i++) {
+                    for (let j = 0; j < 3; j++) {
+                        if (Math.random() > 0.5) {
+                            spriteCtx.fillRect(5 + i*5, 10 + j*10, 2, 2);
+                        }
+                    }
+                }
+                
+                // Тени
+                spriteCtx.fillStyle = '#229954';
+                spriteCtx.fillRect(12, 5, 2, 40);
+                spriteCtx.fillRect(12, 5, 8, 2);
+                
+            } else if (shape === 'pterodactyl') {
+                // Улучшенный птеродактиль
+                spriteCtx.fillStyle = '#8e44ad';
+                
+                // Тело
+                spriteCtx.fillRect(8, 15, 25, 12);
+                
+                // Голова
+                spriteCtx.fillRect(30, 12, 10, 15);
+                
+                // Клюв
+                spriteCtx.fillRect(40, 15, 6, 4);
+                
+                // Крылья
+                const wingOffset = Math.sin(Date.now() / 100) * 3;
+                spriteCtx.fillRect(0, 12, 35, 6);
+                
+                // Глаз
+                spriteCtx.fillStyle = '#000';
+                spriteCtx.fillRect(33, 15, 3, 3);
+                
+                // Тени
+                spriteCtx.fillStyle = '#6c3483';
+                spriteCtx.fillRect(8, 15, 2, 12);
+                spriteCtx.fillRect(8, 15, 25, 2);
+                
+            } else if (shape === 'star') {
+                // Улучшенная звезда
+                spriteCtx.fillStyle = '#ffd166';
+                
+                // Центральная часть
+                spriteCtx.fillRect(10, 10, 10, 10);
+                
+                // Лучи
+                spriteCtx.fillRect(5, 15, 5, 2);
+                spriteCtx.fillRect(20, 15, 5, 2);
+                spriteCtx.fillRect(15, 5, 2, 5);
+                spriteCtx.fillRect(15, 20, 2, 5);
+                
+                // Диагональные лучи
+                spriteCtx.fillRect(7, 7, 3, 3);
+                spriteCtx.fillRect(20, 7, 3, 3);
+                spriteCtx.fillRect(7, 20, 3, 3);
+                spriteCtx.fillRect(20, 20, 3, 3);
+                
+                // Блеск
+                spriteCtx.fillStyle = '#fff';
+                spriteCtx.fillRect(13, 13, 4, 4);
+                
+            } else if (shape === 'meteor') {
+                // Улучшенный метеорит
+                spriteCtx.fillStyle = '#e74c3c';
+                
+                // Основная форма
+                spriteCtx.beginPath();
+                spriteCtx.arc(size/2, size/2, size/2 - 4, 0, Math.PI * 2);
+                spriteCtx.fill();
+                
+                // Кратеры
+                spriteCtx.fillStyle = '#c0392b';
+                spriteCtx.beginPath();
+                spriteCtx.arc(size/2 - 8, size/2 - 6, 5, 0, Math.PI * 2);
+                spriteCtx.fill();
+                
+                spriteCtx.beginPath();
+                spriteCtx.arc(size/2 + 6, size/2 + 4, 4, 0, Math.PI * 2);
+                spriteCtx.fill();
+                
+                spriteCtx.beginPath();
+                spriteCtx.arc(size/2 + 2, size/2 - 8, 3, 0, Math.PI * 2);
+                spriteCtx.fill();
+                
+                // Огненный хвост
+                spriteCtx.fillStyle = '#ff9f43';
+                ctx.beginPath();
+                ctx.moveTo(size/2 - 15, size/2);
+                ctx.lineTo(size/2 - 35, size/2);
+                ctx.lineTo(size/2 - 20, size/2 + 12);
+                ctx.closePath();
+                ctx.fill();
+                
+                // Внутреннее свечение
+                spriteCtx.fillStyle = '#ff6b6b';
+                spriteCtx.beginPath();
+                spriteCtx.arc(size/2, size/2, size/4, 0, Math.PI * 2);
+                spriteCtx.fill();
+            }
+            
+            return spriteCanvas;
+        };
+        
+        // Создаем спрайты для анимации
+        const dinoSprites = [
+            createPixelSprite('#ff6b6b', 60, 'dino', 0),
+            createPixelSprite('#ff6b6b', 60, 'dino', 1)
+        ];
+        const dinoJumpSprite = createPixelSprite('#ff6b6b', 60, 'dino', 0);
+        const dinoDuckSprite = createPixelSprite('#ff6b6b', 60, 'dino', 0);
+        const cactusSprite = createPixelSprite('#2ecc71', 50, 'cactus');
+        const pterodactylSprite = createPixelSprite('#8e44ad', 45, 'pterodactyl');
+        const starSprite = createPixelSprite('#ffd166', 35, 'star');
+        const meteorSprite = createPixelSprite('#e74c3c', 70, 'meteor');
+        
+        // Генератор звуков через Web Audio API
+        function createSound(frequency, duration, type = 'sine', volume = 0.3) {
+            if (!soundEnabled) return;
+            
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.type = type;
+                oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+                
+                gainNode.gain.setValueAtTime(volume, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + duration);
+                
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + duration);
+            } catch (e) {
+                console.log("Audio context not supported");
+            }
+        }
+        
+        // Функции для звуков
+        function playJumpSound() {
+            createSound(800, 0.1, 'sine', 0.2);
+        }
+        
+        function playStarSound() {
+            createSound(1200, 0.2, 'sine', 0.15);
+            createSound(1600, 0.15, 'sine', 0.1);
+        }
+        
+        function playHurtSound() {
+            createSound(300, 0.3, 'sawtooth', 0.25);
+            createSound(200, 0.2, 'sawtooth', 0.2);
+        }
+        
+        function playGameOverSound() {
+            for(let i = 0; i < 5; i++) {
+                setTimeout(() => {
+                    createSound(200 - i*20, 0.5, 'sawtooth', 0.3);
+                }, i * 100);
+            }
+        }
+        
+        function playMeteorSound() {
+            createSound(150, 1, 'sawtooth', 0.4);
+            setTimeout(() => createSound(120, 0.8, 'sawtooth', 0.3), 100);
+        }
+        
+        // Инициализация игры
+        function initGame() {
+            game.running = true;
+            game.paused = false;
+            game.gameOver = false;
+            game.score = 0;
+            game.health = 3;
+            game.speed = 5;
+            game.animationFrame = 0;
+            
+            dino.x = 80;
+            dino.y = dino.groundY;
+            dino.jumping = false;
+            dino.ducking = false;
+            dino.jumpVelocity = 0;
+            dino.height = dino.normalHeight;
+            dino.frame = 0;
+            
+            obstacles = [];
+            stars = [];
+            clouds = [];
+            particles = [];
+            backgroundElements = [];
+            
+            meteor.x = 850;
+            meteor.y = 50;
+            meteor.visible = false;
+            meteor.rotation = 0;
+            
+            // Создаем облака
+            for (let i = 0; i < 8; i++) {
+                clouds.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * 150 + 20,
+                    width: Math.random() * 50 + 30,
+                    height: Math.random() * 25 + 15,
+                    speed: Math.random() * 0.7 + 0.3,
+                    opacity: Math.random() * 0.3 + 0.7
+                });
+            }
+            
+            // Создаем элементы заднего фона
+            for (let i = 0; i < 20; i++) {
+                backgroundElements.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * 250,
+                    size: Math.random() * 4 + 1,
+                    speed: Math.random() * 0.2 + 0.1,
+                    brightness: Math.random() * 0.5 + 0.5
+                });
+            }
+            
+            updateUI();
+            hideScreen(startScreen);
+            hideScreen(gameOverScreen);
+            
+            // Запускаем фоновую музыку
+            if (soundEnabled && !backgroundMusicStarted) {
+                try {
+                    backgroundMusic.volume = 0.1;
+                    backgroundMusic.play();
+                    backgroundMusicStarted = true;
+                } catch (e) {
+                    console.log("Background music error:", e);
+                }
+            }
+        }
+        
+        // Управление отображением экранов
+        function showScreen(screen) {
+            screen.style.opacity = '1';
+            screen.style.pointerEvents = 'auto';
+        }
+        
+        function hideScreen(screen) {
+            screen.style.opacity = '0';
+            screen.style.pointerEvents = 'none';
+        }
+        
+        // Обновление UI
+        function updateUI() {
+            healthElement.textContent = game.health;
+            scoreElement.textContent = Math.floor(game.score);
+            highScoreElement.textContent = game.highScore;
+        }
+        
+        // Создание частиц
+        function createParticles(x, y, color, count, size = 4) {
+            for (let i = 0; i < count; i++) {
+                particles.push({
+                    x: x,
+                    y: y,
+                    vx: (Math.random() - 0.5) * 8,
+                    vy: (Math.random() - 0.5) * 8 - 2,
+                    size: Math.random() * size + 2,
+                    color: color,
+                    life: 40,
+                    gravity: 0.1
+                });
+            }
+        }
+        
+        // Генерация препятствий
+        function generateObstacle() {
+            const obstacleTypes = ['cactus', 'pterodactyl'];
+            const type = obstacleTypes[Math.floor(Math.random() * obstacleTypes.length)];
+            
+            if (type === 'cactus') {
+                obstacles.push({
+                    x: canvas.width,
+                    y: dino.groundY + dino.normalHeight - 45,
+                    width: 30,
+                    height: 45,
+                    type: 'cactus',
+                    shadow: true
+                });
+            } else if (type === 'pterodactyl') {
+                obstacles.push({
+                    x: canvas.width,
+                    y: Math.random() * 150 + 150,
+                    width: 40,
+                    height: 20,
+                    type: 'pterodactyl',
+                    shadow: false
+                });
+            }
+        }
+        
+        // Генерация звезд
+        function generateStar() {
+            if (Math.random() < 0.015) {
+                stars.push({
+                    x: canvas.width,
+                    y: Math.random() * 200 + 100,
+                    width: 25,
+                    height: 25,
+                    collected: false,
+                    rotation: Math.random() * Math.PI * 2,
+                    rotationSpeed: (Math.random() - 0.5) * 0.1
+                });
+            }
+        }
+        
+        // Отрисовка улучшенного фона
+        function drawBackground() {
+            // Градиентное небо
+            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            gradient.addColorStop(0, '#1a3a5f');
+            gradient.addColorStop(0.3, '#2a5a8a');
+            gradient.addColorStop(0.7, '#4a9ae9');
+            gradient.addColorStop(1, '#87ceeb');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Звезды на заднем плане
+            ctx.fillStyle = '#ffffff';
+            for (const star of backgroundElements) {
+                ctx.globalAlpha = star.brightness;
+                ctx.fillRect(star.x, star.y, star.size, star.size);
+            }
+            ctx.globalAlpha = 1;
+            
+            // Солнце
+            ctx.fillStyle = '#ffd166';
+            ctx.beginPath();
+            ctx.arc(700, 60, 30, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Свечение солнца
+            const sunGradient = ctx.createRadialGradient(700, 60, 30, 700, 60, 60);
+            sunGradient.addColorStop(0, 'rgba(255, 209, 102, 0.8)');
+            sunGradient.addColorStop(1, 'transparent');
+            ctx.fillStyle = sunGradient;
+            ctx.fillRect(640, 20, 120, 120);
+            
+            // Горы
+            ctx.fillStyle = '#2c3e50';
+            ctx.beginPath();
+            ctx.moveTo(0, 250);
+            ctx.lineTo(100, 180);
+            ctx.lineTo(200, 220);
+            ctx.lineTo(300, 150);
+            ctx.lineTo(400, 200);
+            ctx.lineTo(500, 130);
+            ctx.lineTo(600, 180);
+            ctx.lineTo(700, 100);
+            ctx.lineTo(800, 150);
+            ctx.lineTo(800, 400);
+            ctx.lineTo(0, 400);
+            ctx.closePath();
+            ctx.fill();
+            
+            // Снег на горах
+            ctx.fillStyle = '#ecf0f1';
+            ctx.beginPath();
+            ctx.moveTo(280, 150);
+            ctx.lineTo(300, 150);
+            ctx.lineTo(290, 130);
+            ctx.closePath();
+            ctx.fill();
+            
+            ctx.beginPath();
+            ctx.moveTo(480, 130);
+            ctx.lineTo(500, 130);
+            ctx.lineTo(490, 110);
+            ctx.closePath();
+            ctx.fill();
+            
+            ctx.beginPath();
+            ctx.moveTo(680, 100);
+            ctx.lineTo(700, 100);
+            ctx.lineTo(690, 80);
+            ctx.closePath();
+            ctx.fill();
+            
+            // Облака
+            drawClouds();
+            
+            // Земля с текстурой
+            drawGround();
+        }
+        
+        // Отрисовка облаков
+        function drawClouds() {
+            for (const cloud of clouds) {
+                ctx.fillStyle = `rgba(255, 255, 255, ${cloud.opacity})`;
+                
+                // Пиксельные облака с мягкими краями
+                for (let i = 0; i < cloud.width; i += 6) {
+                    for (let j = 0; j < cloud.height; j += 6) {
+                        if (Math.random() > 0.2) {
+                            const size = 5;
+                            const offsetX = Math.sin(i + j + Date.now() / 1000) * 2;
+                            const offsetY = Math.cos(i + j + Date.now() / 1000) * 2;
+                            ctx.fillRect(cloud.x + i + offsetX, cloud.y + j + offsetY, size, size);
+                        }
+                    }
+                }
+            }
+        }
+        
+        // Отрисовка земли
+        function drawGround() {
+            // Основная земля
+            ctx.fillStyle = '#8B4513';
+            ctx.fillRect(0, dino.groundY + dino.normalHeight, canvas.width, canvas.height - (dino.groundY + dino.normalHeight));
+            
+            // Трава
+            ctx.fillStyle = '#27ae60';
+            for (let i = 0; i < canvas.width; i += 12) {
+                const height = Math.sin(i / 20 + Date.now() / 1000) * 3 + 7;
+                ctx.fillRect(i, dino.groundY + dino.normalHeight, 8, -height);
+            }
+            
+            // Детали на земле
+            ctx.fillStyle = '#a0522d';
+            for (let i = 0; i < canvas.width; i += 25) {
+                for (let j = dino.groundY + dino.normalHeight + 15; j < canvas.height; j += 25) {
+                    if (Math.random() > 0.6) {
+                        ctx.fillRect(i, j, 4, 4);
+                    }
+                }
+            }
+            
+            // Тень от земли
+            const groundShadow = ctx.createLinearGradient(0, dino.groundY + dino.normalHeight, 0, dino.groundY + dino.normalHeight + 50);
+            groundShadow.addColorStop(0, 'rgba(0, 0, 0, 0.3)');
+            groundShadow.addColorStop(1, 'transparent');
+            ctx.fillStyle = groundShadow;
+            ctx.fillRect(0, dino.groundY + dino.normalHeight, canvas.width, 50);
+        }
+        
+        // Отрисовка динозавра
+        function drawDino() {
+            const dinoY = dino.y;
+            const dinoHeight = dino.ducking ? dino.duckHeight : dino.normalHeight;
+            
+            // Тень под динозавром
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+            ctx.fillRect(dino.x + 10, dino.groundY + dino.normalHeight, dino.width - 20, 8);
+            
+            // Выбор спрайта в зависимости от состояния
+            let currentSprite;
+            if (dino.jumping) {
+                currentSprite = dinoJumpSprite;
+            } else if (dino.ducking) {
+                currentSprite = dinoDuckSprite;
+            } else {
+                // Анимация бега
+                dino.frame += dino.runAnimationSpeed;
+                if (dino.frame >= dinoSprites.length) dino.frame = 0;
+                currentSprite = dinoSprites[Math.floor(dino.frame)];
+            }
+            
+            // Отрисовка спрайта
+            ctx.drawImage(currentSprite, dino.x - 10, dinoY - (dino.ducking ? 20 : 0));
+            
+            // Эффект свечения при беге
+            if (!dino.jumping && !dino.ducking && game.running) {
+                const pulse = Math.sin(Date.now() / 100) * 0.3 + 0.7;
+                ctx.fillStyle = `rgba(255, 107, 107, ${pulse})`;
+                ctx.fillRect(dino.x + 40, dinoY + 10, 6, 6);
+            }
+        }
+        
+        // Отрисовка препятствий
+        function drawObstacles() {
+            for (const obstacle of obstacles) {
+                // Тень
+                if (obstacle.shadow) {
+                    ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+                    ctx.fillRect(obstacle.x + 5, dino.groundY + dino.normalHeight, obstacle.width - 10, 8);
+                }
+                
+                if (obstacle.type === 'cactus') {
+                    // Кактус
+                    ctx.drawImage(cactusSprite, obstacle.x, obstacle.y);
+                } else if (obstacle.type === 'pterodactyl') {
+                    // Анимация птеродактиля
+                    const wingOffset = Math.sin(Date.now() / 80 + obstacle.x * 0.1) * 5;
+                    
+                    ctx.save();
+                    ctx.translate(obstacle.x, obstacle.y + wingOffset);
+                    ctx.drawImage(pterodactylSprite, 0, 0);
+                    ctx.restore();
+                }
+            }
+        }
+        
+        // Отрисовка звезд
+        function drawStars() {
+            for (const star of stars) {
+                if (!star.collected) {
+                    // Вращение звезды
+                    star.rotation += star.rotationSpeed;
+                    
+                    // Мерцание
+                    const twinkle = Math.sin(Date.now() / 200 + star.x * 0.01) * 0.4 + 0.6;
+                    ctx.globalAlpha = twinkle;
+                    
+                    // Сохранение контекста для вращения
+                    ctx.save();
+                    ctx.translate(star.x + star.width/2, star.y + star.height/2);
+                    ctx.rotate(star.rotation);
+                    
+                    // Отрисовка звезды
+                    ctx.drawImage(starSprite, -star.width/2, -star.height/2);
+                    ctx.restore();
+                    
+                    ctx.globalAlpha = 1.0;
+                    
+                    // Эффект свечения
+                    const glow = ctx.createRadialGradient(
+                        star.x + star.width/2, star.y + star.height/2, 0,
+                        star.x + star.width/2, star.y + star.height/2, 25
+                    );
+                    glow.addColorStop(0, 'rgba(255, 209, 102, 0.5)');
+                    glow.addColorStop(1, 'transparent');
+                    ctx.fillStyle = glow;
+                    ctx.fillRect(star.x - 10, star.y - 10, star.width + 20, star.height + 20);
+                }
+            }
+        }
+        
+        // Отрисовка метеорита
+        function drawMeteor() {
+            if (meteor.visible) {
+                // Вращение метеорита
+                meteor.rotation += 0.05;
+                
+                // Огненный след
+                for (let i = 0; i < 8; i++) {
+                    const trailX = meteor.x - i * 12;
+                    const trailY = meteor.y + i * 3;
+                    const size = meteor.size * (1 - i * 0.08);
+                    const opacity = 1 - i * 0.12;
+                    
+                    ctx.fillStyle = i < 4 ? `rgba(255, 159, 67, ${opacity})` : `rgba(255, 107, 107, ${opacity})`;
+                    ctx.beginPath();
+                    ctx.arc(trailX, trailY, size / 2, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                
+                // Метеорит с вращением
+                ctx.save();
+                ctx.translate(meteor.x + meteor.size/2, meteor.y + meteor.size/2);
+                ctx.rotate(meteor.rotation);
+                ctx.drawImage(meteorSprite, -meteor.size/2, -meteor.size/2);
+                ctx.restore();
+                
+                // Свечение метеорита
+                const meteorGlow = ctx.createRadialGradient(
+                    meteor.x + meteor.size/2, meteor.y + meteor.size/2, 0,
+                    meteor.x + meteor.size/2, meteor.y + meteor.size/2, 50
+                );
+                meteorGlow.addColorStop(0, 'rgba(231, 76, 60, 0.6)');
+                meteorGlow.addColorStop(1, 'transparent');
+                ctx.fillStyle = meteorGlow;
+                ctx.fillRect(meteor.x - 20, meteor.y - 20, meteor.size + 40, meteor.size + 40);
+            }
+        }
+        
+        // Отрисовка частиц
+        function drawParticles() {
+            for (const particle of particles) {
+                ctx.fillStyle = particle.color;
+                
+                // Эффект затухания
+                const lifeRatio = particle.life / 40;
+                ctx.globalAlpha = lifeRatio;
+                
+                // Анимация частиц
+                particle.vy += particle.gravity || 0;
+                particle.x += particle.vx;
+                particle.y += particle.vy;
+                particle.life--;
+                
+                // Размер меняется со временем жизни
+                const currentSize = particle.size * lifeRatio;
+                ctx.fillRect(particle.x, particle.y, currentSize, currentSize);
+                
+                ctx.globalAlpha = 1.0;
+            }
+            
+            // Удаляем умершие частицы
+            particles = particles.filter(p => p.life > 0);
+        }
+        
+        // Проверка столкновений
+        function checkCollisions() {
+            const dinoHitbox = {
+                x: dino.x + 8,
+                y: dino.y + 8,
+                width: dino.width - 16,
+                height: dino.height - 16
+            };
+            
+            // Проверка столкновений с препятствиями
+            for (const obstacle of obstacles) {
+                const obstacleHitbox = {
+                    x: obstacle.x + 5,
+                    y: obstacle.y + 5,
+                    width: obstacle.width - 10,
+                    height: obstacle.height - 10
+                };
+                
+                if (dinoHitbox.x < obstacleHitbox.x + obstacleHitbox.width &&
+                    dinoHitbox.x + dinoHitbox.width > obstacleHitbox.x &&
+                    dinoHitbox.y < obstacleHitbox.y + obstacleHitbox.height &&
+                    dinoHitbox.y + dinoHitbox.height > obstacleHitbox.y) {
+                    
+                    // Столкновение
+                    game.health--;
+                    playHurtSound();
+                    createParticles(obstacle.x + obstacle.width/2, obstacle.y + obstacle.height/2, '#ff6b6b', 15, 6);
+                    obstacles = obstacles.filter(o => o !== obstacle);
+                    updateUI();
+                    
+                    if (game.health <= 0) {
+                        gameOver();
+                    }
+                    
+                    return;
+                }
+            }
+            
+            // Проверка сбора звезд
+            for (const star of stars) {
+                if (!star.collected) {
+                    const starHitbox = {
+                        x: star.x + 5,
+                        y: star.y + 5,
+                        width: star.width - 10,
+                        height: star.height - 10
+                    };
+                    
+                    if (dinoHitbox.x < starHitbox.x + starHitbox.width &&
+                        dinoHitbox.x + dinoHitbox.width > starHitbox.x &&
+                        dinoHitbox.y < starHitbox.y + starHitbox.height &&
+                        dinoHitbox.y + dinoHitbox.height > starHitbox.y) {
+                        
+                        star.collected = true;
+                        game.score += 15;
+                        playStarSound();
+                        
+                        // Дополнительная жизнь каждые 100 очков
+                        if (Math.floor(game.score) % 100 === 0 && game.health < 5) {
+                            game.health++;
+                            createParticles(dino.x + dino.width/2, dino.y, '#ffd166', 30, 8);
+                        }
+                        
+                        createParticles(star.x + star.width/2, star.y + star.height/2, '#ffd166', 20, 5);
+                        updateUI();
+                    }
+                }
+            }
+            
+            // Проверка столкновения с метеоритом
+            if (meteor.visible) {
+                const meteorHitbox = {
+                    x: meteor.x + 10,
+                    y: meteor.y + 10,
+                    width: meteor.size - 20,
+                    height: meteor.size - 20
+                };
+                
+                if (dinoHitbox.x < meteorHitbox.x + meteorHitbox.width &&
+                    dinoHitbox.x + dinoHitbox.width > meteorHitbox.x &&
+                    dinoHitbox.y < meteorHitbox.y + meteorHitbox.height &&
+                    dinoHitbox.y + dinoHitbox.height > meteorHitbox.y) {
+                    
+                    game.health = 0;
+                    playMeteorSound();
+                    updateUI();
+                    gameOver();
+                }
+            }
+        }
+        
+        // Обновление игровой логики
+        function updateGame() {
+            if (!game.running || game.paused || game.gameOver) return;
+            
+            game.animationFrame++;
+            
+            // Постепенное увеличение скорости
+            game.speed += 0.0003;
+            
+            // Обновление динозавра
+            if (dino.jumping) {
+                dino.y += dino.jumpVelocity;
+                dino.jumpVelocity += dino.gravity;
+                
+                if (dino.y >= dino.groundY) {
+                    dino.y = dino.groundY;
+                    dino.jumping = false;
+                    dino.jumpVelocity = 0;
+                    createParticles(dino.x + 25, dino.y + dino.height, '#ff6b6b', 8, 3);
+                }
+            }
+            
+            // Обновление препятствий
+            for (let i = obstacles.length - 1; i >= 0; i--) {
+                obstacles[i].x -= game.speed;
+                
+                if (obstacles[i].x < -50) {
+                    obstacles.splice(i, 1);
+                }
+            }
+            
+            // Обновление звезд
+            for (let i = stars.length - 1; i >= 0; i--) {
+                stars[i].x -= game.speed * 0.9;
+                
+                if (stars[i].x < -40 || stars[i].collected) {
+                    stars.splice(i, 1);
+                }
+            }
+            
+            // Обновление облаков
+            for (let i = clouds.length - 1; i >= 0; i--) {
+                clouds[i].x -= clouds[i].speed;
+                
+                if (clouds[i].x < -100) {
+                    clouds[i].x = canvas.width + 50;
+                    clouds[i].y = Math.random() * 150 + 20;
+                }
+            }
+            
+            // Обновление элементов фона
+            for (const element of backgroundElements) {
+                element.x -= element.speed;
+                if (element.x < -10) {
+                    element.x = canvas.width + 10;
+                    element.y = Math.random() * 250;
+                }
+            }
+            
+            // Обновление метеорита
+            if (meteor.visible) {
+                meteor.x -= meteor.speed * 1.5;
+                meteor.y += 0.8;
+                
+                if (meteor.x < -100 || meteor.y > canvas.height) {
+                    meteor.visible = false;
+                    meteor.x = canvas.width + 100;
+                    meteor.y = 50;
+                }
+            } else if (game.score > 50 && Math.random() < 0.0008) {
+                meteor.visible = true;
+                playMeteorSound();
+            }
+            
+            // Генерация новых объектов
+            if (Math.random() < 0.015 + game.speed * 0.001) {
+                generateObstacle();
+            }
+            
+            generateStar();
+            
+            // Увеличение очков
+            game.score += 0.15 * (game.speed / 5);
+            updateUI();
+            
+            checkCollisions();
+        }
+        
+        // Игровой цикл
+        function gameLoop() {
+            // Очистка холста
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Отрисовка
+            drawBackground();
+            drawStars();
+            drawObstacles();
+            drawMeteor();
+            drawDino();
+            drawParticles();
+            
+            // Обновление
+            updateGame();
+            
+            requestAnimationFrame(gameLoop);
+        }
+        
+        // Конец игры
+        function gameOver() {
+            game.running = false;
+            game.gameOver = true;
+            
+            // Взрыв
+            createParticles(dino.x + dino.width/2, dino.y + dino.height/2, '#ff6b6b', 40, 8);
+            createParticles(dino.x + dino.width/2, dino.y + dino.height/2, '#ffd166', 20, 6);
+            
+            // Обновление рекорда
+            const currentScore = Math.floor(game.score);
+            if (currentScore > game.highScore) {
+                game.highScore = currentScore;
+                localStorage.setItem('dinoHighScore', game.highScore);
+            }
+            
+            // Звук завершения игры
+            playGameOverSound();
+            
+            finalScoreElement.textContent = currentScore;
+            setTimeout(() => showScreen(gameOverScreen), 1500);
+        }
+        
+        // Управление
+        function jump() {
+            if (!dino.jumping && game.running && !game.paused) {
+                dino.jumping = true;
+                dino.jumpVelocity = dino.jumpPower;
+                playJumpSound();
+                createParticles(dino.x + 25, dino.y + dino.height, '#ff6b6b', 12, 4);
+            }
+        }
+        
+        function duck(start) {
+            if (!game.running || game.paused) return;
+            
+            if (start && !dino.jumping) {
+                dino.ducking = true;
+                dino.height = dino.duckHeight;
+                dino.y = dino.groundY + (dino.normalHeight - dino.duckHeight);
+            } else {
+                dino.ducking = false;
+                dino.height = dino.normalHeight;
+                dino.y = dino.groundY;
+            }
+        }
+        
+        function togglePause() {
+            if (!game.running || game.gameOver) return;
+            
+            game.paused = !game.paused;
+            pauseButton.textContent = game.paused ? 'Продолжить (P)' : 'Пауза (P)';
+            
+            // Пауза музыки
+            if (soundEnabled) {
+                if (game.paused) {
+                    backgroundMusic.pause();
+                } else {
+                    backgroundMusic.play();
+                }
+            }
+        }
+        
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            soundButton.textContent = soundEnabled ? '🔊' : '🔇';
+            
+            if (soundEnabled) {
+                backgroundMusic.volume = 0.1;
+                if (!backgroundMusicStarted) {
+                    backgroundMusic.play();
+                    backgroundMusicStarted = true;
+                } else if (!game.paused) {
+                    backgroundMusic.play();
+                }
+            } else {
+                backgroundMusic.pause();
+            }
+        }
+        
+        // Обработчики событий
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' || e.key === ' ' || e.code === 'KeyW' || e.code === 'ArrowUp') {
+                e.preventDefault();
+                jump();
+            } else if (e.code === 'KeyS' || e.code === 'ArrowDown' || e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
+                e.preventDefault();
+                duck(true);
+            } else if (e.code === 'KeyP') {
+                togglePause();
+            } else if (e.code === 'KeyM') {
+                toggleSound();
+            }
+        });
+        
+        document.addEventListener('keyup', (e) => {
+            if (e.code === 'KeyS' || e.code === 'ArrowDown' || e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
+                duck(false);
+            }
+        });
+        
+        startButton.addEventListener('click', () => {
+            initGame();
+        });
+        
+        restartButton.addEventListener('click', () => {
+            initGame();
+        });
+        
+        jumpButton.addEventListener('click', jump);
+        
+        duckButton.addEventListener('mousedown', () => duck(true));
+        duckButton.addEventListener('mouseup', () => duck(false));
+        duckButton.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            duck(true);
+        });
+        duckButton.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            duck(false);
+        });
+        
+        pauseButton.addEventListener('click', togglePause);
+        soundButton.addEventListener('click', toggleSound);
+        
+        // Запуск игры
+        showScreen(startScreen);
+        gameLoop();
+        highScoreElement.textContent = game.highScore;
+        
+        // Адаптация размера холста
+        function resizeCanvas() {
+            const container = document.querySelector('.game-container');
+            const aspectRatio = 800 / 400;
+            
+            let newWidth = container.clientWidth;
+            let newHeight = newWidth / aspectRatio;
+            
+            if (newHeight > window.innerHeight * 0.7) {
+                newHeight = window.innerHeight * 0.7;
+                newWidth = newHeight * aspectRatio;
+            }
+            
+            canvas.style.width = `${newWidth}px`;
+            canvas.style.height = `${newHeight}px`;
+        }
+        
+        window.addEventListener('resize', resizeCanvas);
+        window.addEventListener('load', resizeCanvas);
+        
+        // Инициализация звуков при первом клике
+        document.addEventListener('click', function initSound() {
+            if (!backgroundMusicStarted) {
+                backgroundMusic.volume = 0.1;
+                backgroundMusic.play().then(() => {
+                    backgroundMusicStarted = true;
+                }).catch(() => {
+                    // Автозапуск заблокирован, ждем взаимодействия пользователя
+                });
+            }
+            document.removeEventListener('click', initSound);
+        }, { once: true });
+    </script>
+</body>
+</html>
