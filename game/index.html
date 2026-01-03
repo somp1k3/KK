@@ -1,3 +1,316 @@
-тут название всех игр
-1 index-Didini.html
-2 index-testdino.html
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Быстрые ссылки на популярные сайты</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .buttons-container {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        @media (max-width: 1200px) {
+            .buttons-container {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        
+        @media (max-width: 900px) {
+            .buttons-container {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .buttons-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+        
+        @media (max-width: 400px) {
+            .buttons-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .site-button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            border-radius: 12px;
+            padding: 25px 15px;
+            text-decoration: none;
+            color: #333;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+            border: 2px solid transparent;
+            min-height: 150px;
+        }
+        
+        .site-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+            border-color: #2575fc;
+        }
+        
+        .site-button:active {
+            transform: translateY(-2px);
+        }
+        
+        .site-button i {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: #2575fc;
+        }
+        
+        .site-button .site-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+        
+        .site-button .site-desc {
+            font-size: 0.85rem;
+            color: #666;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .instructions {
+            background-color: #e8f4ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 5px solid #2575fc;
+        }
+        
+        .instructions h2 {
+            color: #2575fc;
+            margin-bottom: 10px;
+        }
+        
+        .row-counter {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .row-badge {
+            background: #2575fc;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <h1>Быстрые ссылки</h1>
+        <p class="subtitle">20 популярных сайтов в одном месте. Нажмите на любую кнопку, чтобы перейти на выбранный сайт.</p>
+    </header>
+    
+    <div class="instructions">
+        <h2><i class="fas fa-info-circle"></i> Как пользоваться</h2>
+        <p>Просто нажмите на любую кнопку ниже, чтобы мгновенно перейти на соответствующий сайт. Все ссылки открываются в новой вкладке браузера.</p>
+    </div>
+    
+    <div class="row-counter">
+        <div class="row-badge">Ряд 1: Поиск и информация</div>
+        <div class="row-badge">Ряд 2: Социальные сети</div>
+        <div class="row-badge">Ряд 3: Развлечения</div>
+        <div class="row-badge">Ряд 4: Полезные сервисы</div>
+    </div>
+    
+    <div class="buttons-container" id="buttons-container">
+        <!-- Кнопки будут добавлены через JavaScript -->
+    </div>
+    
+    <footer>
+        <p>Сайт создан для быстрого доступа к популярным интернет-ресурсам. Все права принадлежат соответствующим владельцам сайтов.</p>
+        <p>© 2023 Быстрые ссылки. Обновлено: <span id="current-date"></span></p>
+    </footer>
+
+    <script>
+        // Массив с данными о сайтах (20 сайтов)
+        const sites = [
+            {
+                name: "",
+                url: "",
+            },
+            {
+                name: "1",
+                url: "",
+            },
+            {
+                name: "1",
+                url: "",
+            },
+            {
+            {
+                name: "1",
+                url: "",
+            },
+            {
+                name: "1",
+                url: "",
+            },
+            {
+                name: "1",
+                url: "",
+            },
+            {
+                name: "1",
+                url: "",
+            },
+            {
+                name: "1",
+                url: "",
+            },
+            {
+                name: "1",
+                url: "",
+            },
+            {
+            {
+                name: "1",
+                url: "",
+            },
+            {
+                name: "1",
+                url: "",
+            },
+            {
+            {
+                name: "1",
+                url: "",
+            },
+            {
+                name: "1",
+                url: "",
+            },
+            {
+                name: "1",
+                url: "",
+            },
+            {
+                name: "1",
+                url: "",
+            },
+            {
+                name: "1",
+                url: "",
+            },
+            {
+                name: "1",
+                url: "",
+            },
+            {
+                name: "1",
+                url: "",
+            },
+            {
+                name: "1",
+                url: "",
+            },
+            {
+                name: "1",
+                url: "",
+            }
+        ];
+
+        // Получаем контейнер для кнопок
+        const buttonsContainer = document.getElementById('buttons-container');
+        
+        // Создаем кнопки для каждого сайта
+        sites.forEach(site => {
+            // Создаем элемент кнопки
+            const button = document.createElement('a');
+            button.href = site.url;
+            button.target = "_blank"; // Открывать в новой вкладке
+            button.className = "site-button";
+            
+            // Заполняем содержимое кнопки
+            button.innerHTML = `
+                <i class="fab ${site.icon}"></i>
+                <div class="site-name">${site.name}</div>
+                <div class="site-desc">${site.description}</div>
+            `;
+            
+            // Добавляем кнопку в контейнер
+            buttonsContainer.appendChild(button);
+        });
+        
+        // Устанавливаем текущую дату в футере
+        const currentDateElement = document.getElementById('current-date');
+        const now = new Date();
+        const options = { day: 'numeric', month: 'long', year: 'numeric' };
+        currentDateElement.textContent = now.toLocaleDateString('ru-RU', options);
+        
+        // Добавляем интерактивность: при наведении на кнопку показываем её URL
+        document.querySelectorAll('.site-button').forEach(button => {
+            button.addEventListener('mouseenter', function() {
+                this.title = `Перейти на: ${this.href}`;
+            });
+        });
+    </script>
+</body>
+</html>
