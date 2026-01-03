@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepSeek Chat Assistant</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-robot"></i>
+                <h1>DeepSeek Chat Assistant</h1>
+            </div>
+            <div class="mode-indicator" id="modeIndicator">
+                <i class="fas fa-laptop-code"></i>
+                <span>Локальный режим</span>
+            </div>
+        </header>
+
+        <div class="info-box">
+            <i class="fas fa-info-circle"></i>
+            <div>
+                <strong>Информация:</strong> Работаем в локальном режиме. Для доступа к полному функционалу DeepSeek API необходимо пополнить баланс.
+            </div>
+        </div>
+
+        <div class="chat-container">
+            <div class="status-bar" id="statusBar">
+                <div class="status-content">
+                    <i class="fas fa-circle"></i>
+                    <span>Готов к работе</span>
+                </div>
+                <div class="api-status" id="apiStatus">
+                    API: <span class="offline">Не активен</span>
+                </div>
+            </div>
+
+            <div class="messages-container" id="messagesContainer">
+                <div class="message bot">
+                    <div class="avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="content">
+                        <div class="header">
+                            <span class="sender">Ассистент</span>
+                            <span class="time" id="currentTime"></span>
+                        </div>
+                        <div class="text">
+                            Привет! 👋 Я работаю в локальном режиме и могу помочь с:
+                            <ul>
+                                <li>Базовыми вопросами по программированию</li>
+                                <li>HTML/CSS/JavaScript примерами</li>
+                                <li>Объяснением работы API</li>
+                                <li>Советами по веб-разработке</li>
+                            </ul>
+                            Для полноценной работы с AI нужен активный API ключ с балансом.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="examples">
+                <div class="examples-title">
+                    <i class="fas fa-lightbulb"></i>
+                    <span>Примеры запросов:</span>
+                </div>
+                <div class="examples-grid" id="examplesGrid">
+                    <!-- Примеры будут загружены через JavaScript -->
+                </div>
+            </div>
+
+            <div class="input-container">
+                <div class="input-wrapper">
+                    <input type="text" 
+                           id="userInput" 
+                           placeholder="Введите ваш вопрос..." 
+                           autocomplete="off"
+                           aria-label="Поле ввода сообщения">
+                    <button id="sendButton" class="send-btn" onclick="sendMessage()">
+                        <i class="fas fa-paper-plane"></i>
+                        <span>Отправить</span>
+                    </button>
+                    <button id="clearButton" class="clear-btn" onclick="clearChat()" title="Очистить чат">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+                <div class="input-hints">
+                    <span>Нажмите Enter для отправки • Ctrl+Enter для новой строки</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-content">
+                <div class="api-info">
+                    <div class="api-key">
+                        <strong>API ключ:</strong>
+                        <code>sk-30fe27d332404bff9706f08fb337b8eb</code>
+                    </div>
+                    <div class="api-actions">
+                        <a href="https://platform.deepseek.com" target="_blank" class="api-link">
+                            <i class="fas fa-external-link-alt"></i>
+                            Проверить баланс
+                        </a>
+                        <button onclick="checkAPIStatus()" class="test-btn">
+                            <i class="fas fa-sync-alt"></i>
+                            Проверить API
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="instructions">
+                    <h4><i class="fas fa-graduation-cap"></i> Как восстановить работу API:</h4>
+                    <ol>
+                        <li>Перейдите на <a href="https://platform.deepseek.com" target="_blank">platform.deepseek.com</a></li>
+                        <li>Авторизуйтесь с вашим API ключом</li>
+                        <li>В разделе "Billing" пополните баланс</li>
+                        <li>Вернитесь сюда - API заработает автоматически</li>
+                    </ol>
+                </div>
+
+                <div class="free-alternatives">
+                    <h4><i class="fas fa-heart"></i> Бесплатные альтернативы:</h4>
+                    <div class="alternatives-grid">
+                        <a href="https://chat.openai.com" target="_blank">ChatGPT 3.5</a>
+                        <a href="https://claude.ai" target="_blank">Claude Instant</a>
+                        <a href="https://gemini.google.com" target="_blank">Google Gemini</a>
+                        <a href="https://huggingface.co/chat" target="_blank">Hugging Face</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <div class="stats">
+                    <span id="messageCount">Сообщений: 1</span>
+                    <span id="responseTime">Время ответа: —</span>
+                </div>
+                <div class="version">
+                    v1.0.0 • Локальный чат с AI ассистентом
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно для настроек -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-cog"></i> Настройки чата</h3>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="setting-group">
+                    <label>
+                        <input type="checkbox" id="soundToggle" checked>
+                        Включить звуки
+                    </label>
+                </div>
+                <div class="setting-group">
+                    <label>
+                        <input type="checkbox" id="autoScrollToggle" checked>
+                        Автопрокрутка сообщений
+                    </label>
+                </div>
+                <div class="setting-group">
+                    <label>
+                        Сохранять историю:
+                        <select id="historyLimit">
+                            <option value="50">50 сообщений</option>
+                            <option value="100" selected>100 сообщений</option>
+                            <option value="200">200 сообщений</option>
+                            <option value="0">Без ограничений</option>
+                        </select>
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="saveSettings()" class="save-btn">Сохранить</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Подключение JavaScript файлов -->
+    <script src="utils.js"></script>
+    <script src="local-responses.js"></script>
+    <script src="api-service.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
