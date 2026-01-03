@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KiAll Chat - Защищенный чат</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { background: #f0f9f0; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; background: white; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        header { background: #2e7d32; color: white; padding: 20px; border-radius: 10px 10px 0 0; }
+        .messages { height: 400px; overflow-y: auto; padding: 20px; }
+        .message { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .user { background: #e8f5e9; text-align: right; }
+        .bot { background: #f1f8e9; }
+        .input-area { padding: 20px; border-top: 1px solid #ddd; }
+        input { width: 80%; padding: 10px; }
+        button { padding: 10px 20px; background: #2e7d32; color: white; border: none; }
+        .warning { background: #ffebee; color: #c62828; padding: 10px; margin: 10px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="warning">
+            ⚠️ <strong>ВНИМАНИЕ:</strong> Этот файл содержит ваш API ключ. Не делитесь им ни с кем!
+            После тестирования удалите ключ из кода.
+        </div>
+        
+        <header>
+            <h1>KiAll Chat (с вашим API ключом)</h1>
+            <p>Ключ добавлен, но хранится только в вашем браузере</p>
+        </header>
+        
+        <div class="messages" id="messages">
+            <div class="message bot">
+                <strong>KiAll:</strong> Ваш API ключ добавлен. Начинаем общение!
+            </div>
+        </div>
+        
+        <div class="input-area">
+            <input type="text" id="userInput" placeholder="Введите сообщение...">
+            <button onclick="sendMessage()">Отправить</button>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // ВАШ API КЛЮЧ (ХРАНИТЕ В СЕКРЕТЕ!)
+        // ============================================
+        const YOUR_API_KEY = 'sk-79c993c697a04db8ade74fef771efb22';
+        // ============================================
+        // УДАЛИТЕ ЭТУ СТРОКУ ПЕРЕД ПУБЛИКАЦИЕЙ!
+        // ============================================
+        
+        let conversationHistory = [];
+        
+        async function sendMessage() {
+            const input = document.getElementById('userInput');
+            const message = input.value.trim();
+            if (!message) return;
+            
+            // Показать сообщение пользователя
+            displayMessage(message, 'user');
+            input.value = '';
+            
+            // Показать индикатор загрузки
+            const loadingId = displayMessage('Думаю...', 'bot', true);
+            
+            try {
+                const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${YOUR_API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        model: 'deepseek-chat',
+                        messages: [
+                            {
+                                role: 'system',
+                                content: 'Ты полезный ассистент KiAll. Отвечай на русском языке.'
+                            },
+                            ...conversationHistory,
+                            { role: 'user', content: message }
+                        ],
+                        max_tokens: 1000,
+                        temperature: 0.7
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Ошибка API: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                const botMessage = data.choices[0].message.content;
+                
+                // Обновить индикатор загрузки
+                updateMessage(loadingId, botMessage);
+                
+                // Сохранить в историю
+                conversationHistory.push(
+                    { role: 'user', content: message },
+                    { role: 'assistant', content: botMessage }
+                );
+                
+                // Ограничить историю (последние 10 сообщений)
+                if (conversationHistory.length > 10) {
+                    conversationHistory = conversationHistory.slice(-10);
+                }
+                
+            } catch (error) {
+                updateMessage(loadingId, `❌ Ошибка: ${error.message}`);
+                console.error('API Error:', error);
+            }
+        }
+        
+        function displayMessage(text, sender, isTemp = false) {
+            const messagesDiv = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            const messageId = isTemp ? 'temp-' + Date.now() : null;
+            
+            messageDiv.className = `message ${sender}`;
+            messageDiv.id = messageId;
+            messageDiv.innerHTML = `<strong>${sender === 'user' ? 'Вы' : 'KiAll'}:</strong> ${text}`;
+            
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            
+            return messageId;
+        }
+        
+        function updateMessage(id, newText) {
+            const messageDiv = document.getElementById(id);
+            if (messageDiv) {
+                messageDiv.innerHTML = `<strong>KiAll:</strong> ${newText}`;
+            }
+        }
+        
+        // Отправка по Enter
+        document.getElementById('userInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>
