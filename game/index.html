@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ссылки на игры</title>
+    <title>Сайт в разработке</title>
     <style>
         * {
             margin: 0;
@@ -105,20 +105,14 @@
             transform: translateY(-2px);
         }
         
-        .site-button i {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-            color: #2575fc;
-        }
-        
         .site-button .site-name {
             font-weight: 600;
-            font-size: 1.1rem;
+            font-size: 1.5rem;
             margin-bottom: 8px;
         }
         
         .site-button .site-desc {
-            font-size: 0.85rem;
+            font-size: 1rem;
             color: #666;
         }
         
@@ -143,41 +137,17 @@
             color: #2575fc;
             margin-bottom: 10px;
         }
-        
-        .row-counter {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        
-        .row-badge {
-            background: #2575fc;
-            color: white;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-weight: 600;
-        }
     </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <header>
-        <h1>Быстрые ссылки</h1>
-        <p class="subtitle">20 популярных сайтов в одном месте. Нажмите на любую кнопку, чтобы перейти на выбранный сайт.</p>
+        <h1>Сайт в разработке</h1>
+        <p class="subtitle">Все ссылки ведут на главную страницу проекта. Скоро здесь будет больше контента!</p>
     </header>
     
     <div class="instructions">
-        <h2><i class="fas fa-info-circle"></i> Как пользоваться</h2>
-        <p>Просто нажмите на любую кнопку ниже, чтобы мгновенно перейти на соответствующий сайт. Все ссылки открываются в новой вкладке браузера.</p>
-    </div>
-    
-    <div class="row-counter">
-        <div class="row-badge">Ряд 1: Поиск и информация</div>
-        <div class="row-badge">Ряд 2: Социальные сети</div>
-        <div class="row-badge">Ряд 3: Развлечения</div>
-        <div class="row-badge">Ряд 4: Полезные сервисы</div>
+        <h2>Как пользоваться</h2>
+        <p>Нажмите на любую кнопку ниже, чтобы перейти на главную страницу проекта. Все ссылки открываются в новой вкладке браузера.</p>
     </div>
     
     <div class="buttons-container" id="buttons-container">
@@ -185,95 +155,112 @@
     </div>
     
     <footer>
-        <p>Сайт создан для быстрого доступа к популярным интернет-ресурсам. Все права принадлежат соответствующим владельцам сайтов.</p>
-        <p>© 2023 Быстрые ссылки. Обновлено: <span id="current-date"></span></p>
+        <p>Все права защищены. Проект в разработке.</p>
+        <p>© 2023 Сайт в разработке. Обновлено: <span id="current-date"></span></p>
     </footer>
 
     <script>
-        // Массив с данными о сайтах (20 сайтов)
+        // Массив с данными о сайтах (20 сайтов, все одинаковые)
         const sites = [
             {
-                name: "кку",
-                url: "кукук",
+                name: "Игра test Динозаврик хроум",
+                url: "https://somp1k3.github.io/game/index-testdino.html",
+                description: "Игра может не работать или просто отдалите икран зажаф кнопки контр и минус!!!!!"
             },
             {
-                name: "1",
-                url: "",
+                name: "Игра Динозаврик Ди",
+                url: "https://somp1k3.github.io/game/index-Didini.html",
+                description: "Игра стабильна но может быть баг с изменением место нахождение икрана!!!!!"
             },
             {
-                name: "1",
-                url: "",
+                name: "1 в разработке",
+                url: "https://somp1k3.github.io",
+                description: "Скоро здесь будет интересный контент"
             },
             {
-            {
-                name: "1",
-                url: "",
+                name: "1 в разработке",
+                url: "https://somp1k3.github.io",
+                description: "Скоро здесь будет интересный контент"
             },
             {
-                name: "1",
-                url: "",
+                name: "1 в разработке",
+                url: "https://somp1k3.github.io",
+                description: "Скоро здесь будет интересный контент"
             },
             {
-                name: "1",
-                url: "",
+                name: "1 в разработке",
+                url: "https://somp1k3.github.io",
+                description: "Скоро здесь будет интересный контент"
             },
             {
-                name: "1",
-                url: "",
+                name: "1 в разработке",
+                url: "https://somp1k3.github.io",
+                description: "Скоро здесь будет интересный контент"
             },
             {
-                name: "1",
-                url: "",
+                name: "1 в разработке",
+                url: "https://somp1k3.github.io",
+                description: "Скоро здесь будет интересный контент"
             },
             {
-                name: "1",
-                url: "",
+                name: "1 в разработке",
+                url: "https://somp1k3.github.io",
+                description: "Скоро здесь будет интересный контент"
             },
             {
-            {
-                name: "1",
-                url: "",
+                name: "1 в разработке",
+                url: "https://somp1k3.github.io",
+                description: "Скоро здесь будет интересный контент"
             },
             {
-                name: "1",
-                url: "",
+                name: "1 в разработке",
+                url: "https://somp1k3.github.io",
+                description: "Скоро здесь будет интересный контент"
             },
             {
-            {
-                name: "1",
-                url: "",
+                name: "1 в разработке",
+                url: "https://somp1k3.github.io",
+                description: "Скоро здесь будет интересный контент"
             },
             {
-                name: "1",
-                url: "",
+                name: "1 в разработке",
+                url: "https://somp1k3.github.io",
+                description: "Скоро здесь будет интересный контент"
             },
             {
-                name: "1",
-                url: "",
+                name: "1 в разработке",
+                url: "https://somp1k3.github.io",
+                description: "Скоро здесь будет интересный контент"
             },
             {
-                name: "1",
-                url: "",
+                name: "1 в разработке",
+                url: "https://somp1k3.github.io",
+                description: "Скоро здесь будет интересный контент"
             },
             {
-                name: "1",
-                url: "",
+                name: "1 в разработке",
+                url: "https://somp1k3.github.io",
+                description: "Скоро здесь будет интересный контент"
             },
             {
-                name: "1",
-                url: "",
+                name: "1 в разработке",
+                url: "https://somp1k3.github.io",
+                description: "Скоро здесь будет интересный контент"
             },
             {
-                name: "1",
-                url: "",
+                name: "1 в разработке",
+                url: "https://somp1k3.github.io",
+                description: "Скоро здесь будет интересный контент"
             },
             {
-                name: "1",
-                url: "",
+                name: "1 в разработке",
+                url: "https://somp1k3.github.io",
+                description: "Скоро здесь будет интересный контент"
             },
             {
-                name: "1",
-                url: "",
+                name: "1 в разработке",
+                url: "https://somp1k3.github.io",
+                description: "Скоро здесь будет интересный контент"
             }
         ];
 
@@ -288,9 +275,8 @@
             button.target = "_blank"; // Открывать в новой вкладке
             button.className = "site-button";
             
-            // Заполняем содержимое кнопки
+            // Заполняем содержимое кнопки (без иконок)
             button.innerHTML = `
-                <i class="fab ${site.icon}"></i>
                 <div class="site-name">${site.name}</div>
                 <div class="site-desc">${site.description}</div>
             `;
