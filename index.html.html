@@ -1,0 +1,1586 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KiraKi - Разработчик</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👨‍💻</text></svg>">
+    <style>
+        /* Основные стили */
+        :root {
+            --primary-hue: 160;
+            --saturation: 70%;
+            --lightness: 50%;
+            --text-color: #f0f0f0;
+            --bg-color: rgba(10, 20, 15, 0.95);
+            --panel-color: rgba(20, 40, 30, 0.85);
+            --border-color: rgba(255, 255, 255, 0.15);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            --transition: all 0.3s ease;
+            --border-radius: 16px;
+            --glass-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            --hover-border-color: rgba(255, 255, 255, 0.8);
+            --hover-glow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #0a140f;
+            color: var(--text-color);
+            min-height: 100vh;
+            background-attachment: fixed;
+            transition: var(--transition);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .rgb-gradient-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                135deg,
+                rgba(10, 30, 20, 0.9) 0%,
+                rgba(20, 50, 35, 0.9) 25%,
+                rgba(30, 70, 50, 0.9) 50%,
+                rgba(20, 50, 35, 0.9) 75%,
+                rgba(10, 30, 20, 0.9) 100%
+            );
+            background-size: 400% 400%;
+            animation: rgbFlow 20s ease infinite;
+            z-index: -2;
+            opacity: 1;
+        }
+
+        .glass-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            background: rgba(10, 20, 15, 0.7);
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Приветственное сообщение - справа */
+        .welcome-message {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: var(--panel-color);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            padding: 20px 25px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            z-index: 1000;
+            animation: slideRight 0.5s ease;
+            max-width: 350px;
+            width: auto;
+            display: none;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .welcome-content h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+            color: #4ade80;
+        }
+
+        .welcome-content p {
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .timer-bar {
+            height: 4px;
+            background: linear-gradient(90deg, #4ade80, #22c55e);
+            border-radius: 2px;
+            width: 100%;
+            animation: timerCountdown 10s linear forwards;
+        }
+
+        .close-welcome {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: var(--transition);
+            line-height: 1;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        .close-welcome:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(90deg);
+        }
+
+        /* Сообщение о разработке */
+        .dev-message {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--panel-color);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            padding: 15px 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            z-index: 1000;
+            animation: slideUp 0.5s ease;
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+            display: none;
+        }
+
+        .dev-content h4 {
+            color: #4ade80;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+
+        .dev-content p {
+            line-height: 1.5;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .telegram-link {
+            color: #4ade80;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .telegram-link:hover {
+            color: #22c55e;
+            text-decoration: underline;
+        }
+
+        .dev-timer-bar {
+            height: 3px;
+            background: linear-gradient(90deg, #4ade80, #22c55e);
+            border-radius: 2px;
+            width: 100%;
+            animation: timerCountdown 10s linear forwards;
+            margin-top: 10px;
+        }
+
+        .close-dev {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+            position: absolute;
+            top: 5px;
+            right: 10px;
+        }
+
+        .close-dev:hover {
+            transform: rotate(90deg);
+        }
+
+        /* Панель навигации */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            background: var(--panel-color);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            padding: 15px 25px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: fadeIn 1s ease;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .navbar:hover {
+            border-color: var(--hover-border-color);
+            box-shadow: var(--hover-glow);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, #4ade80, #22c55e, #16a34a);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        /* Верхние виджеты в строку (2 штуки) */
+        .top-widgets {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+            animation: slideDown 1s ease;
+        }
+
+        @media (max-width: 768px) {
+            .top-widgets {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .widget {
+            background: var(--panel-color);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .widget::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #4ade80, #22c55e, #16a34a);
+        }
+
+        .widget::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: calc(var(--border-radius) + 4px);
+            border: 2px solid transparent;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .widget:hover::after {
+            opacity: 1;
+            border-color: var(--hover-border-color);
+            box-shadow: var(--hover-glow);
+        }
+
+        .widget:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow), 0 12px 40px rgba(0, 0, 0, 0.5);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .time-widget {
+            text-align: center;
+        }
+
+        .date {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            opacity: 0.9;
+        }
+
+        .time {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #4ade80;
+            letter-spacing: 1px;
+        }
+
+        .word-widget {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .word-of-day {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #22c55e;
+            margin-top: 10px;
+        }
+
+        /* Основное содержимое с вкладками */
+        .main-content {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeIn 1.5s ease;
+        }
+
+        .nickname-container {
+            margin-bottom: 30px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .nickname {
+            font-size: 4.5rem;
+            font-weight: 900;
+            background: linear-gradient(90deg, #4ade80, #22c55e, #16a34a);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 20px;
+        }
+
+        .nickname::after {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            border-radius: 24px;
+            border: 2px solid transparent;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .nickname:hover::after {
+            opacity: 1;
+            border-color: var(--hover-border-color);
+            box-shadow: var(--hover-glow);
+        }
+
+        .nickname:hover {
+            transform: scale(1.05);
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 0 20px;
+            color: #a7f3d0;
+        }
+
+        /* Контейнер для вкладок */
+        .tabs-container {
+            margin-top: 40px;
+            animation: fadeIn 1s ease;
+        }
+
+        .tabs-navigation {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 12px 24px;
+            color: var(--text-color);
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+            font-size: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tab-btn::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: 14px;
+            border: 2px solid transparent;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .tab-btn:hover::after {
+            opacity: 1;
+            border-color: var(--hover-border-color);
+            box-shadow: var(--hover-glow);
+        }
+
+        .tab-btn:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(90deg, #4ade80, #22c55e);
+            color: white;
+            border-color: transparent;
+        }
+
+        .tab-content {
+            background: var(--panel-color);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            min-height: 400px;
+            display: none;
+            position: relative;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-content::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: calc(var(--border-radius) + 4px);
+            border: 2px solid transparent;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .tab-content:hover::after {
+            opacity: 1;
+            border-color: var(--hover-border-color);
+            box-shadow: var(--hover-glow);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .tab-content h3 {
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            color: #4ade80;
+        }
+
+        .tab-content p {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .tab-content ul {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        .tab-content li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        /* Нижние виджеты */
+        .bottom-widgets {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .bottom-widgets {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .widget-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+            color: #4ade80;
+        }
+
+        .widget-title i {
+            color: #4ade80;
+        }
+
+        /* Виджет с ссылками */
+        .links-widget {
+            grid-column: 1 / -1;
+        }
+
+        .link-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .link-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .link-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .link-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: var(--transition);
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--text-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .link-item::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: 14px;
+            border: 2px solid transparent;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .link-item:hover::after {
+            opacity: 1;
+            border-color: var(--hover-border-color);
+            box-shadow: var(--hover-glow);
+        }
+
+        .link-item:hover {
+            transform: translateX(5px) translateY(-2px);
+            border-color: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .link-icon {
+            font-size: 1.8rem;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .tg .link-icon { color: #0088cc; background: rgba(0, 136, 204, 0.1); }
+        .github .link-icon { color: #ffffff; background: rgba(255, 255, 255, 0.1); }
+        .portfolio .link-icon { color: #06d6a0; background: rgba(6, 214, 160, 0.1); }
+        .steam .link-icon { color: #1b2838; background: rgba(27, 40, 56, 0.1); }
+        .friend .link-icon { color: #ff6b8b; background: rgba(255, 107, 139, 0.1); }
+
+        .link-info h4 {
+            font-size: 1.1rem;
+            margin-bottom: 4px;
+        }
+
+        .link-info p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Эффект взрыва при клике */
+        .explosion-effect {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0) 70%);
+            border-radius: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 10;
+            animation: explode 0.6s ease-out;
+        }
+
+        @keyframes explode {
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 1;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        /* Футер */
+        .footer {
+            text-align: center;
+            padding: 25px;
+            background: var(--panel-color);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            margin-top: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .footer:hover {
+            border-color: var(--hover-border-color);
+            box-shadow: var(--hover-glow);
+        }
+
+        .copyright {
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .warning {
+            font-size: 0.85rem;
+            opacity: 0.7;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+
+        .warning-link {
+            color: #4ade80;
+            cursor: pointer;
+            text-decoration: underline;
+            transition: var(--transition);
+            font-weight: 600;
+        }
+
+        .warning-link:hover {
+            text-decoration: none;
+            opacity: 0.9;
+        }
+
+        /* Модальные окна */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            animation: fadeIn 0.3s ease;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: var(--panel-color);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 700px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            animation: slideUp 0.5s ease;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-content::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: calc(var(--border-radius) + 4px);
+            border: 2px solid transparent;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-content:hover::after {
+            opacity: 1;
+            border-color: var(--hover-border-color);
+            box-shadow: var(--hover-glow);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: var(--transition);
+            background: transparent;
+            border: none;
+            color: var(--text-color);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+        }
+
+        .close-modal:hover {
+            transform: rotate(90deg);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-title {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #4ade80;
+        }
+
+        /* Кнопка "Наверх" */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #4ade80, #22c55e);
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+            z-index: 100;
+            box-shadow: var(--shadow);
+            border: none;
+        }
+
+        .back-to-top:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 20px rgba(74, 222, 128, 0.5);
+        }
+
+        /* Анимации */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes slideRight {
+            from { transform: translateX(100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px) translateX(-50%); opacity: 0; }
+            to { transform: translateY(0) translateX(-50%); opacity: 1; }
+        }
+
+        @keyframes rgbFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @keyframes timerCountdown {
+            from { width: 100%; }
+            to { width: 0%; }
+        }
+
+        /* Адаптивность */
+        @media (max-width: 1100px) {
+            .top-widgets {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .bottom-widgets {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .top-widgets {
+                grid-template-columns: 1fr;
+            }
+            
+            .nickname {
+                font-size: 3rem;
+            }
+            
+            .link-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .navbar {
+                flex-direction: column;
+                gap: 15px;
+                padding: 20px;
+            }
+            
+            .welcome-message {
+                position: relative;
+                top: auto;
+                right: auto;
+                max-width: 100%;
+                margin-bottom: 20px;
+                animation: slideDown 0.5s ease;
+            }
+            
+            .dev-message {
+                position: fixed;
+                bottom: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 90%;
+            }
+            
+            .tabs-navigation {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .tab-btn {
+                width: 100%;
+                text-align: center;
+            }
+            
+            .tab-content {
+                padding: 20px;
+                min-height: 300px;
+            }
+            
+            .back-to-top {
+                bottom: 20px;
+                right: 20px;
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nickname {
+                font-size: 2.2rem;
+                padding: 8px 16px;
+            }
+            
+            .tagline {
+                font-size: 1rem;
+            }
+            
+            .time {
+                font-size: 2rem;
+            }
+            
+            .word-of-day {
+                font-size: 1.5rem;
+            }
+            
+            .widget {
+                padding: 20px;
+            }
+            
+            .modal-content {
+                padding: 20px;
+                width: 95%;
+            }
+            
+            .modal-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Градиентный фон -->
+    <div class="rgb-gradient-bg"></div>
+    <div class="glass-overlay"></div>
+
+    <!-- Приветственное сообщение (справа) -->
+    <div class="welcome-message" id="welcomeMessage">
+        <button class="close-welcome" id="closeWelcome">&times;</button>
+        <div class="welcome-content">
+            <h3><i class="fas fa-hand-wave"></i> Добро пожаловать!</h3>
+            <p>Спасибо что выбрали нас! Мы вас ценим и будем благодарны если вы оставите отзыв и комментарий.</p>
+            <div class="timer-bar" id="timerBar"></div>
+        </div>
+    </div>
+
+    <!-- Сообщение о разработке (снизу) -->
+    <div class="dev-message" id="devMessage">
+        <button class="close-dev" id="closeDev">&times;</button>
+        <div class="dev-content">
+            <h4><i class="fas fa-tools"></i> Сайт в разработке</h4>
+            <p>Если что-то не работает, напишите нам в Telegram:</p>
+            <p><a href="https://t.me/+79266243659" target="_blank" class="telegram-link">+7 (926) 624-36-59</a></p>
+            <div class="dev-timer-bar" id="devTimerBar"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Навигация -->
+        <nav class="navbar">
+            <div class="logo" id="logo">KiraKi</div>
+        </nav>
+
+        <!-- Верхние виджеты (2 в строку) -->
+        <div class="top-widgets">
+            <div class="widget time-widget">
+                <div class="date" id="currentDate">Загрузка...</div>
+                <div class="time" id="currentTime">00:00:00</div>
+            </div>
+            
+            <div class="widget word-widget">
+                <div>Слово дня:</div>
+                <div class="word-of-day" id="wordOfDay">Креативность</div>
+            </div>
+        </div>
+
+        <!-- Основное содержимое -->
+        <div class="main-content">
+            <div class="nickname-container">
+                <div class="nickname" id="nickname">KiraKi</div>
+                <div class="tagline" id="tagline">Разработчик | Геймер | Создатель цифровых миров</div>
+            </div>
+            
+            <!-- Вкладки -->
+            <div class="tabs-container" id="tabsContainer">
+                <div class="tabs-navigation">
+                    <button class="tab-btn active" data-tab="about">Обо мне</button>
+                    <button class="tab-btn" data-tab="projects">Проекты</button>
+                    <button class="tab-btn" data-tab="skills">Навыки</button>
+                    <button class="tab-btn" data-tab="contact">Контакты</button>
+                </div>
+                
+                <div class="tab-content active" id="aboutTab">
+                    <h3>Обо мне</h3>
+                    <p>Привет! Я <strong>KiraKi</strong> - разработчик с многолетним опытом в создании цифровых проектов. Специализируюсь на веб-технологиях, Python и игровой разработке.</p>
+                    <p>Мои проекты всегда сочетают в себе качественный код, современный дизайн и интуитивный интерфейс. Каждая деталь продумана для максимального удобства пользователя.</p>
+                    <p>Как геймер, я уделяю особое внимание плавности анимаций, отзывчивости интерфейсов и общему пользовательскому опыту.</p>
+                    <p>В работе использую современный стек технологий: HTML5, CSS3, JavaScript, React, Vue.js, Python, Django, Flask, Unity, C# и многое другое.</p>
+                </div>
+                
+                <div class="tab-content" id="projectsTab">
+                    <h3>Мои проекты</h3>
+                    <p><strong>1. Веб-портфолио KiraKi:</strong> Современный адаптивный сайт с кастомными настройками и анимациями.</p>
+                    <p><strong>2. Игра "Pixel Adventure":</strong> 2D платформер на Unity с уникальной механикой и пиксельной графикой.</p>
+                    <p><strong>3. Telegram бот "Assistant":</strong> Многофункциональный бот с интеграцией различных API.</p>
+                    <p><strong>4. Веб-приложение "Task Manager":</strong> Приложение для управления задачами с реальным временем и уведомлениями.</p>
+                    <p><strong>5. Библиотека компонентов React:</strong> Набор переиспользуемых UI компонентов с документацией.</p>
+                </div>
+                
+                <div class="tab-content" id="skillsTab">
+                    <h3>Мои навыки</h3>
+                    <p><strong>Frontend:</strong> HTML5, CSS3, JavaScript, React, Vue.js, SASS, Webpack</p>
+                    <p><strong>Backend:</strong> Python, Django, Flask, Node.js, Express.js, REST API</p>
+                    <p><strong>Базы данных:</strong> PostgreSQL, MySQL, MongoDB, Redis</p>
+                    <p><strong>Игровая разработка:</strong> Unity, C#, Godot, GDScript</p>
+                    <p><strong>Дизайн:</strong> Figma, Adobe XD, Photoshop, UI/UX принципы</p>
+                    <p><strong>Другое:</strong> Git, Docker, CI/CD, AWS, WebSockets</p>
+                </div>
+                
+                <div class="tab-content" id="contactTab">
+                    <h3>Связь со мной</h3>
+                    <p>Вы можете связаться со мной через следующие каналы:</p>
+                    <p><strong>Telegram:</strong> @testuhipis - для быстрой связи и обсуждения проектов</p>
+                    <p><strong>Email:</strong> kiraki.dev@example.com - для формальных запросов</p>
+                    <p><strong>Discord:</strong> KiraKi#1234 - для игровых и неформальных бесед</p>
+                    <p>Обычно я отвечаю в течение 24 часов. Для срочных вопросов лучше использовать Telegram.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Нижние виджеты -->
+        <div class="bottom-widgets">
+            <div class="widget">
+                <div class="widget-title">
+                    <i class="fas fa-code"></i>
+                    <h3>Обо мне</h3>
+                </div>
+                <p>Привет! Я KiraKi - разработчик с многолетним опытом в создании цифровых проектов.</p>
+                <p>Специализируюсь на веб-технологиях, Python и игровой разработке.</p>
+                <p>Мои проекты всегда сочетают в себе качественный код, современный дизайн и интуитивный интерфейс.</p>
+            </div>
+            
+            <div class="widget">
+                <div class="widget-title">
+                    <i class="fas fa-gamepad"></i>
+                    <h3>Геймерский подход</h3>
+                </div>
+                <p>Как геймер, я уделяю особое внимание плавности анимаций, отзывчивости интерфейсов и общему пользовательскому опыту.</p>
+                <p>Каждая деталь продумана для максимального удобства пользователя.</p>
+            </div>
+            
+            <div class="widget">
+                <div class="widget-title">
+                    <i class="fas fa-rocket"></i>
+                    <h3>Технологии</h3>
+                </div>
+                <p>Веб: HTML5, CSS3, JavaScript, React, Vue.js</p>
+                <p>Бэкенд: Python, Django, Flask, Node.js</p>
+                <p>Игры: Unity, C#, Godot</p>
+            </div>
+            
+            <div class="widget links-widget">
+                <div class="widget-title">
+                    <i class="fas fa-link"></i>
+                    <h3>Мои ссылки</h3>
+                </div>
+                <div class="link-grid">
+                    <a href="https://t.me/testuhipis" target="_blank" class="link-item tg" data-link-name="Telegram">
+                        <div class="link-icon">
+                            <i class="fab fa-telegram"></i>
+                        </div>
+                        <div class="link-info">
+                            <h4>Telegram</h4>
+                            <p>@testuhipis</p>
+                        </div>
+                    </a>
+                    <a href="javascript:void(0)" class="link-item github" data-link-name="GitHub">
+                        <div class="link-icon">
+                            <i class="fab fa-github"></i>
+                        </div>
+                        <div class="link-info">
+                            <h4>GitHub</h4>
+                            <p>Временно не работает</p>
+                        </div>
+                    </a>
+                    <a href="https://somp1k3.github.io/smp3/pr/" target="_blank" class="link-item portfolio" data-link-name="Портфолио">
+                        <div class="link-icon">
+                            <i class="fas fa-briefcase"></i>
+                        </div>
+                        <div class="link-info">
+                            <h4>Портфолио</h4>
+                            <p>Мои проекты</p>
+                        </div>
+                    </a>
+                    <a href="https://steamcommunity.com/id/KiraKi1/" target="_blank" class="link-item steam" data-link-name="Steam">
+                        <div class="link-icon">
+                            <i class="fab fa-steam"></i>
+                        </div>
+                        <div class="link-info">
+                            <h4>Steam</h4>
+                            <p>KiraKi1</p>
+                        </div>
+                    </a>
+                    <a href="https://l1ratch.ru/" target="_blank" class="link-item friend" data-link-name="Сайт друга">
+                        <div class="link-icon">
+                            <i class="fas fa-user-friends"></i>
+                        </div>
+                        <div class="link-info">
+                            <h4>Сайт друга</h4>
+                            <p>l1ratch.ru</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Футер -->
+        <footer class="footer">
+            <div class="copyright" id="copyright">
+                <!-- Автоматически обновится через JavaScript -->
+            </div>
+            <div class="warning" id="warningText">
+                Все данные не сохраняются и любое копирование сайта в целях создать копию сайта преследуется законом <span class="warning-link" id="warningLink">тыкни!</span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Модальное окно с предупреждением -->
+    <div class="modal" id="warningModal">
+        <div class="modal-content">
+            <button class="close-modal" id="closeWarningModal">&times;</button>
+            <h2 class="modal-title" id="warningModalTitle">Правовая информация</h2>
+            <div class="modal-text" id="warningModalText">
+                <p>Сайт и его элементы являются объектом авторского права (ст. 1259 ГК РФ). Использование произведений или их составляющих без согласия владельца запрещено (ст. 1229 ГК РФ).</p>
+                <p>За незаконное копирование сайта грозит гражданско-правовая, административная или уголовная ответственность. Некоторые меры, которые могут быть приняты:</p>
+                <ul>
+                    <li><strong>Претензии от правообладателя.</strong> Владелец оригинального сайта может направить претензию с требованием удалить скопированный контент или прекратить использование дизайна.</li>
+                    <li><strong>Судебные иски.</strong> В случае отказа добровольно устранить нарушение, правообладатель может обратиться в суд.</li>
+                    <li><strong>Блокировка сайта.</strong> В некоторых случаях, по решению суда, сайт-нарушитель может быть заблокирован.</li>
+                    <li><strong>Возмещение убытков.</strong> Суд может обязать нарушителя выплатить компенсацию за причинённый ущерб, который может включать упущенную выгоду, расходы на восстановление репутации и т. д.</li>
+                    <li><strong>Уголовная ответственность.</strong> В случае крупного ущерба или систематических нарушений, может наступить уголовная ответственность.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Кнопка "Наверх" -->
+    <button class="back-to-top" id="backToTop" title="Наверх">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script>
+        // ============================================
+        // КОНФИГУРАЦИЯ И ПЕРЕМЕННЫЕ
+        // ============================================
+        
+        // Слова дня
+        const wordsOfDay = [
+            "Креативность", "Инновации", "Код", "Дизайн", "Геймдев", 
+            "Технологии", "Вдохновение", "Проект", "Интерфейс", "Анимация",
+            "Оптимизация", "Функциональность", "Эстетика", "Интуиция", "Интерактив"
+        ];
+
+        // Глобальные переменные
+        let activeTab = 'about';
+
+        // ============================================
+        // ФУНКЦИИ УТИЛИТЫ
+        // ============================================
+
+        // Создание эффекта взрыва
+        function createExplosionEffect(element) {
+            const explosion = document.createElement('div');
+            explosion.className = 'explosion-effect';
+            
+            const rect = element.getBoundingClientRect();
+            explosion.style.position = 'fixed';
+            explosion.style.left = `${rect.left + rect.width / 2}px`;
+            explosion.style.top = `${rect.top + rect.height / 2}px`;
+            
+            document.body.appendChild(explosion);
+            
+            // Удаляем эффект после анимации
+            setTimeout(() => {
+                explosion.remove();
+            }, 600);
+        }
+
+        // Обновление текста элемента
+        function updateElementText(id, text) {
+            const element = document.getElementById(id);
+            if (element) element.textContent = text;
+        }
+
+        // ============================================
+        // ФУНКЦИИ АВТОМАТИЧЕСКОГО ОБНОВЛЕНИЯ ГОДА
+        // ============================================
+
+        function updateCopyrightYear() {
+            const currentYear = new Date().getFullYear();
+            const nextYear = currentYear + 1;
+            const copyrightElement = document.getElementById('copyright');
+            
+            if (copyrightElement) {
+                copyrightElement.textContent = `Все права защищены © KK ${currentYear}-${nextYear}`;
+            }
+        }
+
+        // ============================================
+        // ФУНКЦИИ ВКЛАДОК
+        // ============================================
+
+        // Переключение вкладок
+        function switchTab(tabId) {
+            // Скрываем все вкладки
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Убираем активный класс со всех кнопок
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            tabButtons.forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Показываем выбранную вкладку
+            const selectedTab = document.getElementById(`${tabId}Tab`);
+            const selectedButton = document.querySelector(`.tab-btn[data-tab="${tabId}"]`);
+            
+            if (selectedTab) {
+                selectedTab.classList.add('active');
+            }
+            
+            if (selectedButton) {
+                selectedButton.classList.add('active');
+            }
+            
+            activeTab = tabId;
+        }
+
+        // Инициализация вкладок
+        function initTabs() {
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const nickname = document.getElementById('nickname');
+            
+            // Обработка кликов по кнопкам вкладок
+            tabButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const tabId = btn.getAttribute('data-tab');
+                    switchTab(tabId);
+                });
+            });
+            
+            // Обработка клика по нику для переключения на вкладку "Обо мне"
+            if (nickname) {
+                nickname.addEventListener('click', () => {
+                    switchTab('about');
+                    
+                    // Прокручиваем к вкладкам
+                    const tabsContainer = document.getElementById('tabsContainer');
+                    if (tabsContainer) {
+                        tabsContainer.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            }
+        }
+
+        // ============================================
+        // ФУНКЦИИ ВИДЖЕТОВ
+        // ============================================
+
+        // Установка слова дня
+        function setWordOfDay() {
+            const wordElement = document.getElementById('wordOfDay');
+            if (!wordElement) return;
+            
+            const today = new Date();
+            const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24);
+            const wordIndex = dayOfYear % wordsOfDay.length;
+            wordElement.textContent = wordsOfDay[wordIndex];
+        }
+
+        // Обновление даты и времени
+        function updateDateTime() {
+            const dateElement = document.getElementById('currentDate');
+            const timeElement = document.getElementById('currentTime');
+            
+            if (!dateElement || !timeElement) return;
+            
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            };
+            
+            dateElement.textContent = now.toLocaleDateString('ru-RU', options);
+            timeElement.textContent = now.toLocaleTimeString('ru-RU');
+        }
+
+        // Инициализация виджетов
+        function initWidgets() {
+            updateDateTime();
+            setWordOfDay();
+            setInterval(updateDateTime, 1000);
+        }
+
+        // ============================================
+        // ФУНКЦИИ СООБЩЕНИЙ
+        // ============================================
+
+        // Инициализация приветственного сообщения
+        function initWelcomeMessage() {
+            const welcomeMessage = document.getElementById('welcomeMessage');
+            const closeWelcome = document.getElementById('closeWelcome');
+            
+            // Проверяем, было ли уже показано сообщение
+            const welcomeShown = sessionStorage.getItem('welcomeShown');
+            
+            if (!welcomeShown && welcomeMessage) {
+                // Показываем сообщение через 1 секунду
+                setTimeout(() => {
+                    welcomeMessage.style.display = 'flex';
+                }, 1000);
+                
+                // Автоматическое закрытие через 10 секунд
+                setTimeout(() => {
+                    if (welcomeMessage.style.display !== 'none') {
+                        welcomeMessage.style.opacity = '0';
+                        welcomeMessage.style.transform = 'translateX(20px)';
+                        welcomeMessage.style.transition = 'all 0.5s ease';
+                        
+                        setTimeout(() => {
+                            welcomeMessage.style.display = 'none';
+                        }, 500);
+                    }
+                }, 10000);
+                
+                // Сохраняем в sessionStorage, что сообщение было показано
+                sessionStorage.setItem('welcomeShown', 'true');
+            }
+            
+            // Закрытие сообщения по клику
+            if (closeWelcome && welcomeMessage) {
+                closeWelcome.addEventListener('click', () => {
+                    welcomeMessage.style.opacity = '0';
+                    welcomeMessage.style.transform = 'translateX(20px)';
+                    welcomeMessage.style.transition = 'all 0.5s ease';
+                    
+                    setTimeout(() => {
+                        welcomeMessage.style.display = 'none';
+                    }, 500);
+                });
+            }
+        }
+
+        // Инициализация сообщения о разработке
+        function initDevMessage() {
+            const devMessage = document.getElementById('devMessage');
+            const closeDev = document.getElementById('closeDev');
+            
+            // Проверяем, было ли уже показано сообщение
+            const devMessageShown = sessionStorage.getItem('devMessageShown');
+            
+            if (!devMessageShown && devMessage) {
+                // Показываем сообщение через 2 секунды
+                setTimeout(() => {
+                    devMessage.style.display = 'block';
+                }, 2000);
+                
+                // Автоматическое закрытие через 10 секунд
+                setTimeout(() => {
+                    if (devMessage.style.display !== 'none') {
+                        devMessage.style.opacity = '0';
+                        devMessage.style.transform = 'translateY(20px) translateX(-50%)';
+                        devMessage.style.transition = 'all 0.5s ease';
+                        
+                        setTimeout(() => {
+                            devMessage.style.display = 'none';
+                        }, 500);
+                    }
+                }, 12000); // 12 секунд (2 секунды задержки + 10 секунд показа)
+                
+                // Сохраняем в sessionStorage, что сообщение было показано
+                sessionStorage.setItem('devMessageShown', 'true');
+            }
+            
+            // Закрытие сообщения по клику
+            if (closeDev && devMessage) {
+                closeDev.addEventListener('click', () => {
+                    devMessage.style.opacity = '0';
+                    devMessage.style.transform = 'translateY(20px) translateX(-50%)';
+                    devMessage.style.transition = 'all 0.5s ease';
+                    
+                    setTimeout(() => {
+                        devMessage.style.display = 'none';
+                    }, 500);
+                });
+            }
+        }
+
+        // ============================================
+        // ФУНКЦИИ МОДАЛЬНЫХ ОКОН
+        // ============================================
+
+        // Инициализация модальных окон
+        function initModals() {
+            const logo = document.getElementById('logo');
+            const warningModal = document.getElementById('warningModal');
+            const closeWarningModal = document.getElementById('closeWarningModal');
+            const warningLink = document.getElementById('warningLink');
+            
+            // Открытие модального окна с предупреждением
+            if (warningLink && warningModal) {
+                warningLink.addEventListener('click', () => {
+                    warningModal.style.display = 'flex';
+                });
+            }
+            
+            // Закрытие модального окна с предупреждением
+            if (closeWarningModal && warningModal) {
+                closeWarningModal.addEventListener('click', () => {
+                    warningModal.style.display = 'none';
+                });
+            }
+            
+            // Закрытие модальных окон при клике вне их
+            window.addEventListener('click', (e) => {
+                if (e.target === warningModal) {
+                    warningModal.style.display = 'none';
+                }
+            });
+        }
+
+        // ============================================
+        // ФУНКЦИИ ДЛЯ ССЫЛОК
+        // ============================================
+
+        // Инициализация обработчиков ссылок
+        function initLinks() {
+            const links = document.querySelectorAll('.link-item');
+            
+            links.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    const href = this.getAttribute('href');
+                    
+                    // Если ссылка не ведет на JavaScript, создаем эффект и переходим
+                    if (href && href !== 'javascript:void(0)') {
+                        e.preventDefault();
+                        createExplosionEffect(this);
+                        
+                        // Задержка перед переходом для эффекта
+                        setTimeout(() => {
+                            window.open(href, '_blank');
+                        }, 300);
+                    } else {
+                        // Для неработающих ссылок (GitHub) просто создаем эффект
+                        createExplosionEffect(this);
+                    }
+                });
+            });
+        }
+
+        // ============================================
+        // ФУНКЦИИ ДЛЯ КНОПКИ "НАВЕРХ"
+        // ============================================
+
+        function initBackToTop() {
+            const backToTopBtn = document.getElementById('backToTop');
+            
+            // Показываем/скрываем кнопку при прокрутке
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    backToTopBtn.style.display = 'flex';
+                } else {
+                    backToTopBtn.style.display = 'none';
+                }
+            });
+            
+            // Прокрутка наверх при клике
+            if (backToTopBtn) {
+                backToTopBtn.addEventListener('click', () => {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                });
+            }
+        }
+
+        // ============================================
+        // ИНИЦИАЛИЗАЦИЯ
+        // ============================================
+
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('Инициализация сайта KiraKi...');
+            
+            // Плавное появление
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.5s ease';
+            
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 100);
+            
+            // Обновляем год в копирайте
+            updateCopyrightYear();
+            
+            // Инициализируем виджеты
+            initWidgets();
+            
+            // Инициализируем вкладки
+            initTabs();
+            
+            // Инициализируем сообщения
+            initWelcomeMessage();
+            initDevMessage();
+            
+            // Инициализируем модальные окна
+            initModals();
+            
+            // Инициализируем обработчики ссылок
+            initLinks();
+            
+            // Инициализируем кнопку "Наверх"
+            initBackToTop();
+            
+            console.log('Сайт KiraKi успешно инициализирован!');
+        });
+
+    </script>
+</body>
+</html>
