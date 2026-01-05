@@ -1,0 +1,2616 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Игровой портал - Мини-игры</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #f1f1f1;
+            min-height: 100vh;
+            padding-bottom: 30px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 40px 0 30px;
+            background: rgba(15, 23, 42, 0.9);
+            border-bottom: 3px solid #0ea5e9;
+            margin-bottom: 40px;
+            position: relative;
+        }
+        
+        h1 {
+            font-size: 3.2rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #0ea5e9, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #94a3b8;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .stats-bar {
+            display: flex;
+            justify-content: space-between;
+            background: rgba(30, 41, 59, 0.8);
+            padding: 15px 25px;
+            border-radius: 12px;
+            margin: 25px auto;
+            max-width: 1000px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            flex-wrap: wrap;
+        }
+        
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .stat-value {
+            font-weight: bold;
+            color: #0ea5e9;
+            font-size: 1.3rem;
+        }
+        
+        .cookie-counter {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(30, 41, 59, 0.9);
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 100;
+        }
+        
+        .cookie-icon {
+            color: #f59e0b;
+            font-size: 1.5rem;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .games-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .game-card {
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .game-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+        }
+        
+        .game-header {
+            padding: 25px 25px 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .game-title-wrapper {
+            display: flex;
+            align-items: center;
+        }
+        
+        .game-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #0ea5e9, #3b82f6);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            font-size: 28px;
+        }
+        
+        .game-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .game-record {
+            background: rgba(16, 185, 129, 0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 1rem;
+            border: 1px solid rgba(16, 185, 129, 0.5);
+        }
+        
+        .record-value {
+            color: #10b981;
+            font-weight: bold;
+        }
+        
+        .game-description {
+            padding: 20px 25px;
+            color: #cbd5e1;
+            line-height: 1.6;
+            font-size: 1.05rem;
+            flex-grow: 1;
+        }
+        
+        .game-content {
+            padding: 0 25px 25px;
+        }
+        
+        .game-screen {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            min-height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            position: relative;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            background: linear-gradient(to right, #0ea5e9, #3b82f6);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn:hover {
+            background: linear-gradient(to right, #0284c7, #2563eb);
+            transform: translateY(-2px);
+        }
+        
+        .btn:active {
+            transform: translateY(1px);
+        }
+        
+        .btn-cookie {
+            background: linear-gradient(to right, #f59e0b, #d97706);
+        }
+        
+        .btn-cookie:hover {
+            background: linear-gradient(to right, #eab308, #b45309);
+        }
+        
+        .stats {
+            color: #94a3b8;
+            font-size: 1rem;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            color: #64748b;
+            font-size: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 40px;
+        }
+        
+        /* Стили для игр */
+        #ticTacToeBoard {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-gap: 8px;
+            width: 240px;
+            margin: 0 auto;
+        }
+        
+        .cell {
+            width: 75px;
+            height: 75px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .cell:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .cell.x {
+            color: #0ea5e9;
+        }
+        
+        .cell.o {
+            color: #f59e0b;
+        }
+        
+        #snakeGame {
+            position: relative;
+            width: 300px;
+            height: 200px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        #snakeCanvas {
+            background: #0f172a;
+            border-radius: 8px;
+        }
+        
+        #mathQuestion {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        #mathAnswer {
+            padding: 12px 20px;
+            font-size: 1.2rem;
+            width: 200px;
+            border-radius: 8px;
+            border: 2px solid #3b82f6;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            text-align: center;
+        }
+        
+        #memoryBoard {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-gap: 10px;
+            width: 280px;
+            margin: 0 auto;
+        }
+        
+        .memoryCard {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #0ea5e9, #3b82f6);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            cursor: pointer;
+            transform-style: preserve-3d;
+            transition: transform 0.5s;
+        }
+        
+        .memoryCard.flipped {
+            transform: rotateY(180deg);
+            background: #1e293b;
+        }
+        
+        .memoryCard.matched {
+            background: #10b981;
+            cursor: default;
+        }
+        
+        /* Стили для Pac-Man */
+        #pacmanGame {
+            position: relative;
+            width: 300px;
+            height: 250px;
+            background: #111827;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        #pacmanCanvas {
+            background: #111827;
+        }
+        
+        .pacman-info {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 8px 15px;
+            border-radius: 8px;
+            color: #fbbf24;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        
+        /* Стили для игры 2048 */
+        #game2048Board {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-gap: 8px;
+            width: 280px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px;
+            border-radius: 8px;
+        }
+        
+        .tile {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            transition: all 0.2s;
+        }
+        
+        .tile-2 { background-color: #3b82f6; }
+        .tile-4 { background-color: #0ea5e9; }
+        .tile-8 { background-color: #06b6d4; }
+        .tile-16 { background-color: #10b981; }
+        .tile-32 { background-color: #f59e0b; }
+        .tile-64 { background-color: #f97316; }
+        .tile-128 { background-color: #ef4444; }
+        .tile-256 { background-color: #8b5cf6; }
+        .tile-512 { background-color: #d946ef; }
+        .tile-1024 { background-color: #ec4899; }
+        .tile-2048 { background-color: #fbbf24; }
+        
+        /* Стили для арканоида */
+        #arkanoidGame {
+            position: relative;
+            width: 300px;
+            height: 250px;
+            background: #111827;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        #arkanoidCanvas {
+            background: #111827;
+        }
+        
+        .arkanoid-info {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 8px 15px;
+            border-radius: 8px;
+            color: #0ea5e9;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        
+        /* Стили для викторины */
+        #quizQuestion {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+            padding: 0 10px;
+        }
+        
+        .quiz-answers {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        .quiz-answer {
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        
+        .quiz-answer:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+        
+        .quiz-answer.correct {
+            background: rgba(16, 185, 129, 0.3);
+            border: 2px solid #10b981;
+        }
+        
+        .quiz-answer.wrong {
+            background: rgba(239, 68, 68, 0.3);
+            border: 2px solid #ef4444;
+        }
+        
+        /* Модальное окно для рекордов */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: #1e293b;
+            border-radius: 15px;
+            padding: 30px;
+            width: 90%;
+            max-width: 600px;
+            border: 2px solid #0ea5e9;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .modal-title {
+            font-size: 1.8rem;
+            color: #0ea5e9;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .close-modal:hover {
+            color: #ef4444;
+        }
+        
+        .records-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .records-table th {
+            background: rgba(14, 165, 233, 0.2);
+            padding: 15px;
+            text-align: left;
+            color: #0ea5e9;
+        }
+        
+        .records-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .records-table tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .games-container {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .stats-bar {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .cookie-counter {
+                position: static;
+                margin: 15px auto;
+                width: 90%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-gamepad"></i> Игровой портал</h1>
+            <p class="subtitle">Добро пожаловать на портал с мини-играми! Здесь вы найдете увлекательные игры, в которые можно поиграть прямо в браузере. Установите рекорды и соревнуйтесь с другими игроками!</p>
+            
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <i class="fas fa-users"></i>
+                    <div>Посетителей сегодня: <span class="stat-value" id="visitorsToday">0</span></div>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-globe"></i>
+                    <div>Всего посещений: <span class="stat-value" id="totalVisitors">0</span></div>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-cookie-bite"></i>
+                    <div>Ваши куки: <span class="stat-value" id="cookieCount">0</span></div>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-trophy"></i>
+                    <div>Ваши рекорды: <span class="stat-value" id="userRecords">0</span></div>
+                </div>
+            </div>
+        </header>
+        
+        <div class="cookie-counter">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                <i class="fas fa-cookie cookie-icon"></i>
+                <div>Куки: <strong id="cookieDisplay">0</strong></div>
+            </div>
+            <button class="btn btn-cookie" id="collectCookie">
+                <i class="fas fa-plus"></i> Собрать куки
+            </button>
+        </div>
+        
+        <div class="games-container">
+            <!-- Игра 1: Крестики-нолики -->
+            <div class="game-card">
+                <div class="game-header">
+                    <div class="game-title-wrapper">
+                        <div class="game-icon">
+                            <i class="fas fa-times"></i>
+                        </div>
+                        <div class="game-title">Крестики-нолики</div>
+                    </div>
+                    <div class="game-record">Рекорд: <span class="record-value" id="ticTacToeRecord">0</span></div>
+                </div>
+                <div class="game-description">
+                    Классическая игра для двух игроков. По очереди ставьте крестики и нолики, стараясь выстроить три в ряд по горизонтали, вертикали или диагонали. Установите рекорд по количеству побед!
+                </div>
+                <div class="game-content">
+                    <div class="game-screen">
+                        <div id="ticTacToeBoard">
+                            <!-- Игровое поле будет сгенерировано JavaScript -->
+                        </div>
+                        <div id="ticTacToeMessage" style="margin-top: 20px; font-weight: bold; text-align: center;"></div>
+                    </div>
+                    <div class="controls">
+                        <button id="resetTicTacToe" class="btn">
+                            <i class="fas fa-redo"></i> Новая игра
+                        </button>
+                        <div class="stats" id="ticTacToeStats">Ход: <span id="currentPlayer">X</span> | Побед: <span id="ticTacToeWins">0</span></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Игра 2: Змейка -->
+            <div class="game-card">
+                <div class="game-header">
+                    <div class="game-title-wrapper">
+                        <div class="game-icon">
+                            <i class="fas fa-snake"></i>
+                        </div>
+                        <div class="game-title">Змейка</div>
+                    </div>
+                    <div class="game-record">Рекорд: <span class="record-value" id="snakeRecord">0</span></div>
+                </div>
+                <div class="game-description">
+                    Классическая аркадная игра. Управляйте змейкой с помощью клавиш со стрелками, собирайте еду и старайтесь не врезаться в стены или в себя. Установите рекорд по очкам!
+                </div>
+                <div class="game-content">
+                    <div class="game-screen">
+                        <div id="snakeGame">
+                            <canvas id="snakeCanvas" width="300" height="200"></canvas>
+                        </div>
+                        <div id="snakeMessage" style="margin-top: 15px; text-align: center;"></div>
+                    </div>
+                    <div class="controls">
+                        <button id="startSnake" class="btn">
+                            <i class="fas fa-play"></i> Старт
+                        </button>
+                        <div class="stats">Очки: <span id="snakeScore">0</span> | Рекорд: <span id="snakeRecordDisplay">0</span></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Игра 3: Pac-Man -->
+            <div class="game-card">
+                <div class="game-header">
+                    <div class="game-title-wrapper">
+                        <div class="game-icon">
+                            <i class="fas fa-ghost"></i>
+                        </div>
+                        <div class="game-title">Pac-Man</div>
+                    </div>
+                    <div class="game-record">Рекорд: <span class="record-value" id="pacmanRecord">0</span></div>
+                </div>
+                <div class="game-description">
+                    Классическая аркадная игра. Управляйте Пакманом с помощью стрелок, собирайте точки и убегайте от привидений. Установите рекорд по количеству собранных точек!
+                </div>
+                <div class="game-content">
+                    <div class="game-screen">
+                        <div id="pacmanGame">
+                            <canvas id="pacmanCanvas" width="300" height="250"></canvas>
+                            <div class="pacman-info">Очки: <span id="pacmanScore">0</span></div>
+                        </div>
+                        <div id="pacmanMessage" style="margin-top: 15px; text-align: center;"></div>
+                    </div>
+                    <div class="controls">
+                        <button id="startPacman" class="btn">
+                            <i class="fas fa-play"></i> Старт
+                        </button>
+                        <div class="stats">Уровень: <span id="pacmanLevel">1</span> | Жизни: <span id="pacmanLives">3</span></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Игра 4: Математическая викторина -->
+            <div class="game-card">
+                <div class="game-header">
+                    <div class="game-title-wrapper">
+                        <div class="game-icon">
+                            <i class="fas fa-calculator"></i>
+                        </div>
+                        <div class="game-title">Математика</div>
+                    </div>
+                    <div class="game-record">Рекорд: <span class="record-value" id="mathRecord">0</span></div>
+                </div>
+                <div class="game-description">
+                    Проверьте свои математические навыки! Решайте простые арифметические примеры на скорость. У вас есть 30 секунд, чтобы набрать как можно больше очков. Установите рекорд!
+                </div>
+                <div class="game-content">
+                    <div class="game-screen">
+                        <div id="mathQuestion">5 + 3 = ?</div>
+                        <input type="number" id="mathAnswer" placeholder="Введите ответ">
+                        <div id="mathMessage" style="margin-top: 15px; text-align: center;"></div>
+                    </div>
+                    <div class="controls">
+                        <button id="nextMath" class="btn">
+                            <i class="fas fa-forward"></i> Следующий пример
+                        </button>
+                        <div class="stats">Очки: <span id="mathScore">0</span> | Время: <span id="mathTimer">30</span>с</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Игра 5: Игра на память -->
+            <div class="game-card">
+                <div class="game-header">
+                    <div class="game-title-wrapper">
+                        <div class="game-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <div class="game-title">Тренировка памяти</div>
+                    </div>
+                    <div class="game-record">Рекорд: <span class="record-value" id="memoryRecord">0</span></div>
+                </div>
+                <div class="game-description">
+                    Найди пары одинаковых карт! Переворачивайте по две карты за ход и старайтесь найти все пары за минимальное количество ходов. Установите рекорд по наименьшему количеству ходов!
+                </div>
+                <div class="game-content">
+                    <div class="game-screen">
+                        <div id="memoryBoard">
+                            <!-- Карточки будут сгенерированы JavaScript -->
+                        </div>
+                        <div id="memoryMessage" style="margin-top: 15px; text-align: center;"></div>
+                    </div>
+                    <div class="controls">
+                        <button id="resetMemory" class="btn">
+                            <i class="fas fa-redo"></i> Новая игра
+                        </button>
+                        <div class="stats">Ходы: <span id="memoryMoves">0</span> | Рекорд: <span id="memoryRecordDisplay">∞</span></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Игра 6: 2048 -->
+            <div class="game-card">
+                <div class="game-header">
+                    <div class="game-title-wrapper">
+                        <div class="game-icon">
+                            <i class="fas fa-th"></i>
+                        </div>
+                        <div class="game-title">2048</div>
+                    </div>
+                    <div class="game-record">Рекорд: <span class="record-value" id="game2048Record">0</span></div>
+                </div>
+                <div class="game-description">
+                    Соединяйте одинаковые числа, чтобы получить число 2048! Используйте стрелки для перемещения плиток. Установите рекорд по количеству очков!
+                </div>
+                <div class="game-content">
+                    <div class="game-screen">
+                        <div id="game2048Board">
+                            <!-- Поле будет сгенерировано JavaScript -->
+                        </div>
+                        <div id="game2048Message" style="margin-top: 15px; text-align: center;"></div>
+                    </div>
+                    <div class="controls">
+                        <button id="reset2048" class="btn">
+                            <i class="fas fa-redo"></i> Новая игра
+                        </button>
+                        <div class="stats">Очки: <span id="game2048Score">0</span> | Рекорд: <span id="game2048RecordDisplay">0</span></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Игра 7: Арканоид -->
+            <div class="game-card">
+                <div class="game-header">
+                    <div class="game-title-wrapper">
+                        <div class="game-icon">
+                            <i class="fas fa-square"></i>
+                        </div>
+                        <div class="game-title">Арканоид</div>
+                    </div>
+                    <div class="game-record">Рекорд: <span class="record-value" id="arkanoidRecord">0</span></div>
+                </div>
+                <div class="game-description">
+                    Классическая аркадная игра. Управляйте платформой с помощью мыши или стрелок, разбивайте блоки мячиком. Установите рекорд по количеству сбитых блоков!
+                </div>
+                <div class="game-content">
+                    <div class="game-screen">
+                        <div id="arkanoidGame">
+                            <canvas id="arkanoidCanvas" width="300" height="250"></canvas>
+                            <div class="arkanoid-info">Очки: <span id="arkanoidScore">0</span></div>
+                        </div>
+                        <div id="arkanoidMessage" style="margin-top: 15px; text-align: center;"></div>
+                    </div>
+                    <div class="controls">
+                        <button id="startArkanoid" class="btn">
+                            <i class="fas fa-play"></i> Старт
+                        </button>
+                        <div class="stats">Уровень: <span id="arkanoidLevel">1</span> | Жизни: <span id="arkanoidLives">3</span></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Игра 8: Викторина -->
+            <div class="game-card">
+                <div class="game-header">
+                    <div class="game-title-wrapper">
+                        <div class="game-icon">
+                            <i class="fas fa-question-circle"></i>
+                        </div>
+                        <div class="game-title">Викторина</div>
+                    </div>
+                    <div class="game-record">Рекорд: <span class="record-value" id="quizRecord">0</span></div>
+                </div>
+                <div class="game-description">
+                    Проверьте свои общие знания! Отвечайте на вопросы из разных категорий. Установите рекорд по количеству правильных ответов подряд!
+                </div>
+                <div class="game-content">
+                    <div class="game-screen">
+                        <div id="quizQuestion">Какой язык программирования используется для создания веб-страниц?</div>
+                        <div class="quiz-answers" id="quizAnswers">
+                            <!-- Варианты ответов будут сгенерированы JavaScript -->
+                        </div>
+                        <div id="quizMessage" style="margin-top: 15px; text-align: center;"></div>
+                    </div>
+                    <div class="controls">
+                        <button id="nextQuiz" class="btn">
+                            <i class="fas fa-forward"></i> Следующий вопрос
+                        </button>
+                        <div class="stats">Правильно: <span id="quizCorrect">0</span>/<span id="quizTotal">0</span> | Рекорд: <span id="quizRecordDisplay">0</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Кнопка для просмотра всех рекордов -->
+        <div style="text-align: center; margin-top: 40px;">
+            <button id="showRecords" class="btn" style="padding: 15px 30px; font-size: 1.2rem;">
+                <i class="fas fa-trophy"></i> Показать все рекорды
+            </button>
+        </div>
+        
+        <!-- Модальное окно с рекордами -->
+        <div id="recordsModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title"><i class="fas fa-trophy"></i> Таблица рекордов</h2>
+                    <button class="close-modal" id="closeModal">&times;</button>
+                </div>
+                <table class="records-table">
+                    <thead>
+                        <tr>
+                            <th>Игра</th>
+                            <th>Ваш рекорд</th>
+                            <th>Лучший рекорд</th>
+                            <th>Игрок</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recordsTableBody">
+                        <!-- Данные будут заполнены JavaScript -->
+                    </tbody>
+                </table>
+                <div style="margin-top: 20px; text-align: center;">
+                    <button id="resetAllRecords" class="btn" style="background: linear-gradient(to right, #ef4444, #dc2626);">
+                        <i class="fas fa-trash"></i> Сбросить все мои рекорды
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Игровой портал &copy; 2023 | Все игры работают прямо в вашем браузере</p>
+            <p style="margin-top: 5px; font-size: 0.9rem;">Для змейки и Pac-Man используйте стрелки на клавиатуре. Для 2048 используйте стрелки или WASD.</p>
+            <p style="margin-top: 5px; font-size: 0.9rem;">Посетителей сегодня: <span id="footerVisitorsToday">0</span> | Всего посещений: <span id="footerTotalVisitors">0</span></p>
+        </footer>
+    </div>
+
+    <script>
+        // Глобальные переменные для статистики
+        let totalVisits = 0;
+        let visitorsToday = 0;
+        let cookieCount = 0;
+        let userRecordsCount = 0;
+        
+        // Глобальные переменные для рекордов игр
+        let gameRecords = {
+            ticTacToe: { value: 0, player: "Вы" },
+            snake: { value: 0, player: "Вы" },
+            pacman: { value: 0, player: "Вы" },
+            math: { value: 0, player: "Вы" },
+            memory: { value: Infinity, player: "Вы" },
+            game2048: { value: 0, player: "Вы" },
+            arkanoid: { value: 0, player: "Вы" },
+            quiz: { value: 0, player: "Вы" }
+        };
+        
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            // Загрузка данных из localStorage
+            loadStats();
+            loadRecords();
+            
+            // Инициализация игр
+            initTicTacToe();
+            initSnake();
+            initPacman();
+            initMathGame();
+            initMemoryGame();
+            init2048();
+            initArkanoid();
+            initQuiz();
+            
+            // Инициализация обработчиков событий
+            initEventListeners();
+            
+            // Обновление статистики посещений (имитация API)
+            updateVisitorStats();
+            
+            // Автоматическое обновление счетчиков каждые 10 секунд
+            setInterval(updateVisitorStats, 10000);
+        });
+        
+        // ========== СИСТЕМА СТАТИСТИКИ И КУКИ ==========
+        function loadStats() {
+            // Загрузка статистики из localStorage
+            const savedTotalVisits = localStorage.getItem('totalVisits');
+            const savedVisitorsToday = localStorage.getItem('visitorsToday');
+            const savedCookieCount = localStorage.getItem('cookieCount');
+            const savedLastVisitDate = localStorage.getItem('lastVisitDate');
+            
+            // Получение текущей даты
+            const today = new Date().toDateString();
+            
+            // Инициализация счетчиков
+            totalVisits = savedTotalVisits ? parseInt(savedTotalVisits) : 0;
+            cookieCount = savedCookieCount ? parseInt(savedCookieCount) : 0;
+            
+            // Проверка, был ли сегодня уже визит
+            if (savedLastVisitDate === today) {
+                visitorsToday = savedVisitorsToday ? parseInt(savedVisitorsToday) : 1;
+            } else {
+                visitorsToday = 1;
+                localStorage.setItem('lastVisitDate', today);
+            }
+            
+            // Обновление отображения
+            updateStatsDisplay();
+        }
+        
+        function updateVisitorStats() {
+            // Имитация API: увеличиваем счетчики посещений
+            totalVisits++;
+            visitorsToday++;
+            
+            // Сохранение в localStorage
+            localStorage.setItem('totalVisits', totalVisits);
+            localStorage.setItem('visitorsToday', visitorsToday);
+            
+            // Обновление отображения
+            updateStatsDisplay();
+        }
+        
+        function updateStatsDisplay() {
+            document.getElementById('totalVisitors').textContent = totalVisits;
+            document.getElementById('visitorsToday').textContent = visitorsToday;
+            document.getElementById('footerTotalVisitors').textContent = totalVisits;
+            document.getElementById('footerVisitorsToday').textContent = visitorsToday;
+            document.getElementById('cookieCount').textContent = cookieCount;
+            document.getElementById('cookieDisplay').textContent = cookieCount;
+            document.getElementById('userRecords').textContent = userRecordsCount;
+        }
+        
+        function collectCookie() {
+            cookieCount++;
+            localStorage.setItem('cookieCount', cookieCount);
+            updateStatsDisplay();
+            
+            // Анимация сбора куки
+            const cookieBtn = document.getElementById('collectCookie');
+            cookieBtn.innerHTML = '<i class="fas fa-cookie-bite"></i> Собрано!';
+            cookieBtn.style.background = 'linear-gradient(to right, #10b981, #059669)';
+            
+            setTimeout(() => {
+                cookieBtn.innerHTML = '<i class="fas fa-plus"></i> Собрать куки';
+                cookieBtn.style.background = 'linear-gradient(to right, #f59e0b, #d97706)';
+            }, 1000);
+        }
+        
+        // ========== СИСТЕМА РЕКОРДОВ ==========
+        function loadRecords() {
+            const savedRecords = localStorage.getItem('gameRecords');
+            if (savedRecords) {
+                gameRecords = JSON.parse(savedRecords);
+                updateRecordsDisplay();
+                countUserRecords();
+            }
+        }
+        
+        function saveRecords() {
+            localStorage.setItem('gameRecords', JSON.stringify(gameRecords));
+            countUserRecords();
+        }
+        
+        function countUserRecords() {
+            userRecordsCount = 0;
+            for (const game in gameRecords) {
+                if (gameRecords[game].value > 0 || (game === 'memory' && gameRecords[game].value !== Infinity)) {
+                    userRecordsCount++;
+                }
+            }
+            updateStatsDisplay();
+        }
+        
+        function updateRecordsDisplay() {
+            // Обновление отображения рекордов на карточках игр
+            document.getElementById('ticTacToeRecord').textContent = gameRecords.ticTacToe.value;
+            document.getElementById('snakeRecord').textContent = gameRecords.snake.value;
+            document.getElementById('pacmanRecord').textContent = gameRecords.pacman.value;
+            document.getElementById('mathRecord').textContent = gameRecords.math.value;
+            document.getElementById('memoryRecord').textContent = gameRecords.memory.value === Infinity ? '∞' : gameRecords.memory.value;
+            document.getElementById('game2048Record').textContent = gameRecords.game2048.value;
+            document.getElementById('arkanoidRecord').textContent = gameRecords.arkanoid.value;
+            document.getElementById('quizRecord').textContent = gameRecords.quiz.value;
+            
+            // Обновление отображения в игровых интерфейсах
+            document.getElementById('memoryRecordDisplay').textContent = gameRecords.memory.value === Infinity ? '∞' : gameRecords.memory.value;
+            document.getElementById('snakeRecordDisplay').textContent = gameRecords.snake.value;
+            document.getElementById('game2048RecordDisplay').textContent = gameRecords.game2048.value;
+            document.getElementById('quizRecordDisplay').textContent = gameRecords.quiz.value;
+        }
+        
+        function checkAndUpdateRecord(gameName, newValue, isLowerBetter = false) {
+            const record = gameRecords[gameName];
+            let updated = false;
+            
+            if (isLowerBetter) {
+                // Для игр, где меньше значение - лучше (например, память - меньше ходов)
+                if (newValue < record.value) {
+                    record.value = newValue;
+                    record.player = "Вы";
+                    updated = true;
+                }
+            } else {
+                // Для игр, где больше значение - лучше
+                if (newValue > record.value) {
+                    record.value = newValue;
+                    record.player = "Вы";
+                    updated = true;
+                }
+            }
+            
+            if (updated) {
+                saveRecords();
+                updateRecordsDisplay();
+                
+                // Показать сообщение о новом рекорде
+                setTimeout(() => {
+                    alert(`🎉 Новый рекорд в игре ${gameName.toUpperCase()}! 🎉\nВы установили новый рекорд: ${newValue}`);
+                }, 500);
+            }
+            
+            return updated;
+        }
+        
+        function showRecordsModal() {
+            const modal = document.getElementById('recordsModal');
+            const tableBody = document.getElementById('recordsTableBody');
+            
+            // Очистка таблицы
+            tableBody.innerHTML = '';
+            
+            // Заполнение таблицы данными
+            for (const game in gameRecords) {
+                const row = document.createElement('tr');
+                
+                // Название игры
+                const gameNameCell = document.createElement('td');
+                let gameName = '';
+                switch(game) {
+                    case 'ticTacToe': gameName = 'Крестики-нолики'; break;
+                    case 'snake': gameName = 'Змейка'; break;
+                    case 'pacman': gameName = 'Pac-Man'; break;
+                    case 'math': gameName = 'Математика'; break;
+                    case 'memory': gameName = 'Память'; break;
+                    case 'game2048': gameName = '2048'; break;
+                    case 'arkanoid': gameName = 'Арканоид'; break;
+                    case 'quiz': gameName = 'Викторина'; break;
+                }
+                gameNameCell.textContent = gameName;
+                
+                // Ваш рекорд
+                const yourRecordCell = document.createElement('td');
+                yourRecordCell.textContent = gameRecords[game].value === Infinity ? '∞' : gameRecords[game].value;
+                yourRecordCell.style.color = '#0ea5e9';
+                yourRecordCell.style.fontWeight = 'bold';
+                
+                // Лучший рекорд (в данном случае всегда ваш, но можно расширить)
+                const bestRecordCell = document.createElement('td');
+                bestRecordCell.textContent = gameRecords[game].value === Infinity ? '∞' : gameRecords[game].value;
+                bestRecordCell.style.color = '#10b981';
+                bestRecordCell.style.fontWeight = 'bold';
+                
+                // Игрок
+                const playerCell = document.createElement('td');
+                playerCell.textContent = gameRecords[game].player;
+                
+                row.appendChild(gameNameCell);
+                row.appendChild(yourRecordCell);
+                row.appendChild(bestRecordCell);
+                row.appendChild(playerCell);
+                tableBody.appendChild(row);
+            }
+            
+            // Показ модального окна
+            modal.style.display = 'flex';
+        }
+        
+        function resetAllRecords() {
+            if (confirm('Вы уверены, что хотите сбросить все ваши рекорды?')) {
+                gameRecords = {
+                    ticTacToe: { value: 0, player: "Вы" },
+                    snake: { value: 0, player: "Вы" },
+                    pacman: { value: 0, player: "Вы" },
+                    math: { value: 0, player: "Вы" },
+                    memory: { value: Infinity, player: "Вы" },
+                    game2048: { value: 0, player: "Вы" },
+                    arkanoid: { value: 0, player: "Вы" },
+                    quiz: { value: 0, player: "Вы" }
+                };
+                
+                saveRecords();
+                updateRecordsDisplay();
+                alert('Все ваши рекорды были сброшены!');
+            }
+        }
+        
+        // ========== ИНИЦИАЛИЗАЦИЯ ОБРАБОТЧИКОВ СОБЫТИЙ ==========
+        function initEventListeners() {
+            // Сбор куки
+            document.getElementById('collectCookie').addEventListener('click', collectCookie);
+            
+            // Модальное окно рекордов
+            document.getElementById('showRecords').addEventListener('click', showRecordsModal);
+            document.getElementById('closeModal').addEventListener('click', function() {
+                document.getElementById('recordsModal').style.display = 'none';
+            });
+            document.getElementById('resetAllRecords').addEventListener('click', resetAllRecords);
+            
+            // Закрытие модального окна при клике вне его
+            window.addEventListener('click', function(event) {
+                const modal = document.getElementById('recordsModal');
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        }
+        
+        // ========== КРЕСТИКИ-НОЛИКИ ==========
+        function initTicTacToe() {
+            const board = document.getElementById('ticTacToeBoard');
+            const message = document.getElementById('ticTacToeMessage');
+            const currentPlayerSpan = document.getElementById('currentPlayer');
+            const winsSpan = document.getElementById('ticTacToeWins');
+            const resetButton = document.getElementById('resetTicTacToe');
+            
+            let currentPlayer = 'X';
+            let gameBoard = ['', '', '', '', '', '', '', '', ''];
+            let gameActive = true;
+            let wins = 0;
+            
+            // Создание игрового поля
+            for (let i = 0; i < 9; i++) {
+                const cell = document.createElement('div');
+                cell.classList.add('cell');
+                cell.setAttribute('data-index', i);
+                cell.addEventListener('click', () => handleCellClick(i));
+                board.appendChild(cell);
+            }
+            
+            function handleCellClick(index) {
+                if (!gameActive || gameBoard[index] !== '') return;
+                
+                gameBoard[index] = currentPlayer;
+                updateBoard();
+                
+                if (checkWin()) {
+                    message.textContent = `Игрок ${currentPlayer} победил!`;
+                    message.style.color = '#10b981';
+                    gameActive = false;
+                    
+                    // Обновление счетчика побед
+                    wins++;
+                    winsSpan.textContent = wins;
+                    
+                    // Проверка рекорда
+                    checkAndUpdateRecord('ticTacToe', wins);
+                    
+                    // Награда куками
+                    cookieCount += 5;
+                    localStorage.setItem('cookieCount', cookieCount);
+                    updateStatsDisplay();
+                    return;
+                }
+                
+                if (checkDraw()) {
+                    message.textContent = 'Ничья!';
+                    message.style.color = '#f59e0b';
+                    gameActive = false;
+                    return;
+                }
+                
+                // Смена игрока
+                currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+                currentPlayerSpan.textContent = currentPlayer;
+            }
+            
+            function updateBoard() {
+                const cells = document.querySelectorAll('#ticTacToeBoard .cell');
+                cells.forEach((cell, index) => {
+                    cell.textContent = gameBoard[index];
+                    if (gameBoard[index] === 'X') {
+                        cell.classList.add('x');
+                        cell.classList.remove('o');
+                    } else if (gameBoard[index] === 'O') {
+                        cell.classList.add('o');
+                        cell.classList.remove('x');
+                    } else {
+                        cell.classList.remove('x', 'o');
+                    }
+                });
+            }
+            
+            function checkWin() {
+                const winPatterns = [
+                    [0, 1, 2], [3, 4, 5], [6, 7, 8], // Горизонтали
+                    [0, 3, 6], [1, 4, 7], [2, 5, 8], // Вертикали
+                    [0, 4, 8], [2, 4, 6] // Диагонали
+                ];
+                
+                return winPatterns.some(pattern => {
+                    const [a, b, c] = pattern;
+                    return gameBoard[a] && gameBoard[a] === gameBoard[b] && gameBoard[a] === gameBoard[c];
+                });
+            }
+            
+            function checkDraw() {
+                return gameBoard.every(cell => cell !== '');
+            }
+            
+            resetButton.addEventListener('click', () => {
+                gameBoard = ['', '', '', '', '', '', '', '', ''];
+                currentPlayer = 'X';
+                gameActive = true;
+                message.textContent = '';
+                currentPlayerSpan.textContent = currentPlayer;
+                updateBoard();
+            });
+            
+            // Инициализация доски
+            updateBoard();
+            winsSpan.textContent = wins;
+        }
+
+        // ========== ЗМЕЙКА ==========
+        function initSnake() {
+            const canvas = document.getElementById('snakeCanvas');
+            const ctx = canvas.getContext('2d');
+            const scoreSpan = document.getElementById('snakeScore');
+            const message = document.getElementById('snakeMessage');
+            const startButton = document.getElementById('startSnake');
+            
+            const gridSize = 20;
+            const tileCount = canvas.width / gridSize;
+            
+            let snake = [{x: 10, y: 10}];
+            let food = {};
+            let dx = 0;
+            let dy = 0;
+            let score = 0;
+            let gameRunning = false;
+            let gameLoop;
+            
+            function randomTile() {
+                return Math.floor(Math.random() * tileCount);
+            }
+            
+            function generateFood() {
+                food = {
+                    x: randomTile(),
+                    y: randomTile()
+                };
+                
+                // Проверка, что еда не появилась на змейке
+                for (let segment of snake) {
+                    if (segment.x === food.x && segment.y === food.y) {
+                        return generateFood();
+                    }
+                }
+            }
+            
+            function drawGame() {
+                // Очистка холста
+                ctx.fillStyle = '#0f172a';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Рисование змейки
+                ctx.fillStyle = '#10b981';
+                for (let segment of snake) {
+                    ctx.fillRect(segment.x * gridSize, segment.y * gridSize, gridSize - 2, gridSize - 2);
+                }
+                
+                // Рисование еды
+                ctx.fillStyle = '#ef4444';
+                ctx.fillRect(food.x * gridSize, food.y * gridSize, gridSize - 2, gridSize - 2);
+            }
+            
+            function moveSnake() {
+                if (!gameRunning) return;
+                
+                const head = {x: snake[0].x + dx, y: snake[0].y + dy};
+                
+                // Проверка столкновения со стенами
+                if (head.x < 0 || head.x >= tileCount || head.y < 0 || head.y >= tileCount) {
+                    gameOver();
+                    return;
+                }
+                
+                // Проверка столкновения с собой
+                for (let segment of snake) {
+                    if (head.x === segment.x && head.y === segment.y) {
+                        gameOver();
+                        return;
+                    }
+                }
+                
+                snake.unshift(head);
+                
+                // Проверка съедания еды
+                if (head.x === food.x && head.y === food.y) {
+                    score += 10;
+                    scoreSpan.textContent = score;
+                    generateFood();
+                    
+                    // Награда куками
+                    cookieCount += 2;
+                    localStorage.setItem('cookieCount', cookieCount);
+                    updateStatsDisplay();
+                } else {
+                    snake.pop();
+                }
+                
+                drawGame();
+            }
+            
+            function gameOver() {
+                gameRunning = false;
+                clearInterval(gameLoop);
+                message.textContent = `Игра окончена! Ваш счет: ${score}`;
+                message.style.color = '#ef4444';
+                startButton.innerHTML = '<i class="fas fa-redo"></i> Заново';
+                
+                // Проверка рекорда
+                checkAndUpdateRecord('snake', score);
+            }
+            
+            function startGame() {
+                if (gameRunning) return;
+                
+                snake = [{x: 10, y: 10}];
+                dx = 0;
+                dy = 0;
+                score = 0;
+                scoreSpan.textContent = score;
+                message.textContent = 'Используйте стрелки для управления';
+                message.style.color = '#0ea5e9';
+                gameRunning = true;
+                startButton.innerHTML = '<i class="fas fa-pause"></i> Пауза';
+                
+                generateFood();
+                drawGame();
+                
+                // Установка начального направления
+                dx = 1;
+                dy = 0;
+                
+                // Запуск игрового цикла
+                gameLoop = setInterval(moveSnake, 150);
+            }
+            
+            function togglePause() {
+                if (!gameRunning) return;
+                
+                gameRunning = !gameRunning;
+                if (gameRunning) {
+                    startButton.innerHTML = '<i class="fas fa-pause"></i> Пауза';
+                    message.textContent = 'Используйте стрелки для управления';
+                    gameLoop = setInterval(moveSnake, 150);
+                } else {
+                    startButton.innerHTML = '<i class="fas fa-play"></i> Продолжить';
+                    message.textContent = 'Игра на паузе';
+                    clearInterval(gameLoop);
+                }
+            }
+            
+            startButton.addEventListener('click', () => {
+                if (!gameRunning || startButton.innerHTML.includes('Пауза')) {
+                    if (startButton.innerHTML.includes('Старт') || startButton.innerHTML.includes('Заново')) {
+                        startGame();
+                    } else {
+                        togglePause();
+                    }
+                }
+            });
+            
+            // Управление с клавиатуры
+            document.addEventListener('keydown', (e) => {
+                if (!gameRunning) return;
+                
+                const key = e.key;
+                const goingUp = dy === -1;
+                const goingDown = dy === 1;
+                const goingRight = dx === 1;
+                const goingLeft = dx === -1;
+                
+                // Стрелка вверх
+                if (key === 'ArrowUp' && !goingDown) {
+                    dx = 0;
+                    dy = -1;
+                }
+                // Стрелка вниз
+                if (key === 'ArrowDown' && !goingUp) {
+                    dx = 0;
+                    dy = 1;
+                }
+                // Стрелка влево
+                if (key === 'ArrowLeft' && !goingRight) {
+                    dx = -1;
+                    dy = 0;
+                }
+                // Стрелка вправо
+                if (key === 'ArrowRight' && !goingLeft) {
+                    dx = 1;
+                    dy = 0;
+                }
+            });
+            
+            // Начальная отрисовка
+            generateFood();
+            drawGame();
+        }
+
+        // ========== PAC-MAN ==========
+        function initPacman() {
+            const canvas = document.getElementById('pacmanCanvas');
+            const ctx = canvas.getContext('2d');
+            const scoreSpan = document.getElementById('pacmanScore');
+            const levelSpan = document.getElementById('pacmanLevel');
+            const livesSpan = document.getElementById('pacmanLives');
+            const message = document.getElementById('pacmanMessage');
+            const startButton = document.getElementById('startPacman');
+            
+            const gridSize = 20;
+            const tileCountX = canvas.width / gridSize;
+            const tileCountY = canvas.height / gridSize;
+            
+            let pacman = { x: 1, y: 1, direction: 'right' };
+            let dots = [];
+            let ghosts = [];
+            let score = 0;
+            let level = 1;
+            let lives = 3;
+            let gameRunning = false;
+            let gameLoop;
+            
+            // Создание точек
+            function createDots() {
+                dots = [];
+                for (let x = 0; x < tileCountX; x++) {
+                    for (let y = 0; y < tileCountY; y++) {
+                        // Не создаем точки в начале и в стенах
+                        if (x > 0 && x < tileCountX - 1 && y > 0 && y < tileCountY - 1) {
+                            dots.push({ x, y });
+                        }
+                    }
+                }
+                // Ограничим количество точек для производительности
+                dots = dots.filter((dot, index) => index % 2 === 0);
+            }
+            
+            // Создание привидений
+            function createGhosts() {
+                ghosts = [];
+                for (let i = 0; i < level; i++) {
+                    ghosts.push({
+                        x: Math.floor(tileCountX / 2) + i,
+                        y: Math.floor(tileCountY / 2),
+                        color: i % 3 === 0 ? '#ef4444' : i % 3 === 1 ? '#8b5cf6' : '#0ea5e9'
+                    });
+                }
+            }
+            
+            function drawGame() {
+                // Очистка холста
+                ctx.fillStyle = '#111827';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Рисование точек
+                ctx.fillStyle = '#fbbf24';
+                dots.forEach(dot => {
+                    ctx.beginPath();
+                    ctx.arc(dot.x * gridSize + gridSize/2, dot.y * gridSize + gridSize/2, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+                
+                // Рисование привидений
+                ghosts.forEach(ghost => {
+                    ctx.fillStyle = ghost.color;
+                    ctx.beginPath();
+                    ctx.arc(ghost.x * gridSize + gridSize/2, ghost.y * gridSize + gridSize/2, gridSize/2 - 2, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // Глаза
+                    ctx.fillStyle = 'white';
+                    ctx.beginPath();
+                    ctx.arc(ghost.x * gridSize + gridSize/2 - 4, ghost.y * gridSize + gridSize/2 - 4, 3, 0, Math.PI * 2);
+                    ctx.arc(ghost.x * gridSize + gridSize/2 + 4, ghost.y * gridSize + gridSize/2 - 4, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    ctx.fillStyle = 'black';
+                    ctx.beginPath();
+                    ctx.arc(ghost.x * gridSize + gridSize/2 - 4, ghost.y * gridSize + gridSize/2 - 4, 1, 0, Math.PI * 2);
+                    ctx.arc(ghost.x * gridSize + gridSize/2 + 4, ghost.y * gridSize + gridSize/2 - 4, 1, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+                
+                // Рисование Пакмана
+                ctx.fillStyle = '#fbbf24';
+                let startAngle, endAngle;
+                
+                switch(pacman.direction) {
+                    case 'right':
+                        startAngle = 0.2;
+                        endAngle = 1.8;
+                        break;
+                    case 'left':
+                        startAngle = 1.2;
+                        endAngle = 2.8;
+                        break;
+                    case 'up':
+                        startAngle = 0.7;
+                        endAngle = 2.3;
+                        break;
+                    case 'down':
+                        startAngle = -0.3;
+                        endAngle = 1.3;
+                        break;
+                }
+                
+                ctx.beginPath();
+                ctx.arc(pacman.x * gridSize + gridSize/2, pacman.y * gridSize + gridSize/2, gridSize/2 - 2, startAngle * Math.PI, endAngle * Math.PI);
+                ctx.lineTo(pacman.x * gridSize + gridSize/2, pacman.y * gridSize + gridSize/2);
+                ctx.fill();
+            }
+            
+            function movePacman() {
+                if (!gameRunning) return;
+                
+                // Движение Пакмана
+                switch(pacman.direction) {
+                    case 'right': pacman.x++; break;
+                    case 'left': pacman.x--; break;
+                    case 'up': pacman.y--; break;
+                    case 'down': pacman.y++; break;
+                }
+                
+                // Проверка границ
+                if (pacman.x < 0) pacman.x = tileCountX - 1;
+                if (pacman.x >= tileCountX) pacman.x = 0;
+                if (pacman.y < 0) pacman.y = tileCountY - 1;
+                if (pacman.y >= tileCountY) pacman.y = 0;
+                
+                // Сбор точек
+                const dotIndex = dots.findIndex(dot => dot.x === pacman.x && dot.y === pacman.y);
+                if (dotIndex !== -1) {
+                    dots.splice(dotIndex, 1);
+                    score += 10;
+                    scoreSpan.textContent = score;
+                    
+                    // Награда куками
+                    cookieCount++;
+                    localStorage.setItem('cookieCount', cookieCount);
+                    updateStatsDisplay();
+                }
+                
+                // Движение привидений
+                ghosts.forEach(ghost => {
+                    // Простое движение привидений
+                    const directions = ['left', 'right', 'up', 'down'];
+                    const randomDir = directions[Math.floor(Math.random() * directions.length)];
+                    
+                    switch(randomDir) {
+                        case 'right': ghost.x++; break;
+                        case 'left': ghost.x--; break;
+                        case 'up': ghost.y--; break;
+                        case 'down': ghost.y++; break;
+                    }
+                    
+                    // Проверка границ для привидений
+                    if (ghost.x < 0) ghost.x = tileCountX - 1;
+                    if (ghost.x >= tileCountX) ghost.x = 0;
+                    if (ghost.y < 0) ghost.y = tileCountY - 1;
+                    if (ghost.y >= tileCountY) ghost.y = 0;
+                    
+                    // Проверка столкновения с привидением
+                    if (ghost.x === pacman.x && ghost.y === pacman.y) {
+                        lives--;
+                        livesSpan.textContent = lives;
+                        
+                        if (lives <= 0) {
+                            gameOver();
+                        } else {
+                            // Возвращаем Пакмана в начальную позицию
+                            pacman.x = 1;
+                            pacman.y = 1;
+                        }
+                    }
+                });
+                
+                // Проверка завершения уровня
+                if (dots.length === 0) {
+                    level++;
+                    levelSpan.textContent = level;
+                    createDots();
+                    createGhosts();
+                    
+                    // Награда за уровень
+                    score += 100;
+                    scoreSpan.textContent = score;
+                    
+                    cookieCount += 10;
+                    localStorage.setItem('cookieCount', cookieCount);
+                    updateStatsDisplay();
+                }
+                
+                drawGame();
+            }
+            
+            function gameOver() {
+                gameRunning = false;
+                clearInterval(gameLoop);
+                message.textContent = `Игра окончена! Ваш счет: ${score}`;
+                message.style.color = '#ef4444';
+                startButton.innerHTML = '<i class="fas fa-redo"></i> Заново';
+                
+                // Проверка рекорда
+                checkAndUpdateRecord('pacman', score);
+            }
+            
+            function startGame() {
+                if (gameRunning) return;
+                
+                pacman = { x: 1, y: 1, direction: 'right' };
+                score = 0;
+                level = 1;
+                lives = 3;
+                scoreSpan.textContent = score;
+                levelSpan.textContent = level;
+                livesSpan.textContent = lives;
+                message.textContent = 'Используйте стрелки для управления';
+                message.style.color = '#0ea5e9';
+                gameRunning = true;
+                startButton.innerHTML = '<i class="fas fa-pause"></i> Пауза';
+                
+                createDots();
+                createGhosts();
+                drawGame();
+                
+                // Запуск игрового цикла
+                gameLoop = setInterval(movePacman, 200);
+            }
+            
+            function togglePause() {
+                if (!gameRunning) return;
+                
+                gameRunning = !gameRunning;
+                if (gameRunning) {
+                    startButton.innerHTML = '<i class="fas fa-pause"></i> Пауза';
+                    message.textContent = 'Используйте стрелки для управления';
+                    gameLoop = setInterval(movePacman, 200);
+                } else {
+                    startButton.innerHTML = '<i class="fas fa-play"></i> Продолжить';
+                    message.textContent = 'Игра на паузе';
+                    clearInterval(gameLoop);
+                }
+            }
+            
+            startButton.addEventListener('click', () => {
+                if (!gameRunning || startButton.innerHTML.includes('Пауза')) {
+                    if (startButton.innerHTML.includes('Старт') || startButton.innerHTML.includes('Заново')) {
+                        startGame();
+                    } else {
+                        togglePause();
+                    }
+                }
+            });
+            
+            // Управление с клавиатуры
+            document.addEventListener('keydown', (e) => {
+                if (!gameRunning) return;
+                
+                const key = e.key;
+                
+                if (key === 'ArrowUp') pacman.direction = 'up';
+                if (key === 'ArrowDown') pacman.direction = 'down';
+                if (key === 'ArrowLeft') pacman.direction = 'left';
+                if (key === 'ArrowRight') pacman.direction = 'right';
+            });
+            
+            // Начальная отрисовка
+            createDots();
+            createGhosts();
+            drawGame();
+        }
+
+        // ========== МАТЕМАТИЧЕСКАЯ ВИКТОРИНА ==========
+        function initMathGame() {
+            const questionElement = document.getElementById('mathQuestion');
+            const answerInput = document.getElementById('mathAnswer');
+            const message = document.getElementById('mathMessage');
+            const scoreSpan = document.getElementById('mathScore');
+            const timerSpan = document.getElementById('mathTimer');
+            const nextButton = document.getElementById('nextMath');
+            
+            let score = 0;
+            let timeLeft = 30;
+            let timer;
+            let correctAnswer;
+            
+            function generateQuestion() {
+                const operations = ['+', '-', '*'];
+                const operation = operations[Math.floor(Math.random() * operations.length)];
+                let num1, num2;
+                
+                if (operation === '+') {
+                    num1 = Math.floor(Math.random() * 50) + 1;
+                    num2 = Math.floor(Math.random() * 50) + 1;
+                    correctAnswer = num1 + num2;
+                } else if (operation === '-') {
+                    num1 = Math.floor(Math.random() * 50) + 1;
+                    num2 = Math.floor(Math.random() * num1) + 1;
+                    correctAnswer = num1 - num2;
+                } else {
+                    num1 = Math.floor(Math.random() * 10) + 1;
+                    num2 = Math.floor(Math.random() * 10) + 1;
+                    correctAnswer = num1 * num2;
+                }
+                
+                questionElement.textContent = `${num1} ${operation} ${num2} = ?`;
+                answerInput.value = '';
+                message.textContent = '';
+                answerInput.focus();
+            }
+            
+            function checkAnswer() {
+                const userAnswer = parseInt(answerInput.value);
+                
+                if (isNaN(userAnswer)) {
+                    message.textContent = 'Пожалуйста, введите число!';
+                    message.style.color = '#f59e0b';
+                    return;
+                }
+                
+                if (userAnswer === correctAnswer) {
+                    score += 10;
+                    scoreSpan.textContent = score;
+                    message.textContent = 'Правильно! +10 очков';
+                    message.style.color = '#10b981';
+                    
+                    // Награда куками
+                    cookieCount += 2;
+                    localStorage.setItem('cookieCount', cookieCount);
+                    updateStatsDisplay();
+                } else {
+                    message.textContent = `Неправильно! Правильный ответ: ${correctAnswer}`;
+                    message.style.color = '#ef4444';
+                }
+                
+                // Автогенерация следующего вопроса через 1.5 секунды
+                setTimeout(generateQuestion, 1500);
+            }
+            
+            function startTimer() {
+                clearInterval(timer);
+                timeLeft = 30;
+                timerSpan.textContent = timeLeft;
+                
+                timer = setInterval(() => {
+                    timeLeft--;
+                    timerSpan.textContent = timeLeft;
+                    
+                    if (timeLeft <= 0) {
+                        clearInterval(timer);
+                        message.textContent = `Время вышло! Ваш счет: ${score}`;
+                        message.style.color = '#ef4444';
+                        answerInput.disabled = true;
+                        nextButton.disabled = true;
+                        
+                        // Проверка рекорда
+                        checkAndUpdateRecord('math', score);
+                    }
+                }, 1000);
+            }
+            
+            answerInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    checkAnswer();
+                }
+            });
+            
+            nextButton.addEventListener('click', () => {
+                checkAnswer();
+            });
+            
+            // Запуск игры
+            generateQuestion();
+            startTimer();
+        }
+
+        // ========== ИГРА НА ПАМЯТЬ ==========
+        function initMemoryGame() {
+            const board = document.getElementById('memoryBoard');
+            const message = document.getElementById('memoryMessage');
+            const movesSpan = document.getElementById('memoryMoves');
+            const resetButton = document.getElementById('resetMemory');
+            
+            const symbols = ['🍎', '🍌', '🍒', '🍇', '🍉', '🍊', '🍓', '🥭'];
+            let cards = [...symbols, ...symbols]; // Дублируем символы для пар
+            let flippedCards = [];
+            let matchedCards = [];
+            let moves = 0;
+            let canFlip = true;
+            
+            // Перемешивание карт
+            function shuffleCards() {
+                for (let i = cards.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [cards[i], cards[j]] = [cards[j], cards[i]];
+                }
+            }
+            
+            function createBoard() {
+                board.innerHTML = '';
+                flippedCards = [];
+                matchedCards = [];
+                moves = 0;
+                movesSpan.textContent = moves;
+                message.textContent = 'Найдите все пары!';
+                message.style.color = '#0ea5e9';
+                canFlip = true;
+                
+                shuffleCards();
+                
+                cards.forEach((symbol, index) => {
+                    const card = document.createElement('div');
+                    card.classList.add('memoryCard');
+                    card.dataset.symbol = symbol;
+                    card.dataset.index = index;
+                    card.textContent = '?';
+                    
+                    card.addEventListener('click', () => flipCard(card));
+                    board.appendChild(card);
+                });
+            }
+            
+            function flipCard(card) {
+                if (!canFlip || card.classList.contains('flipped') || card.classList.contains('matched')) {
+                    return;
+                }
+                
+                card.textContent = card.dataset.symbol;
+                card.classList.add('flipped');
+                flippedCards.push(card);
+                
+                if (flippedCards.length === 2) {
+                    canFlip = false;
+                    moves++;
+                    movesSpan.textContent = moves;
+                    
+                    checkForMatch();
+                }
+            }
+            
+            function checkForMatch() {
+                const [card1, card2] = flippedCards;
+                
+                if (card1.dataset.symbol === card2.dataset.symbol) {
+                    // Найдена пара
+                    card1.classList.add('matched');
+                    card2.classList.add('matched');
+                    matchedCards.push(card1, card2);
+                    
+                    message.textContent = 'Отлично! Найдена пара!';
+                    message.style.color = '#10b981';
+                    
+                    // Награда куками
+                    cookieCount += 3;
+                    localStorage.setItem('cookieCount', cookieCount);
+                    updateStatsDisplay();
+                    
+                    if (matchedCards.length === cards.length) {
+                        message.textContent = `Поздравляем! Вы нашли все пары за ${moves} ходов!`;
+                        message.style.color = '#f59e0b';
+                        
+                        // Проверка рекорда (чем меньше ходов, тем лучше)
+                        checkAndUpdateRecord('memory', moves, true);
+                        
+                        // Дополнительная награда
+                        cookieCount += 10;
+                        localStorage.setItem('cookieCount', cookieCount);
+                        updateStatsDisplay();
+                    }
+                    
+                    flippedCards = [];
+                    canFlip = true;
+                } else {
+                    // Не совпали
+                    message.textContent = 'Не совпало, попробуйте еще!';
+                    message.style.color = '#ef4444';
+                    
+                    setTimeout(() => {
+                        card1.textContent = '?';
+                        card2.textContent = '?';
+                        card1.classList.remove('flipped');
+                        card2.classList.remove('flipped');
+                        flippedCards = [];
+                        canFlip = true;
+                    }, 1000);
+                }
+            }
+            
+            resetButton.addEventListener('click', createBoard);
+            
+            // Инициализация игры
+            createBoard();
+        }
+
+        // ========== ИГРА 2048 ==========
+        function init2048() {
+            const board = document.getElementById('game2048Board');
+            const scoreSpan = document.getElementById('game2048Score');
+            const message = document.getElementById('game2048Message');
+            const resetButton = document.getElementById('reset2048');
+            
+            let grid = [];
+            let score = 0;
+            let gameOver = false;
+            
+            // Инициализация игрового поля
+            function initGrid() {
+                grid = [
+                    [0, 0, 0, 0],
+                    [0, 0, 0, 0],
+                    [0, 0, 0, 0],
+                    [0, 0, 0, 0]
+                ];
+                
+                // Добавляем два начальных числа
+                addRandomTile();
+                addRandomTile();
+                
+                updateBoard();
+            }
+            
+            // Добавление случайной плитки (2 или 4)
+            function addRandomTile() {
+                const emptyCells = [];
+                
+                // Находим все пустые клетки
+                for (let row = 0; row < 4; row++) {
+                    for (let col = 0; col < 4; col++) {
+                        if (grid[row][col] === 0) {
+                            emptyCells.push({row, col});
+                        }
+                    }
+                }
+                
+                // Если есть пустые клетки, добавляем новую плитку
+                if (emptyCells.length > 0) {
+                    const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+                    grid[randomCell.row][randomCell.col] = Math.random() < 0.9 ? 2 : 4;
+                }
+            }
+            
+            // Обновление отображения игрового поля
+            function updateBoard() {
+                board.innerHTML = '';
+                
+                for (let row = 0; row < 4; row++) {
+                    for (let col = 0; col < 4; col++) {
+                        const tile = document.createElement('div');
+                        tile.classList.add('tile');
+                        
+                        const value = grid[row][col];
+                        if (value !== 0) {
+                            tile.textContent = value;
+                            tile.classList.add(`tile-${value}`);
+                        }
+                        
+                        board.appendChild(tile);
+                    }
+                }
+                
+                scoreSpan.textContent = score;
+                
+                // Проверка завершения игры
+                if (isGameOver()) {
+                    message.textContent = `Игра окончена! Ваш счет: ${score}`;
+                    message.style.color = '#ef4444';
+                    gameOver = true;
+                    
+                    // Проверка рекорда
+                    checkAndUpdateRecord('game2048', score);
+                }
+            }
+            
+            // Движение плиток
+            function move(direction) {
+                if (gameOver) return false;
+                
+                let moved = false;
+                const oldGrid = JSON.parse(JSON.stringify(grid));
+                
+                if (direction === 'left') {
+                    for (let row = 0; row < 4; row++) {
+                        // Удаляем нули и объединяем одинаковые числа
+                        const newRow = [];
+                        let previous = null;
+                        
+                        for (let col = 0; col < 4; col++) {
+                            if (grid[row][col] !== 0) {
+                                if (previous === null) {
+                                    previous = grid[row][col];
+                                } else if (previous === grid[row][col]) {
+                                    newRow.push(previous * 2);
+                                    score += previous * 2;
+                                    previous = null;
+                                } else {
+                                    newRow.push(previous);
+                                    previous = grid[row][col];
+                                }
+                            }
+                        }
+                        
+                        if (previous !== null) {
+                            newRow.push(previous);
+                        }
+                        
+                        // Заполняем оставшиеся места нулями
+                        while (newRow.length < 4) {
+                            newRow.push(0);
+                        }
+                        
+                        grid[row] = newRow;
+                    }
+                } else if (direction === 'right') {
+                    for (let row = 0; row < 4; row++) {
+                        const newRow = [];
+                        let previous = null;
+                        
+                        for (let col = 3; col >= 0; col--) {
+                            if (grid[row][col] !== 0) {
+                                if (previous === null) {
+                                    previous = grid[row][col];
+                                } else if (previous === grid[row][col]) {
+                                    newRow.unshift(previous * 2);
+                                    score += previous * 2;
+                                    previous = null;
+                                } else {
+                                    newRow.unshift(previous);
+                                    previous = grid[row][col];
+                                }
+                            }
+                        }
+                        
+                        if (previous !== null) {
+                            newRow.unshift(previous);
+                        }
+                        
+                        while (newRow.length < 4) {
+                            newRow.unshift(0);
+                        }
+                        
+                        grid[row] = newRow;
+                    }
+                } else if (direction === 'up') {
+                    for (let col = 0; col < 4; col++) {
+                        const newCol = [];
+                        let previous = null;
+                        
+                        for (let row = 0; row < 4; row++) {
+                            if (grid[row][col] !== 0) {
+                                if (previous === null) {
+                                    previous = grid[row][col];
+                                } else if (previous === grid[row][col]) {
+                                    newCol.push(previous * 2);
+                                    score += previous * 2;
+                                    previous = null;
+                                } else {
+                                    newCol.push(previous);
+                                    previous = grid[row][col];
+                                }
+                            }
+                        }
+                        
+                        if (previous !== null) {
+                            newCol.push(previous);
+                        }
+                        
+                        while (newCol.length < 4) {
+                            newCol.push(0);
+                        }
+                        
+                        // Записываем обратно в столбец
+                        for (let row = 0; row < 4; row++) {
+                            grid[row][col] = newCol[row];
+                        }
+                    }
+                } else if (direction === 'down') {
+                    for (let col = 0; col < 4; col++) {
+                        const newCol = [];
+                        let previous = null;
+                        
+                        for (let row = 3; row >= 0; row--) {
+                            if (grid[row][col] !== 0) {
+                                if (previous === null) {
+                                    previous = grid[row][col];
+                                } else if (previous === grid[row][col]) {
+                                    newCol.unshift(previous * 2);
+                                    score += previous * 2;
+                                    previous = null;
+                                } else {
+                                    newCol.unshift(previous);
+                                    previous = grid[row][col];
+                                }
+                            }
+                        }
+                        
+                        if (previous !== null) {
+                            newCol.unshift(previous);
+                        }
+                        
+                        while (newCol.length < 4) {
+                            newCol.unshift(0);
+                        }
+                        
+                        // Записываем обратно в столбец (в обратном порядке)
+                        for (let row = 0; row < 4; row++) {
+                            grid[row][col] = newCol[3 - row];
+                        }
+                    }
+                }
+                
+                // Проверяем, было ли движение
+                moved = JSON.stringify(oldGrid) !== JSON.stringify(grid);
+                
+                if (moved) {
+                    addRandomTile();
+                    updateBoard();
+                    
+                    // Награда куками
+                    cookieCount++;
+                    localStorage.setItem('cookieCount', cookieCount);
+                    updateStatsDisplay();
+                }
+                
+                return moved;
+            }
+            
+            // Проверка завершения игры
+            function isGameOver() {
+                // Проверяем, есть ли пустые клетки
+                for (let row = 0; row < 4; row++) {
+                    for (let col = 0; col < 4; col++) {
+                        if (grid[row][col] === 0) {
+                            return false;
+                        }
+                    }
+                }
+                
+                // Проверяем, есть ли возможные ходы
+                for (let row = 0; row < 4; row++) {
+                    for (let col = 0; col < 4; col++) {
+                        const current = grid[row][col];
+                        
+                        // Проверка соседей
+                        if (row < 3 && grid[row + 1][col] === current) return false;
+                        if (col < 3 && grid[row][col + 1] === current) return false;
+                    }
+                }
+                
+                return true;
+            }
+            
+            // Обработка нажатий клавиш
+            document.addEventListener('keydown', (e) => {
+                if (gameOver) return;
+                
+                const key = e.key;
+                
+                if (key === 'ArrowLeft' || key === 'a') move('left');
+                if (key === 'ArrowRight' || key === 'd') move('right');
+                if (key === 'ArrowUp' || key === 'w') move('up');
+                if (key === 'ArrowDown' || key === 's') move('down');
+            });
+            
+            resetButton.addEventListener('click', () => {
+                score = 0;
+                gameOver = false;
+                message.textContent = '';
+                initGrid();
+            });
+            
+            // Инициализация игры
+            initGrid();
+        }
+
+        // ========== АРКАНОИД ==========
+        function initArkanoid() {
+            const canvas = document.getElementById('arkanoidCanvas');
+            const ctx = canvas.getContext('2d');
+            const scoreSpan = document.getElementById('arkanoidScore');
+            const levelSpan = document.getElementById('arkanoidLevel');
+            const livesSpan = document.getElementById('arkanoidLives');
+            const message = document.getElementById('arkanoidMessage');
+            const startButton = document.getElementById('startArkanoid');
+            
+            let paddle = { x: canvas.width / 2 - 50, width: 100, height: 10 };
+            let ball = { x: canvas.width / 2, y: canvas.height - 30, dx: 4, dy: -4, radius: 8 };
+            let bricks = [];
+            let score = 0;
+            let level = 1;
+            let lives = 3;
+            let gameRunning = false;
+            let gameLoop;
+            
+            // Создание кирпичей
+            function createBricks() {
+                bricks = [];
+                const brickRows = 3 + level;
+                const brickCols = 8;
+                const brickWidth = canvas.width / brickCols - 10;
+                const brickHeight = 20;
+                const brickPadding = 5;
+                
+                for (let row = 0; row < brickRows; row++) {
+                    for (let col = 0; col < brickCols; col++) {
+                        bricks.push({
+                            x: col * (brickWidth + brickPadding) + brickPadding,
+                            y: row * (brickHeight + brickPadding) + brickPadding + 30,
+                            width: brickWidth,
+                            height: brickHeight,
+                            color: row % 3 === 0 ? '#ef4444' : row % 3 === 1 ? '#0ea5e9' : '#10b981',
+                            visible: true
+                        });
+                    }
+                }
+            }
+            
+            function drawGame() {
+                // Очистка холста
+                ctx.fillStyle = '#111827';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Рисование платформы
+                ctx.fillStyle = '#0ea5e9';
+                ctx.fillRect(paddle.x, canvas.height - paddle.height, paddle.width, paddle.height);
+                
+                // Рисование мяча
+                ctx.fillStyle = '#fbbf24';
+                ctx.beginPath();
+                ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Рисование кирпичей
+                bricks.forEach(brick => {
+                    if (brick.visible) {
+                        ctx.fillStyle = brick.color;
+                        ctx.fillRect(brick.x, brick.y, brick.width, brick.height);
+                        ctx.strokeStyle = '#1e293b';
+                        ctx.strokeRect(brick.x, brick.y, brick.width, brick.height);
+                    }
+                });
+            }
+            
+            function updateGame() {
+                if (!gameRunning) return;
+                
+                // Движение мяча
+                ball.x += ball.dx;
+                ball.y += ball.dy;
+                
+                // Отскок от стен
+                if (ball.x + ball.radius > canvas.width || ball.x - ball.radius < 0) {
+                    ball.dx = -ball.dx;
+                }
+                
+                if (ball.y - ball.radius < 0) {
+                    ball.dy = -ball.dy;
+                }
+                
+                // Отскок от платформы
+                if (ball.y + ball.radius > canvas.height - paddle.height &&
+                    ball.x > paddle.x && ball.x < paddle.x + paddle.width) {
+                    
+                    // Угол отскока зависит от места удара о платформу
+                    const hitPoint = (ball.x - paddle.x) / paddle.width;
+                    ball.dx = 8 * (hitPoint - 0.5);
+                    ball.dy = -Math.abs(ball.dy);
+                }
+                
+                // Проверка выхода мяча за нижнюю границу
+                if (ball.y + ball.radius > canvas.height) {
+                    lives--;
+                    livesSpan.textContent = lives;
+                    
+                    if (lives <= 0) {
+                        gameOver();
+                        return;
+                    }
+                    
+                    // Сброс мяча
+                    ball.x = canvas.width / 2;
+                    ball.y = canvas.height - 30;
+                    ball.dx = 4;
+                    ball.dy = -4;
+                }
+                
+                // Проверка столкновения с кирпичами
+                bricks.forEach(brick => {
+                    if (brick.visible) {
+                        if (ball.x + ball.radius > brick.x &&
+                            ball.x - ball.radius < brick.x + brick.width &&
+                            ball.y + ball.radius > brick.y &&
+                            ball.y - ball.radius < brick.y + brick.height) {
+                            
+                            brick.visible = false;
+                            ball.dy = -ball.dy;
+                            score += 10;
+                            scoreSpan.textContent = score;
+                            
+                            // Награда куками
+                            cookieCount += 2;
+                            localStorage.setItem('cookieCount', cookieCount);
+                            updateStatsDisplay();
+                        }
+                    }
+                });
+                
+                // Проверка завершения уровня
+                const bricksLeft = bricks.filter(brick => brick.visible).length;
+                if (bricksLeft === 0) {
+                    level++;
+                    levelSpan.textContent = level;
+                    createBricks();
+                    
+                    // Сброс мяча
+                    ball.x = canvas.width / 2;
+                    ball.y = canvas.height - 30;
+                    ball.dx += 0.5;
+                    ball.dy = -Math.abs(ball.dy);
+                    
+                    // Награда за уровень
+                    score += 100;
+                    scoreSpan.textContent = score;
+                    
+                    cookieCount += 10;
+                    localStorage.setItem('cookieCount', cookieCount);
+                    updateStatsDisplay();
+                }
+                
+                drawGame();
+            }
+            
+            function gameOver() {
+                gameRunning = false;
+                cancelAnimationFrame(gameLoop);
+                message.textContent = `Игра окончена! Ваш счет: ${score}`;
+                message.style.color = '#ef4444';
+                startButton.innerHTML = '<i class="fas fa-redo"></i> Заново';
+                
+                // Проверка рекорда
+                checkAndUpdateRecord('arkanoid', score);
+            }
+            
+            function startGame() {
+                if (gameRunning) return;
+                
+                paddle = { x: canvas.width / 2 - 50, width: 100, height: 10 };
+                ball = { x: canvas.width / 2, y: canvas.height - 30, dx: 4, dy: -4, radius: 8 };
+                score = 0;
+                level = 1;
+                lives = 3;
+                scoreSpan.textContent = score;
+                levelSpan.textContent = level;
+                livesSpan.textContent = lives;
+                message.textContent = 'Управляйте платформой мышью';
+                message.style.color = '#0ea5e9';
+                gameRunning = true;
+                startButton.innerHTML = '<i class="fas fa-pause"></i> Пауза';
+                
+                createBricks();
+                drawGame();
+                
+                // Запуск игрового цикла
+                gameLoop = requestAnimationFrame(gameLoopFunc);
+            }
+            
+            function gameLoopFunc() {
+                updateGame();
+                if (gameRunning) {
+                    gameLoop = requestAnimationFrame(gameLoopFunc);
+                }
+            }
+            
+            function togglePause() {
+                if (!gameRunning) return;
+                
+                gameRunning = !gameRunning;
+                if (gameRunning) {
+                    startButton.innerHTML = '<i class="fas fa-pause"></i> Пауза';
+                    message.textContent = 'Управляйте платформой мышью';
+                    gameLoop = requestAnimationFrame(gameLoopFunc);
+                } else {
+                    startButton.innerHTML = '<i class="fas fa-play"></i> Продолжить';
+                    message.textContent = 'Игра на паузе';
+                    cancelAnimationFrame(gameLoop);
+                }
+            }
+            
+            // Управление платформой с помощью мыши
+            canvas.addEventListener('mousemove', (e) => {
+                if (!gameRunning) return;
+                
+                const rect = canvas.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left;
+                paddle.x = mouseX - paddle.width / 2;
+                
+                // Ограничение движения платформы в пределах canvas
+                if (paddle.x < 0) paddle.x = 0;
+                if (paddle.x + paddle.width > canvas.width) paddle.x = canvas.width - paddle.width;
+            });
+            
+            startButton.addEventListener('click', () => {
+                if (!gameRunning || startButton.innerHTML.includes('Пауза')) {
+                    if (startButton.innerHTML.includes('Старт') || startButton.innerHTML.includes('Заново')) {
+                        startGame();
+                    } else {
+                        togglePause();
+                    }
+                }
+            });
+            
+            // Начальная отрисовка
+            createBricks();
+            drawGame();
+        }
+
+        // ========== ВИКТОРИНА ==========
+        function initQuiz() {
+            const questionElement = document.getElementById('quizQuestion');
+            const answersElement = document.getElementById('quizAnswers');
+            const message = document.getElementById('quizMessage');
+            const correctSpan = document.getElementById('quizCorrect');
+            const totalSpan = document.getElementById('quizTotal');
+            const nextButton = document.getElementById('nextQuiz');
+            
+            // База вопросов для викторины
+            const questions = [
+                {
+                    question: "Какой язык программирования используется для создания веб-страниц?",
+                    answers: ["Java", "Python", "JavaScript", "C++"],
+                    correct: 2
+                },
+                {
+                    question: "Какая планета самая большая в Солнечной системе?",
+                    answers: ["Земля", "Марс", "Юпитер", "Сатурн"],
+                    correct: 2
+                },
+                {
+                    question: "Сколько континентов на Земле?",
+                    answers: ["5", "6", "7", "8"],
+                    correct: 2
+                },
+                {
+                    question: "Кто написал роман 'Война и мир'?",
+                    answers: ["Достоевский", "Толстой", "Чехов", "Гоголь"],
+                    correct: 1
+                },
+                {
+                    question: "Какой химический элемент обозначается как 'O'?",
+                    answers: ["Золото", "Кислород", "Олово", "Осмий"],
+                    correct: 1
+                },
+                {
+                    question: "Столица Франции?",
+                    answers: ["Лондон", "Берлин", "Париж", "Мадрид"],
+                    correct: 2
+                },
+                {
+                    question: "Сколько цветов в радуге?",
+                    answers: ["5", "6", "7", "8"],
+                    correct: 2
+                },
+                {
+                    question: "Кто изобрел телефон?",
+                    answers: ["Эдисон", "Тесла", "Белл", "Маркони"],
+                    correct: 2
+                }
+            ];
+            
+            let currentQuestionIndex = 0;
+            let correctAnswers = 0;
+            let totalQuestions = 0;
+            let streak = 0;
+            
+            function loadQuestion() {
+                const question = questions[currentQuestionIndex];
+                questionElement.textContent = question.question;
+                answersElement.innerHTML = '';
+                
+                question.answers.forEach((answer, index) => {
+                    const answerElement = document.createElement('div');
+                    answerElement.classList.add('quiz-answer');
+                    answerElement.textContent = answer;
+                    answerElement.dataset.index = index;
+                    
+                    answerElement.addEventListener('click', () => checkAnswer(index));
+                    answersElement.appendChild(answerElement);
+                });
+                
+                message.textContent = '';
+                totalSpan.textContent = totalQuestions;
+            }
+            
+            function checkAnswer(selectedIndex) {
+                const question = questions[currentQuestionIndex];
+                const answerElements = document.querySelectorAll('.quiz-answer');
+                
+                // Показываем правильный ответ
+                answerElements.forEach((el, index) => {
+                    if (index === question.correct) {
+                        el.classList.add('correct');
+                    } else if (index === selectedIndex) {
+                        el.classList.add('wrong');
+                    }
+                    el.style.pointerEvents = 'none';
+                });
+                
+                totalQuestions++;
+                totalSpan.textContent = totalQuestions;
+                
+                if (selectedIndex === question.correct) {
+                    message.textContent = 'Правильно!';
+                    message.style.color = '#10b981';
+                    correctAnswers++;
+                    streak++;
+                    correctSpan.textContent = correctAnswers;
+                    
+                    // Награда куками
+                    cookieCount += 5;
+                    localStorage.setItem('cookieCount', cookieCount);
+                    updateStatsDisplay();
+                    
+                    // Проверка рекорда (максимальная серия правильных ответов)
+                    checkAndUpdateRecord('quiz', streak);
+                } else {
+                    message.textContent = `Неправильно! Правильный ответ: ${question.answers[question.correct]}`;
+                    message.style.color = '#ef4444';
+                    streak = 0;
+                }
+                
+                // Переход к следующему вопросу через 2 секунды
+                setTimeout(nextQuestion, 2000);
+            }
+            
+            function nextQuestion() {
+                currentQuestionIndex = (currentQuestionIndex + 1) % questions.length;
+                loadQuestion();
+            }
+            
+            nextButton.addEventListener('click', nextQuestion);
+            
+            // Инициализация игры
+            loadQuestion();
+            correctSpan.textContent = correctAnswers;
+            totalSpan.textContent = totalQuestions;
+        }
+    </script>
+</body>
+</html>
