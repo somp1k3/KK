@@ -3,25 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KiraKi - Разработчик</title>
+    <title>K1ratchi - Разработчик</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👨‍💻</text></svg>">
     <style>
-        /* Основные стили */
+        /* Основные стили с RGB гаммой */
         :root {
-            --primary-hue: 160;
-            --saturation: 70%;
-            --lightness: 50%;
             --text-color: #f0f0f0;
-            --bg-color: rgba(10, 20, 15, 0.95);
-            --panel-color: rgba(20, 40, 30, 0.85);
-            --border-color: rgba(255, 255, 255, 0.15);
             --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
             --transition: all 0.3s ease;
             --border-radius: 16px;
-            --glass-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
-            --hover-border-color: rgba(255, 255, 255, 0.8);
-            --hover-glow: 0 0 20px rgba(255, 255, 255, 0.3);
+            --hover-glow: 0 0 25px rgba(255, 105, 180, 0.5);
         }
 
         * {
@@ -32,7 +24,7 @@
         }
 
         body {
-            background-color: #0a140f;
+            background-color: #000;
             color: var(--text-color);
             min-height: 100vh;
             background-attachment: fixed;
@@ -41,6 +33,7 @@
             position: relative;
         }
 
+        /* RGB градиентный фон */
         .rgb-gradient-bg {
             position: fixed;
             top: 0;
@@ -48,29 +41,58 @@
             width: 100%;
             height: 100%;
             background: linear-gradient(
-                135deg,
-                rgba(10, 30, 20, 0.9) 0%,
-                rgba(20, 50, 35, 0.9) 25%,
-                rgba(30, 70, 50, 0.9) 50%,
-                rgba(20, 50, 35, 0.9) 75%,
-                rgba(10, 30, 20, 0.9) 100%
+                45deg,
+                #ff0000 0%,
+                #ff0099 10%,
+                #cd00ff 20%,
+                #3200ff 30%,
+                #0066ff 40%,
+                #00ffcc 50%,
+                #00ff33 60%,
+                #ccff00 70%,
+                #ff9900 80%,
+                #ff0000 90%,
+                #ff0099 100%
             );
             background-size: 400% 400%;
             animation: rgbFlow 20s ease infinite;
-            z-index: -2;
-            opacity: 1;
+            z-index: -3;
+            opacity: 0.7;
         }
 
+        /* Стеклянный муть-эффект поверх */
         .glass-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            background: rgba(10, 20, 15, 0.7);
+            backdrop-filter: blur(25px) saturate(180%);
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(255, 0, 100, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(0, 200, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(100, 0, 255, 0.15) 0%, transparent 50%),
+                linear-gradient(135deg, 
+                    rgba(10, 10, 30, 0.85) 0%,
+                    rgba(20, 5, 40, 0.9) 50%,
+                    rgba(10, 20, 40, 0.85) 100%);
+            z-index: -2;
+        }
+
+        /* Дополнительный слой для глубины */
+        .noise-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.02) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(255, 255, 255, 0.02) 0%, transparent 20%);
+            opacity: 0.3;
             z-index: -1;
+            animation: floatNoise 20s ease-in-out infinite alternate;
         }
 
         .container {
@@ -81,18 +103,44 @@
             z-index: 1;
         }
 
-        /* Приветственное сообщение - справа */
+        /* Стеклянные панели */
+        .glass-panel {
+            background: rgba(20, 10, 30, 0.4);
+            backdrop-filter: blur(15px) saturate(180%);
+            -webkit-backdrop-filter: blur(15px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: var(--border-radius);
+            box-shadow: 
+                inset 0 1px 0 rgba(255, 255, 255, 0.1),
+                var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                135deg,
+                rgba(255, 255, 255, 0.05) 0%,
+                rgba(255, 255, 255, 0.01) 50%,
+                rgba(255, 255, 255, 0.05) 100%
+            );
+            border-radius: var(--border-radius);
+            z-index: -1;
+        }
+
+        /* Приветственное сообщение */
         .welcome-message {
             position: fixed;
             top: 100px;
             right: 20px;
-            background: var(--panel-color);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: var(--border-radius);
+            composes: glass-panel;
             padding: 20px 25px;
-            box-shadow: var(--shadow);
-            border: 1px solid rgba(255, 255, 255, 0.2);
             z-index: 1000;
             animation: slideRight 0.5s ease;
             max-width: 350px;
@@ -100,6 +148,8 @@
             display: none;
             flex-direction: column;
             gap: 15px;
+            border: 1px solid rgba(255, 105, 180, 0.3);
+            box-shadow: 0 0 20px rgba(255, 105, 180, 0.2);
         }
 
         .welcome-content h3 {
@@ -108,24 +158,28 @@
             gap: 10px;
             margin-bottom: 10px;
             font-size: 1.3rem;
-            color: #4ade80;
+            background: linear-gradient(90deg, #ff3366, #ff33cc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
 
         .welcome-content p {
             line-height: 1.6;
             font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.9);
         }
 
         .timer-bar {
             height: 4px;
-            background: linear-gradient(90deg, #4ade80, #22c55e);
+            background: linear-gradient(90deg, #ff3366, #ff33cc, #9933ff);
             border-radius: 2px;
             width: 100%;
             animation: timerCountdown 10s linear forwards;
         }
 
         .close-welcome {
-            background: none;
+            background: rgba(255, 255, 255, 0.1);
             border: none;
             color: var(--text-color);
             font-size: 1.8rem;
@@ -142,11 +196,13 @@
             position: absolute;
             top: 10px;
             right: 10px;
+            backdrop-filter: blur(10px);
         }
 
         .close-welcome:hover {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.2);
             transform: rotate(90deg);
+            color: #ff33cc;
         }
 
         /* Сообщение о разработке */
@@ -155,23 +211,23 @@
             bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
-            background: var(--panel-color);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: var(--border-radius);
+            composes: glass-panel;
             padding: 15px 20px;
-            box-shadow: var(--shadow);
-            border: 1px solid rgba(255, 255, 255, 0.2);
             z-index: 1000;
             animation: slideUp 0.5s ease;
             max-width: 600px;
             width: 90%;
             text-align: center;
             display: none;
+            border: 1px solid rgba(51, 153, 255, 0.3);
+            box-shadow: 0 0 20px rgba(51, 153, 255, 0.2);
         }
 
         .dev-content h4 {
-            color: #4ade80;
+            background: linear-gradient(90deg, #33ccff, #3399ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
             margin-bottom: 8px;
             font-size: 1.1rem;
         }
@@ -180,23 +236,27 @@
             line-height: 1.5;
             font-size: 0.9rem;
             margin-bottom: 5px;
+            color: rgba(255, 255, 255, 0.9);
         }
 
         .telegram-link {
-            color: #4ade80;
+            background: linear-gradient(90deg, #33ccff, #3399ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
             text-decoration: none;
             font-weight: 600;
             transition: var(--transition);
         }
 
         .telegram-link:hover {
-            color: #22c55e;
             text-decoration: underline;
+            filter: brightness(1.2);
         }
 
         .dev-timer-bar {
             height: 3px;
-            background: linear-gradient(90deg, #4ade80, #22c55e);
+            background: linear-gradient(90deg, #33ccff, #3399ff, #3366ff);
             border-radius: 2px;
             width: 100%;
             animation: timerCountdown 10s linear forwards;
@@ -204,7 +264,7 @@
         }
 
         .close-dev {
-            background: none;
+            background: rgba(255, 255, 255, 0.1);
             border: none;
             color: var(--text-color);
             font-size: 1.5rem;
@@ -213,10 +273,19 @@
             position: absolute;
             top: 5px;
             right: 10px;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
         }
 
         .close-dev:hover {
             transform: rotate(90deg);
+            background: rgba(255, 255, 255, 0.2);
+            color: #33ccff;
         }
 
         /* Панель навигации */
@@ -225,39 +294,39 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 30px;
-            background: var(--panel-color);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: var(--border-radius);
+            composes: glass-panel;
             padding: 15px 25px;
-            box-shadow: var(--shadow);
-            border: 1px solid rgba(255, 255, 255, 0.2);
             animation: fadeIn 1s ease;
             position: relative;
             transition: var(--transition);
+            border: 1px solid rgba(255, 105, 180, 0.2);
         }
 
         .navbar:hover {
-            border-color: var(--hover-border-color);
-            box-shadow: var(--hover-glow);
+            border-color: rgba(255, 105, 180, 0.5);
+            box-shadow: 
+                0 0 25px rgba(255, 105, 180, 0.3),
+                var(--shadow);
         }
 
         .logo {
             font-size: 1.8rem;
             font-weight: 700;
-            background: linear-gradient(90deg, #4ade80, #22c55e, #16a34a);
+            background: linear-gradient(90deg, #ff3366, #ff33cc, #9933ff, #3366ff, #33ccff);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
             cursor: pointer;
             transition: var(--transition);
+            text-shadow: 0 0 20px rgba(255, 51, 204, 0.3);
         }
 
         .logo:hover {
             transform: scale(1.05);
+            text-shadow: 0 0 30px rgba(255, 51, 204, 0.5);
         }
 
-        /* Верхние виджеты в строку (2 штуки) */
+        /* Верхние виджеты */
         .top-widgets {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -273,13 +342,8 @@
         }
 
         .widget {
-            background: var(--panel-color);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: var(--border-radius);
+            composes: glass-panel;
             padding: 25px;
-            box-shadow: var(--shadow);
-            border: 1px solid rgba(255, 255, 255, 0.2);
             transition: var(--transition);
             position: relative;
             overflow: hidden;
@@ -292,50 +356,45 @@
             left: 0;
             right: 0;
             height: 2px;
-            background: linear-gradient(90deg, #4ade80, #22c55e, #16a34a);
-        }
-
-        .widget::after {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            border-radius: calc(var(--border-radius) + 4px);
-            border: 2px solid transparent;
-            z-index: -1;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .widget:hover::after {
-            opacity: 1;
-            border-color: var(--hover-border-color);
-            box-shadow: var(--hover-glow);
+            background: linear-gradient(90deg, #ff3366, #ff33cc, #9933ff);
         }
 
         .widget:hover {
             transform: translateY(-5px);
-            box-shadow: var(--shadow), 0 12px 40px rgba(0, 0, 0, 0.5);
+            box-shadow: 
+                0 15px 35px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
             border-color: rgba(255, 255, 255, 0.3);
         }
 
         .time-widget {
             text-align: center;
+            border: 1px solid rgba(51, 204, 255, 0.2);
+        }
+
+        .time-widget:hover {
+            border-color: rgba(51, 204, 255, 0.5);
+            box-shadow: 
+                0 0 25px rgba(51, 204, 255, 0.3),
+                var(--shadow);
         }
 
         .date {
             font-size: 1.1rem;
             margin-bottom: 8px;
             opacity: 0.9;
+            color: rgba(255, 255, 255, 0.9);
         }
 
         .time {
             font-size: 2.5rem;
             font-weight: 700;
-            color: #4ade80;
+            background: linear-gradient(90deg, #33ccff, #3399ff, #3366ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
             letter-spacing: 1px;
+            text-shadow: 0 0 15px rgba(51, 204, 255, 0.3);
         }
 
         .word-widget {
@@ -343,16 +402,28 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
+            border: 1px solid rgba(153, 51, 255, 0.2);
+        }
+
+        .word-widget:hover {
+            border-color: rgba(153, 51, 255, 0.5);
+            box-shadow: 
+                0 0 25px rgba(153, 51, 255, 0.3),
+                var(--shadow);
         }
 
         .word-of-day {
             font-size: 2rem;
             font-weight: 700;
-            color: #22c55e;
+            background: linear-gradient(90deg, #9933ff, #cc33ff, #ff33cc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
             margin-top: 10px;
+            text-shadow: 0 0 15px rgba(153, 51, 255, 0.3);
         }
 
-        /* Основное содержимое с вкладками */
+        /* Основное содержимое */
         .main-content {
             text-align: center;
             margin-bottom: 40px;
@@ -367,42 +438,29 @@
         .nickname {
             font-size: 4.5rem;
             font-weight: 900;
-            background: linear-gradient(90deg, #4ade80, #22c55e, #16a34a);
+            background: linear-gradient(90deg, 
+                #ff3366, #ff33cc, #9933ff, 
+                #3366ff, #33ccff, #33ffcc,
+                #33ff66, #ccff33, #ff9933,
+                #ff3366);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
             letter-spacing: 2px;
             cursor: pointer;
             transition: var(--transition);
-            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            text-shadow: 0 5px 25px rgba(255, 51, 102, 0.3);
             position: relative;
             display: inline-block;
             padding: 10px 20px;
             border-radius: 20px;
-        }
-
-        .nickname::after {
-            content: '';
-            position: absolute;
-            top: -4px;
-            left: -4px;
-            right: -4px;
-            bottom: -4px;
-            border-radius: 24px;
-            border: 2px solid transparent;
-            z-index: -1;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .nickname:hover::after {
-            opacity: 1;
-            border-color: var(--hover-border-color);
-            box-shadow: var(--hover-glow);
+            background-size: 400% 400%;
+            animation: gradientShift 8s ease infinite;
         }
 
         .nickname:hover {
             transform: scale(1.05);
+            text-shadow: 0 5px 35px rgba(255, 51, 102, 0.5);
         }
 
         .tagline {
@@ -411,10 +469,14 @@
             max-width: 600px;
             margin: 0 auto;
             padding: 0 20px;
-            color: #a7f3d0;
+            color: rgba(255, 255, 255, 0.9);
+            background: linear-gradient(90deg, #33ccff, #33ffcc, #ccff33);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
 
-        /* Контейнер для вкладок */
+        /* Вкладки */
         .tabs-container {
             margin-top: 40px;
             animation: fadeIn 1s ease;
@@ -429,8 +491,9 @@
         }
 
         .tab-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             border-radius: 12px;
             padding: 12px 24px;
             color: var(--text-color);
@@ -442,69 +505,28 @@
             overflow: hidden;
         }
 
-        .tab-btn::after {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            border-radius: 14px;
-            border: 2px solid transparent;
-            z-index: -1;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .tab-btn:hover::after {
-            opacity: 1;
-            border-color: var(--hover-border-color);
-            box-shadow: var(--hover-glow);
-        }
-
         .tab-btn:hover {
             transform: translateY(-2px);
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 105, 180, 0.3);
+            box-shadow: 0 5px 15px rgba(255, 105, 180, 0.2);
         }
 
         .tab-btn.active {
-            background: linear-gradient(90deg, #4ade80, #22c55e);
+            background: linear-gradient(90deg, #ff3366, #ff33cc);
             color: white;
             border-color: transparent;
+            box-shadow: 0 0 20px rgba(255, 51, 204, 0.3);
         }
 
         .tab-content {
-            background: var(--panel-color);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: var(--border-radius);
+            composes: glass-panel;
             padding: 30px;
-            box-shadow: var(--shadow);
-            border: 1px solid rgba(255, 255, 255, 0.2);
             min-height: 400px;
             display: none;
             position: relative;
             animation: fadeIn 0.5s ease;
-        }
-
-        .tab-content::after {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            border-radius: calc(var(--border-radius) + 4px);
-            border: 2px solid transparent;
-            z-index: -1;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .tab-content:hover::after {
-            opacity: 1;
-            border-color: var(--hover-border-color);
-            box-shadow: var(--hover-glow);
+            border: 1px solid rgba(51, 204, 255, 0.2);
         }
 
         .tab-content.active {
@@ -514,22 +536,16 @@
         .tab-content h3 {
             margin-bottom: 20px;
             font-size: 1.8rem;
-            color: #4ade80;
+            background: linear-gradient(90deg, #33ccff, #33ffcc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
 
         .tab-content p {
             margin-bottom: 15px;
             line-height: 1.6;
-        }
-
-        .tab-content ul {
-            margin-left: 20px;
-            margin-bottom: 20px;
-        }
-
-        .tab-content li {
-            margin-bottom: 8px;
-            line-height: 1.5;
+            color: rgba(255, 255, 255, 0.9);
         }
 
         /* Нижние виджеты */
@@ -552,11 +568,14 @@
             gap: 10px;
             margin-bottom: 20px;
             font-size: 1.4rem;
-            color: #4ade80;
+            background: linear-gradient(90deg, #ff33cc, #cc33ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
 
         .widget-title i {
-            color: #4ade80;
+            color: #ff33cc;
         }
 
         /* Виджет с ссылками */
@@ -588,9 +607,10 @@
             align-items: center;
             gap: 12px;
             padding: 18px;
-            background: rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
             border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             transition: var(--transition);
             cursor: pointer;
             text-decoration: none;
@@ -599,30 +619,11 @@
             overflow: hidden;
         }
 
-        .link-item::after {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            border-radius: 14px;
-            border: 2px solid transparent;
-            z-index: -1;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .link-item:hover::after {
-            opacity: 1;
-            border-color: var(--hover-border-color);
-            box-shadow: var(--hover-glow);
-        }
-
         .link-item:hover {
             transform: translateX(5px) translateY(-2px);
             border-color: rgba(255, 255, 255, 0.3);
-            background: rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
         }
 
         .link-icon {
@@ -634,32 +635,55 @@
             justify-content: center;
             border-radius: 10px;
             background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
         }
 
-        .tg .link-icon { color: #0088cc; background: rgba(0, 136, 204, 0.1); }
-        .github .link-icon { color: #ffffff; background: rgba(255, 255, 255, 0.1); }
-        .portfolio .link-icon { color: #06d6a0; background: rgba(6, 214, 160, 0.1); }
-        .steam .link-icon { color: #1b2838; background: rgba(27, 40, 56, 0.1); }
-        .friend .link-icon { color: #ff6b8b; background: rgba(255, 107, 139, 0.1); }
+        .tg .link-icon { 
+            background: linear-gradient(135deg, rgba(0, 136, 204, 0.2), rgba(0, 136, 204, 0.1));
+            color: #0088cc; 
+        }
+        .github .link-icon { 
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+            color: #ffffff; 
+        }
+        .portfolio .link-icon { 
+            background: linear-gradient(135deg, rgba(255, 51, 153, 0.2), rgba(255, 51, 153, 0.1));
+            color: #ff3399; 
+        }
+        .steam .link-icon { 
+            background: linear-gradient(135deg, rgba(27, 40, 56, 0.2), rgba(27, 40, 56, 0.1));
+            color: #1b2838; 
+        }
+        .friend .link-icon { 
+            background: linear-gradient(135deg, rgba(255, 107, 139, 0.2), rgba(255, 107, 139, 0.1));
+            color: #ff6b8b; 
+        }
 
         .link-info h4 {
             font-size: 1.1rem;
             margin-bottom: 4px;
+            color: rgba(255, 255, 255, 0.95);
         }
 
         .link-info p {
             font-size: 0.9rem;
             opacity: 0.8;
+            color: rgba(255, 255, 255, 0.8);
         }
 
-        /* Эффект взрыва при клике */
+        /* Эффект взрыва */
         .explosion-effect {
             position: absolute;
             top: 50%;
             left: 50%;
             width: 100px;
             height: 100px;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0) 70%);
+            background: radial-gradient(circle, 
+                rgba(255, 51, 102, 0.8) 0%,
+                rgba(255, 51, 204, 0.6) 30%,
+                rgba(153, 51, 255, 0.4) 60%,
+                rgba(51, 204, 255, 0.2) 90%,
+                transparent 100%);
             border-radius: 50%;
             transform: translate(-50%, -50%) scale(0);
             opacity: 0;
@@ -687,25 +711,23 @@
         .footer {
             text-align: center;
             padding: 25px;
-            background: var(--panel-color);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: var(--border-radius);
+            composes: glass-panel;
             margin-top: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            position: relative;
-            transition: var(--transition);
+            border: 1px solid rgba(51, 204, 255, 0.2);
         }
 
         .footer:hover {
-            border-color: var(--hover-border-color);
-            box-shadow: var(--hover-glow);
+            border-color: rgba(51, 204, 255, 0.5);
+            box-shadow: 
+                0 0 25px rgba(51, 204, 255, 0.3),
+                var(--shadow);
         }
 
         .copyright {
             margin-bottom: 10px;
             font-size: 0.9rem;
             opacity: 0.8;
+            color: rgba(255, 255, 255, 0.8);
         }
 
         .warning {
@@ -713,10 +735,14 @@
             opacity: 0.7;
             margin-top: 15px;
             line-height: 1.5;
+            color: rgba(255, 255, 255, 0.7);
         }
 
         .warning-link {
-            color: #4ade80;
+            background: linear-gradient(90deg, #33ccff, #33ffcc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
             cursor: pointer;
             text-decoration: underline;
             transition: var(--transition);
@@ -725,7 +751,7 @@
 
         .warning-link:hover {
             text-decoration: none;
-            opacity: 0.9;
+            filter: brightness(1.2);
         }
 
         /* Модальные окна */
@@ -740,45 +766,24 @@
             z-index: 10000;
             align-items: center;
             justify-content: center;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(20px);
             animation: fadeIn 0.3s ease;
             padding: 20px;
         }
 
         .modal-content {
-            background: var(--panel-color);
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
-            border-radius: var(--border-radius);
+            composes: glass-panel;
             width: 90%;
             max-width: 700px;
             padding: 30px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.2);
             position: relative;
             animation: slideUp 0.5s ease;
             max-height: 80vh;
             overflow-y: auto;
-        }
-
-        .modal-content::after {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            border-radius: calc(var(--border-radius) + 4px);
-            border: 2px solid transparent;
-            z-index: -1;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .modal-content:hover::after {
-            opacity: 1;
-            border-color: var(--hover-border-color);
-            box-shadow: var(--hover-glow);
+            border: 1px solid rgba(255, 105, 180, 0.3);
+            box-shadow: 
+                0 0 40px rgba(255, 105, 180, 0.2),
+                var(--shadow);
         }
 
         .close-modal {
@@ -788,7 +793,7 @@
             font-size: 2rem;
             cursor: pointer;
             transition: var(--transition);
-            background: transparent;
+            background: rgba(255, 255, 255, 0.1);
             border: none;
             color: var(--text-color);
             width: 40px;
@@ -798,17 +803,22 @@
             align-items: center;
             justify-content: center;
             z-index: 2;
+            backdrop-filter: blur(10px);
         }
 
         .close-modal:hover {
             transform: rotate(90deg);
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.2);
+            color: #ff33cc;
         }
 
         .modal-title {
             font-size: 2rem;
             margin-bottom: 20px;
-            color: #4ade80;
+            background: linear-gradient(90deg, #ff3366, #ff33cc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
 
         /* Кнопка "Наверх" */
@@ -818,7 +828,7 @@
             right: 30px;
             width: 50px;
             height: 50px;
-            background: linear-gradient(135deg, #4ade80, #22c55e);
+            background: linear-gradient(135deg, #ff3366, #ff33cc);
             border-radius: 50%;
             display: none;
             align-items: center;
@@ -828,13 +838,18 @@
             cursor: pointer;
             transition: var(--transition);
             z-index: 100;
-            box-shadow: var(--shadow);
+            box-shadow: 
+                0 0 20px rgba(255, 51, 102, 0.4),
+                var(--shadow);
             border: none;
+            backdrop-filter: blur(10px);
         }
 
         .back-to-top:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 0 20px rgba(74, 222, 128, 0.5);
+            transform: translateY(-5px) scale(1.1);
+            box-shadow: 
+                0 0 30px rgba(255, 51, 102, 0.6),
+                0 10px 30px rgba(0, 0, 0, 0.4);
         }
 
         /* Анимации */
@@ -873,6 +888,35 @@
         @keyframes timerCountdown {
             from { width: 100%; }
             to { width: 0%; }
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes floatNoise {
+            0% { 
+                transform: translate(0, 0) scale(1);
+                opacity: 0.3;
+            }
+            25% { 
+                transform: translate(10px, -10px) scale(1.05);
+                opacity: 0.4;
+            }
+            50% { 
+                transform: translate(0, 5px) scale(1.02);
+                opacity: 0.35;
+            }
+            75% { 
+                transform: translate(-5px, -5px) scale(1.03);
+                opacity: 0.4;
+            }
+            100% { 
+                transform: translate(0, 0) scale(1);
+                opacity: 0.3;
+            }
         }
 
         /* Адаптивность */
@@ -980,27 +1024,28 @@
     </style>
 </head>
 <body>
-    <!-- Градиентный фон -->
+    <!-- RGB градиентный фон -->
     <div class="rgb-gradient-bg"></div>
     <div class="glass-overlay"></div>
+    <div class="noise-overlay"></div>
 
-    <!-- Приветственное сообщение (справа) -->
+    <!-- Приветственное сообщение -->
     <div class="welcome-message" id="welcomeMessage">
         <button class="close-welcome" id="closeWelcome">&times;</button>
         <div class="welcome-content">
             <h3><i class="fas fa-hand-wave"></i> Добро пожаловать!</h3>
-            <p>Спасибо что выбрали нас! Мы вас ценим и будем благодарны если вы оставите отзыв и комментарий.</p>
+            <p>Добро пожаловать на сайт K1ratchi! Я ценю ваш визит и буду рад отзывам.</p>
             <div class="timer-bar" id="timerBar"></div>
         </div>
     </div>
 
-    <!-- Сообщение о разработке (снизу) -->
+    <!-- Сообщение о разработке -->
     <div class="dev-message" id="devMessage">
         <button class="close-dev" id="closeDev">&times;</button>
         <div class="dev-content">
             <h4><i class="fas fa-tools"></i> Сайт в разработке</h4>
-            <p>Если что-то не работает, напишите нам в Telegram:</p>
-            <p><a href="https://t.me/+79266243659" target="_blank" class="telegram-link">+7 (926) 624-36-59</a></p>
+            <p>Если что-то не работает, напишите мне в Telegram:</p>
+            <p><a href="https://t.me/k1ratchi" target="_blank" class="telegram-link">@k1ratchi</a></p>
             <div class="dev-timer-bar" id="devTimerBar"></div>
         </div>
     </div>
@@ -1008,10 +1053,10 @@
     <div class="container">
         <!-- Навигация -->
         <nav class="navbar">
-            <div class="logo" id="logo">KiraKi</div>
+            <div class="logo" id="logo">K1ratchi</div>
         </nav>
 
-        <!-- Верхние виджеты (2 в строку) -->
+        <!-- Верхние виджеты -->
         <div class="top-widgets">
             <div class="widget time-widget">
                 <div class="date" id="currentDate">Загрузка...</div>
@@ -1020,15 +1065,15 @@
             
             <div class="widget word-widget">
                 <div>Слово дня:</div>
-                <div class="word-of-day" id="wordOfDay">Креативность</div>
+                <div class="word-of-day" id="wordOfDay">Инновации</div>
             </div>
         </div>
 
         <!-- Основное содержимое -->
         <div class="main-content">
             <div class="nickname-container">
-                <div class="nickname" id="nickname">KiraKi</div>
-                <div class="tagline" id="tagline">Разработчик | Геймер | Создатель цифровых миров</div>
+                <div class="nickname" id="nickname">K1ratchi</div>
+                <div class="tagline" id="tagline">Разработчик | Киберспортсмен | Создатель инноваций</div>
             </div>
             
             <!-- Вкладки -->
@@ -1042,38 +1087,34 @@
                 
                 <div class="tab-content active" id="aboutTab">
                     <h3>Обо мне</h3>
-                    <p>Привет! Я <strong>KiraKi</strong> - разработчик с многолетним опытом в создании цифровых проектов. Специализируюсь на веб-технологиях, Python и игровой разработке.</p>
-                    <p>Мои проекты всегда сочетают в себе качественный код, современный дизайн и интуитивный интерфейс. Каждая деталь продумана для максимального удобства пользователя.</p>
-                    <p>Как геймер, я уделяю особое внимание плавности анимаций, отзывчивости интерфейсов и общему пользовательскому опыту.</p>
-                    <p>В работе использую современный стек технологий: HTML5, CSS3, JavaScript, React, Vue.js, Python, Django, Flask, Unity, C# и многое другое.</p>
+                    <p>Привет! Я <strong>K1ratchi</strong> - разработчик с фокусом на современных технологиях и киберспорте. Специализируюсь на создании инновационных решений в веб-разработке и игровой индустрии.</p>
+                    <p>Мой подход сочетает техническую экспертизу с глубоким пониманием пользовательского опыта, особенно в гейминг-среде.</p>
+                    <p>Как киберспортсмен, я понимаю важность производительности, отзывчивости и эстетики в цифровых продуктах.</p>
                 </div>
                 
                 <div class="tab-content" id="projectsTab">
                     <h3>Мои проекты</h3>
-                    <p><strong>1. Веб-портфолио KiraKi:</strong> Современный адаптивный сайт с кастомными настройками и анимациями.</p>
-                    <p><strong>2. Игра "Pixel Adventure":</strong> 2D платформер на Unity с уникальной механикой и пиксельной графикой.</p>
-                    <p><strong>3. Telegram бот "Assistant":</strong> Многофункциональный бот с интеграцией различных API.</p>
-                    <p><strong>4. Веб-приложение "Task Manager":</strong> Приложение для управления задачами с реальным временем и уведомлениями.</p>
-                    <p><strong>5. Библиотека компонентов React:</strong> Набор переиспользуемых UI компонентов с документацией.</p>
+                    <p><strong>1. Платформа для киберспортивных турниров:</strong> Масштабируемая система для организации и проведения киберспортивных соревнований.</p>
+                    <p><strong>2. K1ratchi Dashboard:</strong> Персонализированная панель управления с интеграцией игровых статистик и разработки.</p>
+                    <p><strong>3. Аналитический инструмент для стримеров:</strong> Решение для анализа аудитории и оптимизации стримов.</p>
+                    <p><strong>4. Игровой лаунчер:</strong> Кастомный лаунчер для управления игровыми проектами.</p>
                 </div>
                 
                 <div class="tab-content" id="skillsTab">
                     <h3>Мои навыки</h3>
-                    <p><strong>Frontend:</strong> HTML5, CSS3, JavaScript, React, Vue.js, SASS, Webpack</p>
-                    <p><strong>Backend:</strong> Python, Django, Flask, Node.js, Express.js, REST API</p>
-                    <p><strong>Базы данных:</strong> PostgreSQL, MySQL, MongoDB, Redis</p>
-                    <p><strong>Игровая разработка:</strong> Unity, C#, Godot, GDScript</p>
-                    <p><strong>Дизайн:</strong> Figma, Adobe XD, Photoshop, UI/UX принципы</p>
-                    <p><strong>Другое:</strong> Git, Docker, CI/CD, AWS, WebSockets</p>
+                    <p><strong>Frontend:</strong> HTML5, CSS3, JavaScript, React, Vue.js, TypeScript</p>
+                    <p><strong>Backend:</strong> Node.js, Python, Express.js, FastAPI, WebSockets</p>
+                    <p><strong>Игровые технологии:</strong> Unity, Unreal Engine, игровые API</p>
+                    <p><strong>Базы данных:</strong> PostgreSQL, MongoDB, Redis</p>
+                    <p><strong>Инфраструктура:</strong> Docker, AWS, CI/CD, Nginx</p>
                 </div>
                 
                 <div class="tab-content" id="contactTab">
                     <h3>Связь со мной</h3>
-                    <p>Вы можете связаться со мной через следующие каналы:</p>
-                    <p><strong>Telegram:</strong> @testuhipis - для быстрой связи и обсуждения проектов</p>
-                    <p><strong>Email:</strong> kiraki.dev@example.com - для формальных запросов</p>
-                    <p><strong>Discord:</strong> KiraKi#1234 - для игровых и неформальных бесед</p>
-                    <p>Обычно я отвечаю в течение 24 часов. Для срочных вопросов лучше использовать Telegram.</p>
+                    <p><strong>Telegram:</strong> @k1ratchi - основная платформа для коммуникации</p>
+                    <p><strong>Discord:</strong> K1ratchi#0001 - для игровых сообществ и коллабораций</p>
+                    <p><strong>Steam:</strong> K1ratchi - игровой профиль и соревнования</p>
+                    <p>Предпочитаю общение через Telegram для быстрых ответов.</p>
                 </div>
             </div>
         </div>
@@ -1085,18 +1126,17 @@
                     <i class="fas fa-code"></i>
                     <h3>Обо мне</h3>
                 </div>
-                <p>Привет! Я KiraKi - разработчик с многолетним опытом в создании цифровых проектов.</p>
-                <p>Специализируюсь на веб-технологиях, Python и игровой разработке.</p>
-                <p>Мои проекты всегда сочетают в себе качественный код, современный дизайн и интуитивный интерфейс.</p>
+                <p>Привет! Я K1ratchi - разработчик с фокусом на современных технологиях и киберспорте.</p>
+                <p>Создаю инновационные решения на стыке технологий и игровой индустрии.</p>
             </div>
             
             <div class="widget">
                 <div class="widget-title">
                     <i class="fas fa-gamepad"></i>
-                    <h3>Геймерский подход</h3>
+                    <h3>Киберспорт</h3>
                 </div>
-                <p>Как геймер, я уделяю особое внимание плавности анимаций, отзывчивости интерфейсов и общему пользовательскому опыту.</p>
-                <p>Каждая деталь продумана для максимального удобства пользователя.</p>
+                <p>Активный участник киберспортивной сцены. Понимаю специфику игровых механик и пользовательского опыта.</p>
+                <p>Интегрирую игровые принципы в разработку цифровых продуктов.</p>
             </div>
             
             <div class="widget">
@@ -1104,9 +1144,9 @@
                     <i class="fas fa-rocket"></i>
                     <h3>Технологии</h3>
                 </div>
-                <p>Веб: HTML5, CSS3, JavaScript, React, Vue.js</p>
-                <p>Бэкенд: Python, Django, Flask, Node.js</p>
-                <p>Игры: Unity, C#, Godot</p>
+                <p>Веб: React, Vue.js, TypeScript, Node.js</p>
+                <p>Игры: Unity, Unreal Engine, игровые API</p>
+                <p>Инфраструктура: Docker, AWS, CI/CD</p>
             </div>
             
             <div class="widget links-widget">
@@ -1115,13 +1155,13 @@
                     <h3>Мои ссылки</h3>
                 </div>
                 <div class="link-grid">
-                    <a href="https://t.me/testuhipis" target="_blank" class="link-item tg" data-link-name="Telegram">
+                    <a href="https://t.me/k1ratchi" target="_blank" class="link-item tg" data-link-name="Telegram">
                         <div class="link-icon">
                             <i class="fab fa-telegram"></i>
                         </div>
                         <div class="link-info">
                             <h4>Telegram</h4>
-                            <p>@testuhipis</p>
+                            <p>@k1ratchi</p>
                         </div>
                     </a>
                     <a href="javascript:void(0)" class="link-item github" data-link-name="GitHub">
@@ -1130,10 +1170,10 @@
                         </div>
                         <div class="link-info">
                             <h4>GitHub</h4>
-                            <p>Временно не работает</p>
+                            <p>Скоро будет</p>
                         </div>
                     </a>
-                    <a href="https://somp1k3.github.io/smp3/pr/" target="_blank" class="link-item portfolio" data-link-name="Портфолио">
+                    <a href="https://portfolio.k1ratchi.ru" target="_blank" class="link-item portfolio" data-link-name="Портфолио">
                         <div class="link-icon">
                             <i class="fas fa-briefcase"></i>
                         </div>
@@ -1142,13 +1182,13 @@
                             <p>Мои проекты</p>
                         </div>
                     </a>
-                    <a href="https://steamcommunity.com/id/KiraKi1/" target="_blank" class="link-item steam" data-link-name="Steam">
+                    <a href="https://steamcommunity.com/id/k1ratchi" target="_blank" class="link-item steam" data-link-name="Steam">
                         <div class="link-icon">
                             <i class="fab fa-steam"></i>
                         </div>
                         <div class="link-info">
                             <h4>Steam</h4>
-                            <p>KiraKi1</p>
+                            <p>K1ratchi</p>
                         </div>
                     </a>
                     <a href="https://l1ratch.ru/" target="_blank" class="link-item friend" data-link-name="Сайт друга">
@@ -1170,7 +1210,7 @@
                 <!-- Автоматически обновится через JavaScript -->
             </div>
             <div class="warning" id="warningText">
-                Все данные не сохраняются и любое копирование сайта в целях создать копию сайта преследуется законом <span class="warning-link" id="warningLink">тыкни!</span>
+                Все права защищены. Любое копирование сайта преследуется по закону <span class="warning-link" id="warningLink">Подробнее</span>
             </div>
         </footer>
     </div>
@@ -1181,15 +1221,8 @@
             <button class="close-modal" id="closeWarningModal">&times;</button>
             <h2 class="modal-title" id="warningModalTitle">Правовая информация</h2>
             <div class="modal-text" id="warningModalText">
-                <p>Сайт и его элементы являются объектом авторского права (ст. 1259 ГК РФ). Использование произведений или их составляющих без согласия владельца запрещено (ст. 1229 ГК РФ).</p>
-                <p>За незаконное копирование сайта грозит гражданско-правовая, административная или уголовная ответственность. Некоторые меры, которые могут быть приняты:</p>
-                <ul>
-                    <li><strong>Претензии от правообладателя.</strong> Владелец оригинального сайта может направить претензию с требованием удалить скопированный контент или прекратить использование дизайна.</li>
-                    <li><strong>Судебные иски.</strong> В случае отказа добровольно устранить нарушение, правообладатель может обратиться в суд.</li>
-                    <li><strong>Блокировка сайта.</strong> В некоторых случаях, по решению суда, сайт-нарушитель может быть заблокирован.</li>
-                    <li><strong>Возмещение убытков.</strong> Суд может обязать нарушителя выплатить компенсацию за причинённый ущерб, который может включать упущенную выгоду, расходы на восстановление репутации и т. д.</li>
-                    <li><strong>Уголовная ответственность.</strong> В случае крупного ущерба или систематических нарушений, может наступить уголовная ответственность.</li>
-                </ul>
+                <p>Сайт K1ratchi и его элементы защищены авторским правом. Любое несанкционированное копирование или использование материалов запрещено.</p>
+                <p>Технологии и дизайн являются интеллектуальной собственностью и защищены соответствующими законами.</p>
             </div>
         </div>
     </div>
@@ -1200,20 +1233,19 @@
     </button>
 
     <script>
-        // ============================================
-        // КОНФИГУРАЦИЯ И ПЕРЕМЕННЫЕ
-        // ============================================
-        
-        // Слова дня
+        // Слова дня с RGB-тематикой
         const wordsOfDay = [
-            "Креативность", "Инновации", "Код", "Дизайн", "Геймдев", 
-            "Технологии", "Вдохновение", "Проект", "Интерфейс", "Анимация",
-            "Оптимизация", "Функциональность", "Эстетика", "Интуиция", "Интерактив"
+            "Киберпанк", "Неоновый", "Градиент", "Синтез", "Цифровой", 
+            "Виртуальный", "Глюк", "Пиксель", "Ретро", "Футуризм",
+            "Хакер", "Код", "Алгоритм", "Матрица", "K1ratchi"
         ];
 
         // Глобальные переменные
         let activeTab = 'about';
 
+        // Функции (остаются те же, но с обновленными словами дня)
+        // ... (весь JavaScript код остается без изменений, кроме wordsOfDay)
+        
         // ============================================
         // ФУНКЦИИ УТИЛИТЫ
         // ============================================
@@ -1252,7 +1284,7 @@
             const copyrightElement = document.getElementById('copyright');
             
             if (copyrightElement) {
-                copyrightElement.textContent = `Все права защищены © KK ${currentYear}-${nextYear}`;
+                copyrightElement.textContent = `Все права защищены © K1ratchi ${currentYear}-${nextYear}`;
             }
         }
 
@@ -1457,7 +1489,6 @@
 
         // Инициализация модальных окон
         function initModals() {
-            const logo = document.getElementById('logo');
             const warningModal = document.getElementById('warningModal');
             const closeWarningModal = document.getElementById('closeWarningModal');
             const warningLink = document.getElementById('warningLink');
@@ -1546,7 +1577,7 @@
 
         // Инициализация при загрузке страницы
         document.addEventListener('DOMContentLoaded', () => {
-            console.log('Инициализация сайта KiraKi...');
+            console.log('Инициализация сайта K1ratchi...');
             
             // Плавное появление
             document.body.style.opacity = '0';
@@ -1578,7 +1609,7 @@
             // Инициализируем кнопку "Наверх"
             initBackToTop();
             
-            console.log('Сайт KiraKi успешно инициализирован!');
+            console.log('Сайт K1ratchi успешно инициализирован!');
         });
 
     </script>
