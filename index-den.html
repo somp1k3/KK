@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Денис Благославный</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #000000;
+            color: #FFA500;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Шапка сайта */
+        header {
+            background: linear-gradient(to right, #000000, #333333);
+            padding: 30px 0;
+            border-bottom: 5px solid #FFA500;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .site-title {
+            font-size: 3.5rem;
+            color: #FFA500;
+            text-shadow: 0 0 10px rgba(255, 165, 0, 0.5);
+            margin-bottom: 15px;
+            position: relative;
+            padding: 10px 20px;
+            border: 3px solid #FFA500;
+            border-radius: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            letter-spacing: 2px;
+        }
+
+        .gold-cross {
+            color: #FFD700;
+            font-size: 4rem;
+            margin: 20px 0;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.7);
+            animation: glow 2s infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 10px rgba(255, 215, 0, 0.7); }
+            to { text-shadow: 0 0 20px rgba(255, 215, 0, 1); }
+        }
+
+        /* Навигация */
+        nav {
+            background-color: #222222;
+            padding: 15px 0;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            border: 2px solid #FFA500;
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+
+        .nav-links li {
+            margin: 0 15px;
+        }
+
+        .nav-links a {
+            color: #FFA500;
+            text-decoration: none;
+            font-size: 1.2rem;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .nav-links a:hover {
+            background-color: #FFA500;
+            color: #000000;
+        }
+
+        /* Основной контент */
+        section {
+            background-color: #111111;
+            margin-bottom: 30px;
+            padding: 30px;
+            border-radius: 10px;
+            border: 2px solid #333333;
+            box-shadow: 0 0 15px rgba(255, 165, 0, 0.2);
+        }
+
+        h2 {
+            color: #FFA500;
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #FFA500;
+            text-align: center;
+        }
+
+        h3 {
+            color: #FFD700;
+            margin: 20px 0 10px;
+            font-size: 1.5rem;
+        }
+
+        p {
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        /* Секция с гимном */
+        .anthem-section {
+            background-color: #0a0a0a;
+            border: 3px solid #FFA500;
+        }
+
+        .anthem-text {
+            column-count: 2;
+            column-gap: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .anthem-text {
+                column-count: 1;
+            }
+        }
+
+        .anthem-note {
+            background-color: rgba(255, 165, 0, 0.1);
+            padding: 15px;
+            border-left: 4px solid #FFA500;
+            margin-top: 20px;
+            font-style: italic;
+        }
+
+        /* Секция о святом */
+        .saint-image {
+            float: left;
+            margin: 0 20px 15px 0;
+            width: 250px;
+            border-radius: 10px;
+            border: 3px solid #FFA500;
+            box-shadow: 0 0 10px rgba(255, 165, 0, 0.5);
+        }
+
+        @media (max-width: 600px) {
+            .saint-image {
+                float: none;
+                display: block;
+                margin: 0 auto 20px;
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+
+        .saint-quote {
+            background-color: rgba(255, 165, 0, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 25px 0;
+            border-left: 5px solid #FFD700;
+            font-size: 1.2rem;
+            font-style: italic;
+        }
+
+        /* Футер */
+        footer {
+            background: linear-gradient(to right, #000000, #333333);
+            padding: 30px 0;
+            text-align: center;
+            border-top: 5px solid #FFA500;
+            margin-top: 40px;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .footer-logo {
+            font-size: 2.5rem;
+            color: #FFA500;
+            margin-bottom: 15px;
+        }
+
+        .copyright {
+            color: #FFA500;
+            font-size: 1.1rem;
+        }
+
+        /* Декоративные элементы */
+        .divider {
+            height: 3px;
+            background: linear-gradient(to right, transparent, #FFA500, transparent);
+            margin: 30px 0;
+        }
+
+        .decorative-border {
+            height: 5px;
+            background: linear-gradient(to right, #000000, #FFA500, #FFD700, #FFA500, #000000);
+            margin: 20px 0;
+        }
+
+        /* Кнопка наверх */
+        .scroll-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #FFA500;
+            color: #000000;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            z-index: 100;
+            border: 2px solid #FFD700;
+        }
+
+        .scroll-top:hover {
+            background-color: #FFD700;
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Шапка сайта -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <h1 class="site-title">ДЕНИС БЛАГОСЛАВНЫЙ</h1>
+                <div class="gold-cross">
+                    <i class="fas fa-cross"></i>
+                </div>
+                <p style="font-size: 1.3rem; max-width: 800px; color: #FFD700;">Сайт о духовности, вере и святости в нашей жизни</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Навигация -->
+    <nav>
+        <div class="container">
+            <ul class="nav-links">
+                <li><a href="#home"><i class="fas fa-home"></i> Главная</a></li>
+                <li><a href="#anthem"><i class="fas fa-flag"></i> Гимн Казахстана</a></li>
+                <li><a href="#saint"><i class="fas fa-pray"></i> Святой человек</a></li>
+                <li><a href="#about"><i class="fas fa-info-circle"></i> О сайте</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Декоративный элемент -->
+        <div class="decorative-border"></div>
+
+        <!-- Секция с гимном Казахстана -->
+        <section id="anthem" class="anthem-section">
+            <h2><i class="fas fa-flag"></i> Государственный гимн Республики Казахстан</h2>
+            
+            <div class="anthem-text">
+                <div>
+                    <h3>Текст на русском языке</h3>
+                    <p>В небе золотое солнце,<br>
+                    В степи золотое зерно.<br>
+                    Сказание о мужестве —<br>
+                    Моя страна.<br>
+                    В седой древности<br>
+                    Родилась наша слава,<br>
+                    Горд и силен<br>
+                    Мой казахский народ.</p>
+                    
+                    <p>Припев:<br>
+                    О, мой народ! О, моя страна!<br>
+                    Я твой цветок, взращенный тобой.<br>
+                    Я песня, звенящая на твоих устах,<br>
+                    Родина моя — мой Казахстан.</p>
+                    
+                    <p>У меня простор неоглядный<br>
+                    И дорога, открытая в будущее.<br>
+                    У меня независимый,<br>
+                    Сплоченный, единый народ.<br>
+                    Как извечного друга<br>
+                    Встречает новое время<br>
+                    Наша счастливая страна,<br>
+                    Наш народ.</p>
+                    
+                    <p>Припев:<br>
+                    О, мой народ! О, моя страна!<br>
+                    Я твой цветок, взращенный тобой.<br>
+                    Я песня, звенящая на твоих устах,<br>
+                    Родина моя — мой Казахстан.</p>
+                </div>
+                
+                <div>
+                    <h3>Қазақстан Республикасының Мемлекеттік Әнұраны</h3>
+                    <p>Алтын күн аспаны,<br>
+                    Алтын дән даласы,<br>
+                    Ерліктің дастаны —<br>
+                    Еліме қарашы!<br>
+                    Ежелден ер деген,<br>
+                    Даңқымыз шықты ғой,<br>
+                    Намысын бермеген,<br>
+                    Қазағым мықты ғой!</p>
+                    
+                    <p>Қайырмасы:<br>
+                    Менің елім, менің елім,<br>
+                    Гүлің болып егілемін,<br>
+                    Жырың болып төгілемін, елім!<br>
+                    Туған жерім — Қазақстаным!</p>
+                    
+                    <p>Ұрпаққа жол ашқан,<br>
+                    Кең байтақ жерім бар.<br>
+                    Бірлігі жарасқан,<br>
+                    Тәуелсіз елім бар.<br>
+                    Қарсы алған уақытты,<br>
+                    Мәңгілік досындай.<br>
+                    Біздің ел бақытты,<br>
+                    Біздің ел осындай!</p>
+                    
+                    <p>Қайырмасы:<br>
+                    Менің елім, менің елім,<br>
+                    Гүлің болып егілемін,<br>
+                    Жырың болып төгілемін, елім!<br>
+                    Туған жерім — Қазақстаным!</p>
+                </div>
+            </div>
+            
+            <div class="anthem-note">
+                <p><strong>Примечание:</strong> Гимн Казахстана был принят 7 января 2006 года. Музыка композитора Шамши Калдаякова на слова Жумекена Нажимеденова, Нурсултана Назарбаева. Символизирует единство, свободу и независимость казахского народа.</p>
+            </div>
+        </section>
+
+        <!-- Разделитель -->
+        <div class="divider"></div>
+
+        <!-- Секция о святом человеке -->
+        <section id="saint">
+            <h2><i class="fas fa-pray"></i> Святой Николай Чудотворец</h2>
+            
+            <img src="https://images.unsplash.com/photo-1544830287-7a6c4566e4e3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Святой Николай Чудотворец" class="saint-image">
+            
+            <p>Святой Николай, также известный как Николай Чудотворец или Николай Угодник, является одним из самых почитаемых святых в христианском мире. Родился он в III веке в городе Патара (Малая Азия) в семье состоятельных родителей-христиан.</p>
+            
+            <p>С юных лет Николай проявлял особое рвение к вере и духовной жизни. После смерти родителей он раздал всё своё наследство бедным и посвятил жизнь служению Богу. Позже он был избран епископом города Миры в Ликии (ныне территория Турции).</p>
+            
+            <h3>Чудеса и деяния</h3>
+            <p>Святой Николай прославился многочисленными чудесами и добрыми делами:</p>
+            <ul style="margin-left: 20px; margin-bottom: 15px;">
+                <li>Спасение трёх невинно осуждённых от казни</li>
+                <li>Избавление Мир Ликийских от голода</li>
+                <li>Успокоение морской бури и спасение тонущих моряков</li>
+                <li>Таинственная помощь бедным, особенно трём сёстрам, которых он спас от бесчестия, подбросив им в дом мешочки с золотом</li>
+            </ul>
+            
+            <div class="saint-quote">
+                "Доброта без дела мертва есть. Истинная вера проявляется в делах милосердия."
+            </div>
+            
+            <h3>Наследие и почитание</h3>
+            <p>Святой Николай умер 6 декабря 343 года. Его мощи хранятся в базилике Святого Николая в Бари (Италия). Он является покровителем моряков, путешественников, купцов, детей и студентов. В западной традиции образ святого Николая трансформировался в Санта-Клауса, дарующего подарки детям.</p>
+            
+            <p>Православная церковь чтит память святителя Николая 19 декабря (день преставления) и 22 мая (перенесение мощей). Его икону можно найти практически в каждом православном храме, а его имя носит множество церквей по всему миру.</p>
+            
+            <p>Жизнь святого Николая учит нас, что истинная святость проявляется в активной любви к ближним, милосердии и готовности прийти на помощь всем нуждающимся, часто даже анонимно, без ожидания благодарности или признания.</p>
+        </section>
+
+        <!-- Разделитель -->
+        <div class="divider"></div>
+
+        <!-- О сайте -->
+        <section id="about">
+            <h2><i class="fas fa-info-circle"></i> О сайте "Денис Благославный"</h2>
+            <p>Этот сайт создан с целью освещения духовных и культурных ценностей. Название "Денис Благославный" символизирует благословение и стремление к духовному развитию.</p>
+            
+            <p>Мы верим, что в современном мире важно сохранять связь с духовными традициями, историей и культурным наследием. На этом сайте вы найдете материалы о вере, святых, национальных символах и духовных практиках.</p>
+            
+            <p>Цветовая гамма сайта (чёрный и оранжевый) выбрана не случайно: чёрный символизирует смирение и глубину веры, а оранжевый — духовное просветление и благодать. Золотой крест в заголовке олицетворяет божественную благодать и святость.</p>
+            
+            <p>Мы надеемся, что материалы этого сайта помогут вам в духовном поиске и укреплении веры.</p>
+        </section>
+    </div>
+
+    <!-- Футер -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="gold-cross footer-logo">
+                    <i class="fas fa-cross"></i>
+                </div>
+                <h3 style="color: #FFA500; margin-bottom: 10px;">Денис Благославный</h3>
+                <p class="copyright">© 2023 Духовно-просветительский сайт. Все права защищены.</p>
+                <p style="color: #FFD700; margin-top: 10px;">Во славу Божию и на пользу ближним</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Кнопка наверх -->
+    <div class="scroll-top" id="scrollTop">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+
+    <script>
+        // Плавная прокрутка к якорям
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if(targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if(targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 100,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // Кнопка "наверх"
+        const scrollTopBtn = document.getElementById('scrollTop');
+        
+        window.addEventListener('scroll', function() {
+            if (window.pageYOffset > 300) {
+                scrollTopBtn.style.display = 'flex';
+            } else {
+                scrollTopBtn.style.display = 'none';
+            }
+        });
+        
+        scrollTopBtn.addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+        
+        // Изначально скрываем кнопку
+        scrollTopBtn.style.display = 'none';
+        
+        // Анимация при загрузке
+        document.addEventListener('DOMContentLoaded', function() {
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.5s';
+            
+            setTimeout(function() {
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+    </script>
+</body>
+</html>
