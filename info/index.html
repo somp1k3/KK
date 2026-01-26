@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>K1ratchi Info - База знаний по предметам</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f9ff;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #1a2a6c, #3a7bd5);
+            color: white;
+            padding: 30px 0;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        .header-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .logo i {
+            font-size: 2.5rem;
+            margin-right: 15px;
+            color: #4fc3f7;
+        }
+        
+        .logo h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+        
+        .tagline {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin-top: 10px;
+        }
+        
+        .search-box {
+            margin-top: 25px;
+            width: 100%;
+            max-width: 600px;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 15px 20px;
+            border-radius: 50px;
+            border: none;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .search-box input:focus {
+            outline: 3px solid #4fc3f7;
+        }
+        
+        .subjects-section {
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 25px;
+            color: #1a2a6c;
+            border-left: 5px solid #3a7bd5;
+            padding-left: 15px;
+        }
+        
+        .subjects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+        
+        .subject-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            border-top: 5px solid;
+        }
+        
+        .subject-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.12);
+        }
+        
+        .subject-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .subject-title {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #1a2a6c;
+        }
+        
+        .subject-desc {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        
+        .subject-stats {
+            display: flex;
+            justify-content: space-between;
+            color: #777;
+            font-size: 0.9rem;
+        }
+        
+        .subject-math { border-color: #ff5722; }
+        .subject-physics { border-color: #2196f3; }
+        .subject-chemistry { border-color: #4caf50; }
+        .subject-biology { border-color: #9c27b0; }
+        .subject-history { border-color: #ff9800; }
+        .subject-literature { border-color: #009688; }
+        .subject-english { border-color: #795548; }
+        .subject-informatics { border-color: #3f51b5; }
+        
+        .subject-math .subject-icon { color: #ff5722; }
+        .subject-physics .subject-icon { color: #2196f3; }
+        .subject-chemistry .subject-icon { color: #4caf50; }
+        .subject-biology .subject-icon { color: #9c27b0; }
+        .subject-history .subject-icon { color: #ff9800; }
+        .subject-literature .subject-icon { color: #009688; }
+        .subject-english .subject-icon { color: #795548; }
+        .subject-informatics .subject-icon { color: #3f51b5; }
+        
+        .content-area {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 40px;
+            display: none;
+        }
+        
+        .content-area.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .back-button {
+            background: #f5f5f5;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #555;
+            transition: background 0.3s;
+        }
+        
+        .back-button:hover {
+            background: #e0e0e0;
+        }
+        
+        .content-title {
+            font-size: 2rem;
+            color: #1a2a6c;
+        }
+        
+        .topics-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .topic-item {
+            background: #f8fbff;
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 4px solid #3a7bd5;
+            transition: background 0.3s;
+        }
+        
+        .topic-item:hover {
+            background: #eef5ff;
+        }
+        
+        .topic-title {
+            font-size: 1.3rem;
+            color: #1a2a6c;
+            margin-bottom: 10px;
+        }
+        
+        .explanation {
+            background: #f0f7ff;
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 30px;
+            border-left: 4px solid #4fc3f7;
+        }
+        
+        .explanation-title {
+            font-size: 1.5rem;
+            color: #1a2a6c;
+            margin-bottom: 15px;
+        }
+        
+        .examples {
+            background: #fff8e1;
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 30px;
+            border-left: 4px solid #ffb300;
+        }
+        
+        .examples-title {
+            font-size: 1.5rem;
+            color: #1a2a6c;
+            margin-bottom: 15px;
+        }
+        
+        .example-item {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px dashed #ddd;
+        }
+        
+        .example-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .resources {
+            margin-top: 40px;
+        }
+        
+        .resources-title {
+            font-size: 1.5rem;
+            color: #1a2a6c;
+            margin-bottom: 20px;
+        }
+        
+        .resources-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .resource-item {
+            background: #e8f5e9;
+            padding: 12px 20px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            color: #2e7d32;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            color: #666;
+            border-top: 1px solid #eee;
+            margin-top: 50px;
+        }
+        
+        @media (max-width: 768px) {
+            .subjects-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+            
+            .logo h1 {
+                font-size: 2rem;
+            }
+            
+            .tagline {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-graduation-cap"></i>
+                    <h1>K1ratchi Info</h1>
+                </div>
+                <p class="tagline">База знаний по школьным предметам с объяснениями, методами решения и дополнительными материалами для эффективного обучения</p>
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Поиск по темам, предметам или ключевым словам...">
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <main class="container">
+        <section class="subjects-section">
+            <h2 class="section-title">Предметы</h2>
+            <div class="subjects-grid" id="subjectsGrid">
+                <!-- Предметы будут добавлены через JavaScript -->
+            </div>
+        </section>
+        
+        <section id="contentArea" class="content-area">
+            <!-- Контент по предмету будет загружаться динамически -->
+        </section>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <p>© 2023 K1ratchi Info. Все права защищены.</p>
+            <p>Образовательный ресурс для школьников и студентов</p>
+        </div>
+    </footer>
+
+    <script>
+        // База данных по предметам
+        const subjectsDB = {
+            math: {
+                id: "math",
+                name: "Математика",
+                icon: "fas fa-calculator",
+                description: "Алгебра, геометрия, математический анализ",
+                topicsCount: 24,
+                resourcesCount: 45,
+                topics: [
+                    {
+                        title: "Решение квадратных уравнений",
+                        explanation: "Квадратное уравнение — это уравнение вида ax² + bx + c = 0, где a, b, c — числа, причём a ≠ 0. Для решения квадратного уравнения используется дискриминант: D = b² - 4ac. В зависимости от значения дискриминанта уравнение может иметь два, один или ни одного действительного корня.",
+                        examples: [
+                            {
+                                problem: "Решить уравнение: x² - 5x + 6 = 0",
+                                solution: "D = (-5)² - 4·1·6 = 25 - 24 = 1. Так как D > 0, уравнение имеет два корня: x₁ = (5 + √1)/2 = 3, x₂ = (5 - √1)/2 = 2."
+                            },
+                            {
+                                problem: "Решить уравнение: 2x² + 4x + 2 = 0",
+                                solution: "D = 4² - 4·2·2 = 16 - 16 = 0. Так как D = 0, уравнение имеет один корень: x = -4/(2·2) = -1."
+                            }
+                        ],
+                        methods: ["Через дискриминант", "Теорема Виета", "Выделение полного квадрата"],
+                        resources: ["Формулы", "Калькулятор", "Задачи для практики"]
+                    },
+                    {
+                        title: "Теорема Пифагора",
+                        explanation: "Теорема Пифагора утверждает, что в прямоугольном треугольнике квадрат длины гипотенузы равен сумме квадратов длин катетов. Формула: c² = a² + b², где c — гипотенуза, a и b — катеты.",
+                        examples: [
+                            {
+                                problem: "Найти гипотенузу прямоугольного треугольника с катетами 3 и 4",
+                                solution: "c² = 3² + 4² = 9 + 16 = 25, значит c = √25 = 5."
+                            }
+                        ],
+                        methods: ["Прямое применение теоремы", "Обратная теорема"],
+                        resources: ["Интерактивная модель", "Доказательства", "Историческая справка"]
+                    }
+                ],
+                resources: ["Формулы", "Калькуляторы", "Онлайн-учебник", "Видеоуроки", "Тесты"]
+            },
+            physics: {
+                id: "physics",
+                name: "Физика",
+                icon: "fas fa-atom",
+                description: "Механика, термодинамика, оптика, электричество",
+                topicsCount: 18,
+                resourcesCount: 32,
+                topics: [
+                    {
+                        title: "Законы Ньютона",
+                        explanation: "Законы Ньютона — три закона, лежащие в основе классической механики. Первый закон: тело сохраняет состояние покоя или равномерного прямолинейного движения, пока на него не действуют силы. Второй закон: ускорение тела прямо пропорционально равнодействующей сил и обратно пропорционально его массе. Третий закон: силы взаимодействия двух тел равны по величине и противоположны по направлению.",
+                        examples: [
+                            {
+                                problem: "Тело массой 2 кг движется с ускорением 3 м/с². Найти силу, действующую на тело.",
+                                solution: "По второму закону Ньютона: F = m·a = 2 кг · 3 м/с² = 6 Н."
+                            }
+                        ],
+                        methods: ["Применение законов Ньютона", "Решение систем уравнений"],
+                        resources: ["Интерактивные модели", "Видеоэксперименты"]
+                    }
+                ],
+                resources: ["Формулы", "Калькуляторы", "Лабораторные работы", "Справочник"]
+            },
+            chemistry: {
+                id: "chemistry",
+                name: "Химия",
+                icon: "fas fa-flask",
+                description: "Органическая и неорганическая химия, реакции",
+                topicsCount: 22,
+                resourcesCount: 38,
+                topics: [
+                    {
+                        title: "Химические уравнения",
+                        explanation: "Химическое уравнение — это условная запись химической реакции с помощью химических формул и коэффициентов. Уравнение должно быть сбалансировано по закону сохранения массы веществ.",
+                        examples: [
+                            {
+                                problem: "Составьте уравнение реакции горения метана (CH₄)",
+                                solution: "CH₄ + 2O₂ → CO₂ + 2H₂O"
+                            }
+                        ],
+                        methods: ["Метод электронного баланса", "Метод полуреакций"],
+                        resources: ["Таблица Менделеева", "Калькулятор молярных масс"]
+                    }
+                ],
+                resources: ["Таблица Менделеева", "Растворимость веществ", "Химические калькуляторы"]
+            },
+            biology: {
+                id: "biology",
+                name: "Биология",
+                icon: "fas fa-dna",
+                description: "Анатомия, генетика, экология, ботаника",
+                topicsCount: 16,
+                resourcesCount: 28,
+                topics: [
+                    {
+                        title: "Строение клетки",
+                        explanation: "Клетка — элементарная единица строения и жизнедеятельности всех организмов. Состоит из ядра, цитоплазмы и клеточной мембраны. У растительных клеток также есть клеточная стенка и хлоропласты.",
+                        examples: [
+                            {
+                                problem: "Перечислите отличия растительной клетки от животной",
+                                solution: "Растительная клетка имеет клеточную стенку из целлюлозы, хлоропласты и крупную центральную вакуоль. Животная клетка этих структур не имеет."
+                            }
+                        ],
+                        methods: ["Микроскопирование", "Сравнительный анализ"],
+                        resources: ["3D-модель клетки", "Интерактивный атлас"]
+                    }
+                ],
+                resources: ["Атлас анатомии", "Генетические задачи", "Определители"]
+            }
+        };
+
+        // Инициализация страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            renderSubjects();
+            setupSearch();
+        });
+
+        // Отображение всех предметов
+        function renderSubjects() {
+            const subjectsGrid = document.getElementById('subjectsGrid');
+            subjectsGrid.innerHTML = '';
+            
+            for (const subjectKey in subjectsDB) {
+                const subject = subjectsDB[subjectKey];
+                const subjectCard = document.createElement('div');
+                subjectCard.className = `subject-card subject-${subject.id}`;
+                subjectCard.innerHTML = `
+                    <div class="subject-icon">
+                        <i class="${subject.icon}"></i>
+                    </div>
+                    <h3 class="subject-title">${subject.name}</h3>
+                    <p class="subject-desc">${subject.description}</p>
+                    <div class="subject-stats">
+                        <span><i class="fas fa-book"></i> ${subject.topicsCount} тем</span>
+                        <span><i class="fas fa-file-alt"></i> ${subject.resourcesCount} материалов</span>
+                    </div>
+                `;
+                
+                subjectCard.addEventListener('click', () => showSubjectContent(subjectKey));
+                subjectsGrid.appendChild(subjectCard);
+            }
+        }
+
+        // Показать контент по выбранному предмету
+        function showSubjectContent(subjectKey) {
+            const subject = subjectsDB[subjectKey];
+            const contentArea = document.getElementById('contentArea');
+            
+            // Генерация HTML для тем предмета
+            let topicsHTML = '';
+            subject.topics.forEach(topic => {
+                topicsHTML += `
+                    <div class="topic-item">
+                        <h3 class="topic-title">${topic.title}</h3>
+                        <p>${topic.explanation.substring(0, 150)}...</p>
+                        <button class="back-button" style="margin-top: 10px;" onclick="showTopicDetail('${subjectKey}', '${topic.title}')">Подробнее</button>
+                    </div>
+                `;
+            });
+            
+            // Генерация HTML для ресурсов
+            let resourcesHTML = '';
+            subject.resources.forEach(resource => {
+                resourcesHTML += `<span class="resource-item">${resource}</span>`;
+            });
+            
+            contentArea.innerHTML = `
+                <div class="content-header">
+                    <button class="back-button" onclick="hideSubjectContent()"><i class="fas fa-arrow-left"></i> Назад к предметам</button>
+                    <h2 class="content-title">${subject.name}</h2>
+                    <div class="subject-icon">
+                        <i class="${subject.icon}"></i>
+                    </div>
+                </div>
+                
+                <p>${subject.description}. Изучите материалы ниже для углубленного понимания предмета.</p>
+                
+                <h3 style="margin: 30px 0 15px 0; color: #1a2a6c;">Темы по предмету</h3>
+                <div class="topics-list">
+                    ${topicsHTML}
+                </div>
+                
+                <div class="resources">
+                    <h3 class="resources-title">Дополнительные ресурсы</h3>
+                    <div class="resources-list">
+                        ${resourcesHTML}
+                    </div>
+                </div>
+            `;
+            
+            contentArea.classList.add('active');
+            document.querySelector('.subjects-section').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Показать детальную информацию по теме
+        function showTopicDetail(subjectKey, topicTitle) {
+            const subject = subjectsDB[subjectKey];
+            const topic = subject.topics.find(t => t.title === topicTitle);
+            const contentArea = document.getElementById('contentArea');
+            
+            // Генерация HTML для примеров
+            let examplesHTML = '';
+            topic.examples.forEach(example => {
+                examplesHTML += `
+                    <div class="example-item">
+                        <p><strong>Задача:</strong> ${example.problem}</p>
+                        <p><strong>Решение:</strong> ${example.solution}</p>
+                    </div>
+                `;
+            });
+            
+            // Генерация HTML для методов
+            let methodsHTML = '';
+            topic.methods.forEach(method => {
+                methodsHTML += `<span class="resource-item">${method}</span>`;
+            });
+            
+            // Генерация HTML для ресурсов темы
+            let topicResourcesHTML = '';
+            topic.resources.forEach(resource => {
+                topicResourcesHTML += `<span class="resource-item">${resource}</span>`;
+            });
+            
+            contentArea.innerHTML = `
+                <div class="content-header">
+                    <button class="back-button" onclick="showSubjectContent('${subjectKey}')"><i class="fas fa-arrow-left"></i> Назад к предмету</button>
+                    <h2 class="content-title">${topicTitle}</h2>
+                    <div class="subject-icon">
+                        <i class="${subject.icon}"></i>
+                    </div>
+                </div>
+                
+                <div class="explanation">
+                    <h3 class="explanation-title">Объяснение</h3>
+                    <p>${topic.explanation}</p>
+                </div>
+                
+                <div class="examples">
+                    <h3 class="examples-title">Примеры решения</h3>
+                    ${examplesHTML}
+                </div>
+                
+                <div style="margin-top: 30px;">
+                    <h3 class="resources-title">Методы решения</h3>
+                    <div class="resources-list">
+                        ${methodsHTML}
+                    </div>
+                </div>
+                
+                <div style="margin-top: 30px;">
+                    <h3 class="resources-title">Ресурсы по теме</h3>
+                    <div class="resources-list">
+                        ${topicResourcesHTML}
+                    </div>
+                </div>
+            `;
+            
+            contentArea.classList.add('active');
+            contentArea.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Скрыть контент и показать список предметов
+        function hideSubjectContent() {
+            const contentArea = document.getElementById('contentArea');
+            contentArea.classList.remove('active');
+            document.querySelector('.subjects-section').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Настройка поиска
+        function setupSearch() {
+            const searchInput = document.getElementById('searchInput');
+            
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase().trim();
+                
+                if (searchTerm.length === 0) {
+                    renderSubjects();
+                    return;
+                }
+                
+                // Фильтрация предметов по поисковому запросу
+                const filteredSubjects = {};
+                
+                for (const subjectKey in subjectsDB) {
+                    const subject = subjectsDB[subjectKey];
+                    
+                    // Проверка на соответствие запросу в названии, описании или темах
+                    const matchesName = subject.name.toLowerCase().includes(searchTerm);
+                    const matchesDesc = subject.description.toLowerCase().includes(searchTerm);
+                    
+                    // Проверка тем предмета
+                    let matchesTopic = false;
+                    for (const topic of subject.topics) {
+                        if (topic.title.toLowerCase().includes(searchTerm) || 
+                            topic.explanation.toLowerCase().includes(searchTerm)) {
+                            matchesTopic = true;
+                            break;
+                        }
+                    }
+                    
+                    if (matchesName || matchesDesc || matchesTopic) {
+                        filteredSubjects[subjectKey] = subject;
+                    }
+                }
+                
+                // Отображение отфильтрованных предметов
+                const subjectsGrid = document.getElementById('subjectsGrid');
+                subjectsGrid.innerHTML = '';
+                
+                if (Object.keys(filteredSubjects).length === 0) {
+                    subjectsGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 30px; color: #666;">По вашему запросу ничего не найдено</p>';
+                    return;
+                }
+                
+                for (const subjectKey in filteredSubjects) {
+                    const subject = filteredSubjects[subjectKey];
+                    const subjectCard = document.createElement('div');
+                    subjectCard.className = `subject-card subject-${subject.id}`;
+                    subjectCard.innerHTML = `
+                        <div class="subject-icon">
+                            <i class="${subject.icon}"></i>
+                        </div>
+                        <h3 class="subject-title">${subject.name}</h3>
+                        <p class="subject-desc">${subject.description}</p>
+                        <div class="subject-stats">
+                            <span><i class="fas fa-book"></i> ${subject.topicsCount} тем</span>
+                            <span><i class="fas fa-file-alt"></i> ${subject.resourcesCount} материалов</span>
+                        </div>
+                    `;
+                    
+                    subjectCard.addEventListener('click', () => showSubjectContent(subjectKey));
+                    subjectsGrid.appendChild(subjectCard);
+                }
+            });
+        }
+
+        // Сделаем функции доступными глобально для обработчиков событий в HTML
+        window.showSubjectContent = showSubjectContent;
+        window.hideSubjectContent = hideSubjectContent;
+        window.showTopicDetail = showTopicDetail;
+    </script>
+</body>
+</html>
