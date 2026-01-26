@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>K1ratchi Info - База знаний по предметам</title>
+    <title>K1ratchi Info | База знаний 1-9 класс</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -13,25 +13,87 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
+        :root {
+            --bg-dark: #0a0a14;
+            --bg-card: rgba(20, 20, 35, 0.85);
+            --bg-card-hover: rgba(30, 30, 55, 0.9);
+            --text-primary: #f0f0ff;
+            --text-secondary: #b0b0d0;
+            --accent-1: #00ffcc;
+            --accent-2: #ff00cc;
+            --accent-3: #00ccff;
+            --border-color: rgba(100, 100, 255, 0.2);
+            --shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            --transition: all 0.3s ease;
+        }
+        
         body {
-            background-color: #f5f9ff;
-            color: #333;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
             line-height: 1.6;
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(100, 0, 255, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(255, 0, 200, 0.1) 0%, transparent 20%);
+            overflow-x: hidden;
+        }
+        
+        .rgb-border {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        
+        .rgb-border::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 16px;
+            padding: 2px;
+            background: linear-gradient(45deg, var(--accent-1), var(--accent-2), var(--accent-3), var(--accent-1));
+            background-size: 300% 300%;
+            -webkit-mask: 
+                linear-gradient(#fff 0 0) content-box, 
+                linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            animation: rgb-shift 4s ease infinite;
+        }
+        
+        @keyframes rgb-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .rgb-text {
+            background: linear-gradient(90deg, var(--accent-1), var(--accent-2), var(--accent-3));
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: rgb-text 3s ease infinite;
+        }
+        
+        @keyframes rgb-text {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
         
         .container {
-            max-width: 1200px;
+            max-width: 1300px;
             margin: 0 auto;
             padding: 20px;
         }
         
         header {
-            background: linear-gradient(135deg, #1a2a6c, #3a7bd5);
-            color: white;
-            padding: 30px 0;
-            border-radius: 0 0 20px 20px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
+            padding: 40px 0 30px;
+            position: relative;
+            overflow: hidden;
         }
         
         .header-content {
@@ -39,132 +101,180 @@
             flex-direction: column;
             align-items: center;
             text-align: center;
+            position: relative;
+            z-index: 2;
         }
         
         .logo {
             display: flex;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
         }
         
-        .logo i {
-            font-size: 2.5rem;
-            margin-right: 15px;
-            color: #4fc3f7;
+        .logo-icon {
+            font-size: 3.5rem;
+            margin-right: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            padding: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+        }
+        
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
         }
         
         .logo h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+        
+        .logo-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            letter-spacing: 2px;
         }
         
         .tagline {
-            font-size: 1.2rem;
-            opacity: 0.9;
-            max-width: 800px;
-            margin-top: 10px;
+            font-size: 1.3rem;
+            max-width: 900px;
+            margin-top: 15px;
+            color: var(--text-secondary);
+            line-height: 1.8;
         }
         
         .search-box {
-            margin-top: 25px;
+            margin-top: 35px;
             width: 100%;
-            max-width: 600px;
+            max-width: 700px;
+            position: relative;
         }
         
         .search-box input {
             width: 100%;
-            padding: 15px 20px;
+            padding: 18px 25px;
             border-radius: 50px;
             border: none;
             font-size: 1.1rem;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            background: rgba(20, 20, 35, 0.7);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+            transition: var(--transition);
         }
         
         .search-box input:focus {
-            outline: 3px solid #4fc3f7;
+            outline: none;
+            border-color: var(--accent-1);
+            box-shadow: 0 0 20px rgba(0, 255, 204, 0.3);
+        }
+        
+        .search-icon {
+            position: absolute;
+            right: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--accent-3);
+            font-size: 1.2rem;
         }
         
         .subjects-section {
-            margin-bottom: 40px;
+            margin-bottom: 50px;
         }
         
         .section-title {
-            font-size: 2rem;
-            margin-bottom: 25px;
-            color: #1a2a6c;
-            border-left: 5px solid #3a7bd5;
-            padding-left: 15px;
+            font-size: 2.3rem;
+            margin-bottom: 35px;
+            position: relative;
+            display: inline-block;
+            padding-bottom: 10px;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+            border-radius: 3px;
         }
         
         .subjects-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
         }
         
         .subject-card {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
-            transition: transform 0.3s, box-shadow 0.3s;
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 30px;
+            transition: var(--transition);
             cursor: pointer;
-            border-top: 5px solid;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
         }
         
         .subject-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.12);
+            background: var(--bg-card-hover);
+            transform: translateY(-8px);
+            box-shadow: var(--shadow), 0 10px 30px rgba(0, 100, 255, 0.2);
         }
         
         .subject-icon {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+            opacity: 0.9;
         }
         
         .subject-title {
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-            color: #1a2a6c;
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            font-weight: 700;
         }
         
         .subject-desc {
-            color: #666;
-            margin-bottom: 20px;
+            color: var(--text-secondary);
+            margin-bottom: 25px;
+            flex-grow: 1;
         }
         
-        .subject-stats {
+        .subject-classes {
             display: flex;
-            justify-content: space-between;
-            color: #777;
-            font-size: 0.9rem;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
         }
         
-        .subject-math { border-color: #ff5722; }
-        .subject-physics { border-color: #2196f3; }
-        .subject-chemistry { border-color: #4caf50; }
-        .subject-biology { border-color: #9c27b0; }
-        .subject-history { border-color: #ff9800; }
-        .subject-literature { border-color: #009688; }
-        .subject-english { border-color: #795548; }
-        .subject-informatics { border-color: #3f51b5; }
-        
-        .subject-math .subject-icon { color: #ff5722; }
-        .subject-physics .subject-icon { color: #2196f3; }
-        .subject-chemistry .subject-icon { color: #4caf50; }
-        .subject-biology .subject-icon { color: #9c27b0; }
-        .subject-history .subject-icon { color: #ff9800; }
-        .subject-literature .subject-icon { color: #009688; }
-        .subject-english .subject-icon { color: #795548; }
-        .subject-informatics .subject-icon { color: #3f51b5; }
+        .class-badge {
+            background: rgba(0, 200, 255, 0.1);
+            color: var(--accent-3);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            border: 1px solid rgba(0, 200, 255, 0.2);
+        }
         
         .content-area {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
-            margin-bottom: 40px;
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 35px;
+            margin-bottom: 50px;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
             display: none;
+            position: relative;
         }
         
         .content-area.active {
@@ -173,162 +283,243 @@
         }
         
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         .content-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #f0f0f0;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: 20px;
         }
         
         .back-button {
-            background: #f5f5f5;
-            border: none;
-            padding: 10px 20px;
+            background: rgba(0, 150, 255, 0.1);
+            border: 1px solid rgba(0, 150, 255, 0.3);
+            color: var(--accent-3);
+            padding: 12px 25px;
             border-radius: 50px;
             cursor: pointer;
             font-weight: 600;
-            color: #555;
-            transition: background 0.3s;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
         .back-button:hover {
-            background: #e0e0e0;
+            background: rgba(0, 150, 255, 0.2);
+            transform: translateX(-5px);
         }
         
         .content-title {
-            font-size: 2rem;
-            color: #1a2a6c;
+            font-size: 2.2rem;
+            font-weight: 700;
         }
         
-        .topics-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
+        .class-selector {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
             margin-bottom: 30px;
         }
         
-        .topic-item {
-            background: #f8fbff;
+        .class-btn {
+            padding: 10px 20px;
+            background: rgba(100, 100, 255, 0.1);
+            border: 1px solid rgba(100, 100, 255, 0.2);
+            color: var(--text-secondary);
             border-radius: 10px;
-            padding: 20px;
-            border-left: 4px solid #3a7bd5;
-            transition: background 0.3s;
+            cursor: pointer;
+            transition: var(--transition);
         }
         
-        .topic-item:hover {
-            background: #eef5ff;
+        .class-btn.active {
+            background: rgba(0, 200, 255, 0.2);
+            color: var(--accent-3);
+            border-color: var(--accent-3);
+            box-shadow: 0 0 15px rgba(0, 200, 255, 0.2);
+        }
+        
+        .class-btn:hover:not(.active) {
+            background: rgba(100, 100, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .topics-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .topic-card {
+            background: rgba(10, 15, 30, 0.5);
+            border-radius: 12px;
+            padding: 25px;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+        
+        .topic-card:hover {
+            background: rgba(20, 25, 50, 0.7);
+            border-color: var(--accent-1);
+            transform: translateY(-5px);
         }
         
         .topic-title {
-            font-size: 1.3rem;
-            color: #1a2a6c;
-            margin-bottom: 10px;
-        }
-        
-        .explanation {
-            background: #f0f7ff;
-            padding: 25px;
-            border-radius: 10px;
-            margin-top: 30px;
-            border-left: 4px solid #4fc3f7;
-        }
-        
-        .explanation-title {
-            font-size: 1.5rem;
-            color: #1a2a6c;
+            font-size: 1.4rem;
             margin-bottom: 15px;
+            color: var(--accent-1);
         }
         
-        .examples {
-            background: #fff8e1;
-            padding: 25px;
-            border-radius: 10px;
-            margin-top: 30px;
-            border-left: 4px solid #ffb300;
-        }
-        
-        .examples-title {
-            font-size: 1.5rem;
-            color: #1a2a6c;
-            margin-bottom: 15px;
-        }
-        
-        .example-item {
+        .topic-desc {
+            color: var(--text-secondary);
             margin-bottom: 20px;
-            padding-bottom: 20px;
-            border-bottom: 1px dashed #ddd;
+            line-height: 1.7;
         }
         
-        .example-item:last-child {
-            margin-bottom: 0;
-            padding-bottom: 0;
-            border-bottom: none;
+        .topic-example {
+            background: rgba(0, 50, 100, 0.2);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 3px solid var(--accent-3);
         }
         
-        .resources {
-            margin-top: 40px;
+        .example-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--accent-3);
         }
         
-        .resources-title {
-            font-size: 1.5rem;
-            color: #1a2a6c;
-            margin-bottom: 20px;
+        .solution {
+            background: rgba(0, 100, 50, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 3px solid #00ffaa;
         }
         
-        .resources-list {
+        .solution-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #00ffaa;
+        }
+        
+        .methods-list {
             display: flex;
             flex-wrap: wrap;
-            gap: 15px;
+            gap: 10px;
+            margin-top: 15px;
         }
         
-        .resource-item {
-            background: #e8f5e9;
-            padding: 12px 20px;
-            border-radius: 50px;
+        .method-tag {
+            background: rgba(200, 0, 255, 0.1);
+            color: #cc00ff;
+            padding: 6px 12px;
+            border-radius: 20px;
             font-size: 0.9rem;
-            color: #2e7d32;
+            border: 1px solid rgba(200, 0, 255, 0.2);
         }
         
         footer {
             text-align: center;
-            padding: 30px 0;
-            color: #666;
-            border-top: 1px solid #eee;
+            padding: 40px 0;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border-color);
             margin-top: 50px;
         }
         
+        .footer-text {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+        
+        .glow {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 200, 255, 0.1) 0%, transparent 70%);
+            filter: blur(40px);
+            z-index: 1;
+        }
+        
+        .glow-1 {
+            top: 10%;
+            left: 5%;
+            background: radial-gradient(circle, rgba(255, 0, 200, 0.1) 0%, transparent 70%);
+        }
+        
+        .glow-2 {
+            bottom: 10%;
+            right: 5%;
+            background: radial-gradient(circle, rgba(0, 255, 200, 0.1) 0%, transparent 70%);
+        }
+        
+        /* Адаптивность */
         @media (max-width: 768px) {
-            .subjects-grid {
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            .logo {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .logo-icon {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+            
+            .logo-text {
+                align-items: center;
             }
             
             .logo h1 {
-                font-size: 2rem;
+                font-size: 2.5rem;
             }
             
-            .tagline {
-                font-size: 1rem;
+            .subjects-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .content-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .topics-container {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
+    <div class="glow glow-1"></div>
+    <div class="glow glow-2"></div>
+    
     <header>
         <div class="container">
             <div class="header-content">
                 <div class="logo">
-                    <i class="fas fa-graduation-cap"></i>
-                    <h1>K1ratchi Info</h1>
+                    <div class="logo-icon">
+                        <i class="fas fa-atom"></i>
+                    </div>
+                    <div class="logo-text">
+                        <h1 class="rgb-text">K1ratchi Info</h1>
+                        <div class="logo-subtitle">База знаний для 1-9 классов</div>
+                    </div>
                 </div>
-                <p class="tagline">База знаний по школьным предметам с объяснениями, методами решения и дополнительными материалами для эффективного обучения</p>
-                <div class="search-box">
-                    <input type="text" id="searchInput" placeholder="Поиск по темам, предметам или ключевым словам...">
+                <p class="tagline">Полная база знаний по всем школьным предметам с 1 по 9 класс. Подробные объяснения, методы решения, примеры и задания для самостоятельной работы.</p>
+                <div class="search-box rgb-border">
+                    <input type="text" id="searchInput" placeholder="Поиск по темам, предметам или классам...">
+                    <div class="search-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
                 </div>
             </div>
         </div>
@@ -336,7 +527,7 @@
     
     <main class="container">
         <section class="subjects-section">
-            <h2 class="section-title">Предметы</h2>
+            <h2 class="section-title rgb-text">Предметы</h2>
             <div class="subjects-grid" id="subjectsGrid">
                 <!-- Предметы будут добавлены через JavaScript -->
             </div>
@@ -349,121 +540,651 @@
     
     <footer>
         <div class="container">
-            <p>© 2023 K1ratchi Info. Все права защищены.</p>
-            <p>Образовательный ресурс для школьников и студентов</p>
+            <p class="footer-text">© 2023 K1ratchi Info. Образовательный ресурс для школьников 1-9 классов.</p>
+            <p>Все материалы представлены для бесплатного использования в учебных целях.</p>
         </div>
     </footer>
 
     <script>
-        // База данных по предметам
+        // Расширенная база данных по предметам для 1-9 классов
         const subjectsDB = {
             math: {
                 id: "math",
                 name: "Математика",
                 icon: "fas fa-calculator",
-                description: "Алгебра, геометрия, математический анализ",
-                topicsCount: 24,
-                resourcesCount: 45,
-                topics: [
-                    {
-                        title: "Решение квадратных уравнений",
-                        explanation: "Квадратное уравнение — это уравнение вида ax² + bx + c = 0, где a, b, c — числа, причём a ≠ 0. Для решения квадратного уравнения используется дискриминант: D = b² - 4ac. В зависимости от значения дискриминанта уравнение может иметь два, один или ни одного действительного корня.",
-                        examples: [
-                            {
-                                problem: "Решить уравнение: x² - 5x + 6 = 0",
-                                solution: "D = (-5)² - 4·1·6 = 25 - 24 = 1. Так как D > 0, уравнение имеет два корня: x₁ = (5 + √1)/2 = 3, x₂ = (5 - √1)/2 = 2."
-                            },
-                            {
-                                problem: "Решить уравнение: 2x² + 4x + 2 = 0",
-                                solution: "D = 4² - 4·2·2 = 16 - 16 = 0. Так как D = 0, уравнение имеет один корень: x = -4/(2·2) = -1."
-                            }
-                        ],
-                        methods: ["Через дискриминант", "Теорема Виета", "Выделение полного квадрата"],
-                        resources: ["Формулы", "Калькулятор", "Задачи для практики"]
-                    },
-                    {
-                        title: "Теорема Пифагора",
-                        explanation: "Теорема Пифагора утверждает, что в прямоугольном треугольнике квадрат длины гипотенузы равен сумме квадратов длин катетов. Формула: c² = a² + b², где c — гипотенуза, a и b — катеты.",
-                        examples: [
-                            {
-                                problem: "Найти гипотенузу прямоугольного треугольника с катетами 3 и 4",
-                                solution: "c² = 3² + 4² = 9 + 16 = 25, значит c = √25 = 5."
-                            }
-                        ],
-                        methods: ["Прямое применение теоремы", "Обратная теорема"],
-                        resources: ["Интерактивная модель", "Доказательства", "Историческая справка"]
-                    }
-                ],
-                resources: ["Формулы", "Калькуляторы", "Онлайн-учебник", "Видеоуроки", "Тесты"]
+                description: "Арифметика, алгебра, геометрия, основы математического анализа",
+                classes: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+                topics: {
+                    1: [
+                        {
+                            title: "Сложение и вычитание в пределах 10",
+                            description: "Основы арифметики: сложение и вычитание однозначных чисел. Изучение состава чисел.",
+                            example: "Задача: У Маши было 5 яблок, 2 она отдала подруге. Сколько яблок осталось у Маши?",
+                            solution: "5 - 2 = 3 яблока осталось у Маши.",
+                            methods: ["Счет на пальцах", "Предметная визуализация", "Числовая прямая"]
+                        },
+                        {
+                            title: "Геометрические фигуры",
+                            description: "Знакомство с основными геометрическими фигурами: круг, квадрат, треугольник, прямоугольник.",
+                            example: "Задание: Найди в комнате предметы, похожие на круг, квадрат и треугольник.",
+                            solution: "Примеры: часы (круг), окно (квадрат или прямоугольник), крыша дома (треугольник).",
+                            methods: ["Визуальное распознавание", "Рисование фигур", "Конструирование из фигур"]
+                        }
+                    ],
+                    2: [
+                        {
+                            title: "Таблица умножения на 2, 3, 4, 5",
+                            description: "Изучение таблицы умножения. Запоминание основных умножений.",
+                            example: "Задача: В каждой коробке по 4 карандаша. Сколько карандашей в 3 коробках?",
+                            solution: "4 × 3 = 12 карандашей.",
+                            methods: ["Запоминание", "Игровые методы", "Практические задачи"]
+                        },
+                        {
+                            title: "Решение задач в два действия",
+                            description: "Составные задачи, требующие выполнения двух арифметических действий.",
+                            example: "Задача: В магазин привезли 15 кг яблок и 10 кг груш. За день продали 8 кг фруктов. Сколько кг фруктов осталось?",
+                            solution: "1) 15 + 10 = 25 кг фруктов всего. 2) 25 - 8 = 17 кг фруктов осталось.",
+                            methods: ["Поэтапное решение", "Составление плана решения", "Проверка результата"]
+                        }
+                    ],
+                    3: [
+                        {
+                            title: "Умножение и деление двузначных чисел",
+                            description: "Умножение и деление чисел в пределах 100. Проверка деления умножением.",
+                            example: "Задача: 24 ученика разделили на 3 равные группы. Сколько учеников в каждой группе?",
+                            solution: "24 ÷ 3 = 8 учеников в каждой группе.",
+                            methods: ["Деление с остатком", "Табличное умножение и деление", "Проверка результата"]
+                        },
+                        {
+                            title: "Периметр и площадь прямоугольника",
+                            description: "Вычисление периметра (сумма всех сторон) и площади (произведение длины и ширины) прямоугольника.",
+                            example: "Задача: Длина прямоугольника 6 см, ширина 4 см. Найдите периметр и площадь.",
+                            solution: "Периметр: P = (6+4)×2 = 20 см. Площадь: S = 6×4 = 24 см².",
+                            methods: ["Формулы периметра и площади", "Практические измерения", "Решение обратных задач"]
+                        }
+                    ],
+                    4: [
+                        {
+                            title: "Деление с остатком",
+                            description: "Деление чисел, когда одно число не делится на другое нацело. Понятие остатка.",
+                            example: "Задача: Разделите 29 на 6. Найдите частное и остаток.",
+                            solution: "29 ÷ 6 = 4 (остаток 5), так как 6×4=24, 29-24=5.",
+                            methods: ["Подбор частного", "Проверка умножением", "Графическое представление"]
+                        },
+                        {
+                            title: "Дроби: обыкновенные дроби",
+                            description: "Понятие дроби как части целого. Чтение и запись обыкновенных дробей.",
+                            example: "Задача: Разделите круг на 8 равных частей. Закрасьте 3/8 круга. Какая часть осталась незакрашенной?",
+                            solution: "Незакрашенной осталась 5/8 круга.",
+                            methods: ["Наглядное представление", "Сравнение дробей", "Решение задач с дробями"]
+                        }
+                    ],
+                    5: [
+                        {
+                            title: "Десятичные дроби",
+                            description: "Запись дробей в десятичной форме. Сравнение, сложение и вычитание десятичных дробей.",
+                            example: "Задача: Сравните числа: 3,25 и 3,205.",
+                            solution: "3,25 > 3,205, так как 25 сотых больше, чем 20,5 сотых.",
+                            methods: ["Приведение к общему знаменателю", "Сравнение по разрядам", "Решение задач с измерениями"]
+                        },
+                        {
+                            title: "Проценты",
+                            description: "Понятие процента как сотой части целого. Нахождение процента от числа.",
+                            example: "Задача: В классе 25 учеников. 20% из них занимаются спортом. Сколько учеников занимаются спортом?",
+                            solution: "25 × 0,20 = 5 учеников занимаются спортом.",
+                            methods: ["Перевод процентов в десятичные дроби", "Составление пропорций", "Решение практических задач"]
+                        }
+                    ],
+                    6: [
+                        {
+                            title: "Отношения и пропорции",
+                            description: "Понятие отношения двух чисел. Пропорция как равенство двух отношений.",
+                            example: "Задача: Решите пропорцию: 3/4 = x/12.",
+                            solution: "x = (3×12)/4 = 9.",
+                            methods: ["Основное свойство пропорции", "Решение задач на пропорциональность", "Прямая и обратная пропорциональность"]
+                        },
+                        {
+                            title: "Координатная плоскость",
+                            description: "Система координат на плоскости. Построение точек по координатам.",
+                            example: "Задача: Постройте точки A(2;3), B(-1;4), C(0;-2) на координатной плоскости.",
+                            solution: "Точка A: 2 единицы вправо по оси X, 3 единицы вверх по оси Y.",
+                            methods: ["Построение точек", "Определение координат", "Симметрия относительно осей"]
+                        }
+                    ],
+                    7: [
+                        {
+                            title: "Линейные уравнения",
+                            description: "Решение уравнений вида ax + b = 0. Раскрытие скобок, приведение подобных слагаемых.",
+                            example: "Задача: Решите уравнение: 3(x - 2) = 5x + 4.",
+                            solution: "3x - 6 = 5x + 4 → 3x - 5x = 4 + 6 → -2x = 10 → x = -5.",
+                            methods: ["Перенос слагаемых", "Раскрытие скобок", "Проверка корней"]
+                        },
+                        {
+                            title: "Формулы сокращенного умножения",
+                            description: "Квадрат суммы и разности, разность квадратов. Применение для упрощения выражений.",
+                            example: "Задача: Упростите выражение: (a + 3)² - (a - 2)².",
+                            solution: "= (a² + 6a + 9) - (a² - 4a + 4) = a² + 6a + 9 - a² + 4a - 4 = 10a + 5.",
+                            methods: ["Запоминание формул", "Геометрическая интерпретация", "Применение в задачах"]
+                        }
+                    ],
+                    8: [
+                        {
+                            title: "Квадратные уравнения",
+                            description: "Решение уравнений вида ax² + bx + c = 0 через дискриминант: D = b² - 4ac.",
+                            example: "Задача: Решите уравнение: x² - 5x + 6 = 0.",
+                            solution: "D = (-5)² - 4×1×6 = 25 - 24 = 1. x₁ = (5+1)/2 = 3, x₂ = (5-1)/2 = 2.",
+                            methods: ["Через дискриминант", "Теорема Виета", "Выделение полного квадрата"]
+                        },
+                        {
+                            title: "Теорема Пифагора",
+                            description: "В прямоугольном треугольнике квадрат гипотенузы равен сумме квадратов катетов: c² = a² + b².",
+                            example: "Задача: Катеты прямоугольного треугольника равны 6 см и 8 см. Найдите гипотенузу.",
+                            solution: "c² = 6² + 8² = 36 + 64 = 100 → c = √100 = 10 см.",
+                            methods: ["Прямое применение теоремы", "Решение обратных задач", "Применение в геометрических задачах"]
+                        }
+                    ],
+                    9: [
+                        {
+                            title: "Функции и их графики",
+                            description: "Понятие функции. Графики линейной, квадратичной функций. Свойства функций.",
+                            example: "Задача: Постройте график функции y = x² - 4x + 3.",
+                            solution: "Вершина параболы: x₀ = -b/(2a) = 4/2 = 2, y₀ = 2² - 4×2 + 3 = -1. Ветви направлены вверх.",
+                            methods: ["Построение по точкам", "Использование свойств", "Анализ графиков"]
+                        },
+                        {
+                            title: "Тригонометрия: синус, косинус, тангенс",
+                            description: "Определение тригонометрических функций в прямоугольном треугольнике. Основные тригонометрические тождества.",
+                            example: "Задача: В прямоугольном треугольнике гипотенуза равна 10, один из катетов 6. Найдите синус, косинус и тангенс острого угла, противолежащего катету 6.",
+                            solution: "Второй катет: √(10² - 6²) = √(100-36) = √64 = 8. sin = 6/10 = 0.6, cos = 8/10 = 0.8, tg = 6/8 = 0.75.",
+                            methods: ["Определение по сторонам треугольника", "Использование таблиц значений", "Решение задач"]
+                        }
+                    ]
+                }
+            },
+            russian: {
+                id: "russian",
+                name: "Русский язык",
+                icon: "fas fa-language",
+                description: "Грамматика, орфография, пунктуация, развитие речи",
+                classes: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+                topics: {
+                    1: [
+                        {
+                            title: "Алфавит и звуки",
+                            description: "Изучение русского алфавита. Гласные и согласные звуки. Твердые и мягкие согласные.",
+                            example: "Задание: Назовите все гласные буквы русского алфавита.",
+                            solution: "А, О, У, Э, Ы, И, Я, Ё, Ю, Е, Ё (всего 10 гласных букв).",
+                            methods: ["Запоминание алфавита", "Звуковой анализ слов", "Различение гласных и согласных"]
+                        }
+                    ],
+                    2: [
+                        {
+                            title: "Правописание жи-ши, ча-ща, чу-щу",
+                            description: "Правила написания сочетаний жи-ши, ча-ща, чу-щу. Эти сочетания всегда пишутся с определенными гласными.",
+                            example: "Задание: Вставьте пропущенные буквы: ж...раф, ч...йник, щ...ка.",
+                            solution: "жираф, чайник, щука.",
+                            methods: ["Запоминание правил", "Подбор примеров", "Письмо под диктовку"]
+                        }
+                    ],
+                    3: [
+                        {
+                            title: "Части речи: имя существительное",
+                            description: "Имя существительное как часть речи. Одушевленные и неодушевленные, собственные и нарицательные имена существительные.",
+                            example: "Задание: Определите, одушевленные или неодушевленные существительные: кошка, стол, ученик, река.",
+                            solution: "Одушевленные: кошка, ученик. Неодушевленные: стол, река.",
+                            methods: ["Задавание вопросов", "Классификация", "Образование форм"]
+                        }
+                    ],
+                    4: [
+                        {
+                            title: "Падежи имен существительных",
+                            description: "Система падежей в русском языке. Определение падежа по вопросу и предлогу.",
+                            example: "Задание: Определите падеж выделенного слова: Птица сидит на ветке дерева.",
+                            solution: "На ветке (на чем?) - предложный падеж.",
+                            methods: ["Задавание падежных вопросов", "Определение по предлогу", "Изменение слова по падежам"]
+                        }
+                    ],
+                    5: [
+                        {
+                            title: "Глагол: время, лицо, число",
+                            description: "Глагол как часть речи. Изменение глаголов по временам, лицам и числам.",
+                            example: "Задание: Определите время, лицо и число глагола: они читают.",
+                            solution: "Настоящее время, 3 лицо, множественное число.",
+                            methods: ["Постановка вопросов", "Определение по окончанию", "Спряжение глаголов"]
+                        }
+                    ],
+                    6: [
+                        {
+                            title: "Правописание приставок пре- и при-",
+                            description: "Правила написания приставок пре- и при- в зависимости от значения.",
+                            example: "Задание: Вставьте приставку пре- или при-: ...бывать в гостях, ...красный вид.",
+                            solution: "прибывать в гостях, прекрасный вид.",
+                            methods: ["Определение значения приставки", "Запоминание исключений", "Подбор однокоренных слов"]
+                        }
+                    ],
+                    7: [
+                        {
+                            title: "Причастие как особая форма глагола",
+                            description: "Причастие - особая форма глагола, обладающая признаками как глагола, так и прилагательного.",
+                            example: "Задание: Найдите причастия в предложении: Бегущий по дороге мальчик уронил летящий мяч.",
+                            solution: "Бегущий (от глагола бежать), летящий (от глагола лететь).",
+                            methods: ["Задавание вопросов", "Определение от глагола", "Образование причастий"]
+                        }
+                    ],
+                    8: [
+                        {
+                            title: "Обособленные члены предложения",
+                            description: "Обособление определений, обстоятельств, приложений. Знаки препинания при обособленных членах предложения.",
+                            example: "Задание: Расставьте знаки препинания: Солнце ярко светившее весь день скрылось за тучами.",
+                            solution: "Солнце, ярко светившее весь день, скрылось за тучами.",
+                            methods: ["Выделение интонацией", "Определение типа обособленного члена", "Конструирование предложений"]
+                        }
+                    ],
+                    9: [
+                        {
+                            title: "Сложноподчиненные предложения",
+                            description: "Строение сложноподчиненных предложений. Виды придаточных предложений.",
+                            example: "Задание: Определите тип придаточного предложения: Я знаю, что ты сделал.",
+                            solution: "Придаточное изъяснительное (отвечает на вопрос 'что?').",
+                            methods: ["Постановка вопросов", "Определение главного и придаточного", "Схематическое изображение"]
+                        }
+                    ]
+                }
             },
             physics: {
                 id: "physics",
                 name: "Физика",
                 icon: "fas fa-atom",
                 description: "Механика, термодинамика, оптика, электричество",
-                topicsCount: 18,
-                resourcesCount: 32,
-                topics: [
-                    {
-                        title: "Законы Ньютона",
-                        explanation: "Законы Ньютона — три закона, лежащие в основе классической механики. Первый закон: тело сохраняет состояние покоя или равномерного прямолинейного движения, пока на него не действуют силы. Второй закон: ускорение тела прямо пропорционально равнодействующей сил и обратно пропорционально его массе. Третий закон: силы взаимодействия двух тел равны по величине и противоположны по направлению.",
-                        examples: [
-                            {
-                                problem: "Тело массой 2 кг движется с ускорением 3 м/с². Найти силу, действующую на тело.",
-                                solution: "По второму закону Ньютона: F = m·a = 2 кг · 3 м/с² = 6 Н."
-                            }
-                        ],
-                        methods: ["Применение законов Ньютона", "Решение систем уравнений"],
-                        resources: ["Интерактивные модели", "Видеоэксперименты"]
-                    }
-                ],
-                resources: ["Формулы", "Калькуляторы", "Лабораторные работы", "Справочник"]
+                classes: [7, 8, 9],
+                topics: {
+                    7: [
+                        {
+                            title: "Физические величины и их измерение",
+                            description: "Понятие физической величины. Единицы измерения. Измерительные приборы.",
+                            example: "Задача: Переведите 2,5 км в метры.",
+                            solution: "2,5 км = 2500 м (1 км = 1000 м).",
+                            methods: ["Перевод единиц измерения", "Использование измерительных приборов", "Оценка погрешностей"]
+                        },
+                        {
+                            title: "Строение вещества",
+                            description: "Молекулярное строение вещества. Диффузия. Агрегатные состояния вещества.",
+                            example: "Задача: Почему запах духов распространяется по комнате?",
+                            solution: "Из-за диффузии - движения молекул духов и их смешения с молекулами воздуха.",
+                            methods: ["Моделирование молекул", "Наблюдение диффузии", "Сравнение агрегатных состояний"]
+                        }
+                    ],
+                    8: [
+                        {
+                            title: "Тепловые явления",
+                            description: "Температура. Внутренняя энергия. Виды теплопередачи: теплопроводность, конвекция, излучение.",
+                            example: "Задача: Почему металлическая ложка в горячем супе нагревается быстрее, чем пластиковая?",
+                            solution: "Металл имеет большую теплопроводность, чем пластик.",
+                            methods: ["Наблюдение теплопроводности", "Эксперименты с конвекцией", "Изучение излучения"]
+                        },
+                        {
+                            title: "Электрические явления",
+                            description: "Электрический заряд. Электрическое поле. Закон Кулона. Электрический ток.",
+                            example: "Задача: Чему равна сила тока, если за 2 секунды через поперечное сечение проводника проходит заряд 4 Кл?",
+                            solution: "I = q/t = 4 Кл / 2 с = 2 А.",
+                            methods: ["Сборка электрических цепей", "Измерение силы тока", "Изучение закона Ома"]
+                        }
+                    ],
+                    9: [
+                        {
+                            title: "Законы Ньютона",
+                            description: "Основные законы классической механики. Инерция. Взаимодействие тел.",
+                            example: "Задача: Тело массой 5 кг движется с ускорением 2 м/с². Найдите равнодействующую силу.",
+                            solution: "По второму закону Ньютона: F = ma = 5 кг × 2 м/с² = 10 Н.",
+                            methods: ["Применение законов Ньютона", "Решение задач на движение", "Эксперименты с инерцией"]
+                        },
+                        {
+                            title: "Закон всемирного тяготения",
+                            description: "Гравитационное взаимодействие тел. Формула закона всемирного тяготения. Сила тяжести.",
+                            example: "Задача: Чему равна сила тяжести, действующая на тело массой 3 кг на поверхности Земли?",
+                            solution: "F = mg = 3 кг × 9,8 м/с² ≈ 29,4 Н.",
+                            methods: ["Расчет гравитационных сил", "Сравнение сил тяжести", "Решение задач на движение под действием силы тяжести"]
+                        }
+                    ]
+                }
             },
             chemistry: {
                 id: "chemistry",
                 name: "Химия",
                 icon: "fas fa-flask",
-                description: "Органическая и неорганическая химия, реакции",
-                topicsCount: 22,
-                resourcesCount: 38,
-                topics: [
-                    {
-                        title: "Химические уравнения",
-                        explanation: "Химическое уравнение — это условная запись химической реакции с помощью химических формул и коэффициентов. Уравнение должно быть сбалансировано по закону сохранения массы веществ.",
-                        examples: [
-                            {
-                                problem: "Составьте уравнение реакции горения метана (CH₄)",
-                                solution: "CH₄ + 2O₂ → CO₂ + 2H₂O"
-                            }
-                        ],
-                        methods: ["Метод электронного баланса", "Метод полуреакций"],
-                        resources: ["Таблица Менделеева", "Калькулятор молярных масс"]
-                    }
-                ],
-                resources: ["Таблица Менделеева", "Растворимость веществ", "Химические калькуляторы"]
+                description: "Неорганическая и органическая химия, химические реакции",
+                classes: [8, 9],
+                topics: {
+                    8: [
+                        {
+                            title: "Простые и сложные вещества",
+                            description: "Классификация веществ. Химические элементы. Понятие атома и молекулы.",
+                            example: "Задача: К каким веществам относятся: вода, кислород, железо, поваренная соль?",
+                            solution: "Простые вещества: кислород, железо. Сложные вещества: вода, поваренная соль.",
+                            methods: ["Классификация веществ", "Определение состава", "Изучение химических элементов"]
+                        },
+                        {
+                            title: "Химические реакции",
+                            description: "Признаки химических реакций. Уравнения химических реакций. Закон сохранения массы веществ.",
+                            example: "Задача: Составьте уравнение реакции горения магния: магний + кислород → оксид магния.",
+                            solution: "2Mg + O₂ → 2MgO.",
+                            methods: ["Составление уравнений", "Расстановка коэффициентов", "Наблюдение химических реакций"]
+                        }
+                    ],
+                    9: [
+                        {
+                            title: "Периодический закон и Периодическая система",
+                            description: "Периодический закон Д.И. Менделеева. Структура Периодической системы. Закономерности изменения свойств элементов.",
+                            example: "Задача: Как изменяется металлические свойства элементов в периоде?",
+                            solution: "В периоде слева направо металлические свойства элементов ослабевают.",
+                            methods: ["Анализ Периодической системы", "Сравнение свойств элементов", "Определение положения элемента"]
+                        },
+                        {
+                            title: "Теория электролитической диссоциации",
+                            description: "Электролиты и неэлектролиты. Диссоциация кислот, оснований и солей. Сильные и слабые электролиты.",
+                            example: "Задача: Составьте уравнение диссоциации серной кислоты H₂SO₄.",
+                            solution: "H₂SO₄ → 2H⁺ + SO₄²⁻.",
+                            methods: ["Составление уравнений диссоциации", "Определение типа электролита", "Эксперименты с электролитами"]
+                        }
+                    ]
+                }
             },
             biology: {
                 id: "biology",
                 name: "Биология",
                 icon: "fas fa-dna",
-                description: "Анатомия, генетика, экология, ботаника",
-                topicsCount: 16,
-                resourcesCount: 28,
-                topics: [
-                    {
-                        title: "Строение клетки",
-                        explanation: "Клетка — элементарная единица строения и жизнедеятельности всех организмов. Состоит из ядра, цитоплазмы и клеточной мембраны. У растительных клеток также есть клеточная стенка и хлоропласты.",
-                        examples: [
-                            {
-                                problem: "Перечислите отличия растительной клетки от животной",
-                                solution: "Растительная клетка имеет клеточную стенку из целлюлозы, хлоропласты и крупную центральную вакуоль. Животная клетка этих структур не имеет."
-                            }
-                        ],
-                        methods: ["Микроскопирование", "Сравнительный анализ"],
-                        resources: ["3D-модель клетки", "Интерактивный атлас"]
-                    }
-                ],
-                resources: ["Атлас анатомии", "Генетические задачи", "Определители"]
+                description: "Ботаника, зоология, анатомия, общая биология",
+                classes: [5, 6, 7, 8, 9],
+                topics: {
+                    5: [
+                        {
+                            title: "Царства живой природы",
+                            description: "Бактерии, грибы, растения, животные. Основные отличия представителей разных царств.",
+                            example: "Задание: К какому царству относятся: подосиновик, береза, кишечная палочка, волк?",
+                            solution: "Подосиновик - грибы, береза - растения, кишечная палочка - бактерии, волк - животные.",
+                            methods: ["Классификация организмов", "Сравнение признаков", "Определение по внешнему виду"]
+                        }
+                    ],
+                    6: [
+                        {
+                            title: "Строение цветкового растения",
+                            description: "Вегетативные и генеративные органы растений. Функции корня, стебля, листьев, цветка.",
+                            example: "Задание: Перечислите вегетативные органы растения.",
+                            solution: "Корень, стебель, листья - вегетативные органы растения.",
+                            methods: ["Изучение органов растений", "Определение функций", "Наблюдение за развитием растений"]
+                        }
+                    ],
+                    7: [
+                        {
+                            title: "Типы животных: от простейших до хордовых",
+                            description: "Классификация животных. Основные типы: простейшие, кишечнополостные, черви, моллюски, членистоногие, хордовые.",
+                            example: "Задание: К какому типу относятся: медуза, дождевой червь, бабочка, лягушка?",
+                            solution: "Медуза - кишечнополостные, дождевой червь - кольчатые черви, бабочка - членистоногие, лягушка - хордовые.",
+                            methods: ["Классификация животных", "Сравнение строения", "Определение по характерным признакам"]
+                        }
+                    ],
+                    8: [
+                        {
+                            title: "Строение и функции человеческого организма",
+                            description: "Системы органов человека: опорно-двигательная, пищеварительная, дыхательная, кровеносная и др.",
+                            example: "Задание: Какие органы входят в пищеварительную систему?",
+                            solution: "Рот, глотка, пищевод, желудок, тонкий и толстый кишечник, печень, поджелудочная железа.",
+                            methods: ["Изучение систем органов", "Определение функций", "Связь строения и функции"]
+                        }
+                    ],
+                    9: [
+                        {
+                            title: "Основы генетики",
+                            description: "Наследственность и изменчивость. Законы Менделя. Генетическая терминология.",
+                            example: "Задача: У человека карий цвет глаз доминирует над голубым. Кареглазый мужчина и голубоглазая женщина имеют ребенка. Может ли ребенок быть голубоглазым?",
+                            solution: "Если мужчина гомозиготен (АА), то все дети будут кареглазыми. Если гетерозиготен (Аа), то вероятность голубоглазого ребенка 50%.",
+                            methods: ["Решение генетических задач", "Составление родословных", "Анализ законов Менделя"]
+                        }
+                    ]
+                }
+            },
+            history: {
+                id: "history",
+                name: "История",
+                icon: "fas fa-landmark",
+                description: "История России и всемирная история",
+                classes: [5, 6, 7, 8, 9],
+                topics: {
+                    5: [
+                        {
+                            title: "Древний мир: Египет, Греция, Рим",
+                            description: "Цивилизации Древнего мира. Древний Египет, Древняя Греция, Древний Рим.",
+                            example: "Задание: Какие достижения Древнего Египта вы знаете?",
+                            solution: "Пирамиды, иероглифическое письмо, календарь, папирус, знания в медицине и математике.",
+                            methods: ["Изучение артефактов", "Работа с картой", "Сравнение цивилизаций"]
+                        }
+                    ],
+                    6: [
+                        {
+                            title: "Средневековье: рыцари, замки, церковь",
+                            description: "Феодальное общество. Рыцарство. Роль церкви в Средневековье.",
+                            example: "Задание: Опишите жизнь средневекового рыцаря.",
+                            solution: "Рыцарь - воин, вассал сеньора. Жил в замке, участвовал в турнирах, крестовых походах. Следовал кодексу чести.",
+                            methods: ["Изучение феодальной лестницы", "Анализ рыцарского кодекса", "Исследование средневекового замка"]
+                        }
+                    ],
+                    7: [
+                        {
+                            title: "Эпоха Великих географических открытий",
+                            description: "Открытие Нового Света. Путешествия Колумба, Магеллана, Васко да Гамы.",
+                            example: "Задание: Какое значение имело открытие Америки Колумбом?",
+                            solution: "Установление связи между Старым и Новым Светом, начало колонизации Америки, обмен растениями, животными, культурой.",
+                            methods: ["Работа с картой путешествий", "Анализ последствий открытий", "Изучение биографий путешественников"]
+                        }
+                    ],
+                    8: [
+                        {
+                            title: "История России в XVIII веке: Петр I, Екатерина II",
+                            description: "Эпоха Петровских реформ. Просвещенный абсолютизм Екатерины II.",
+                            example: "Задание: Какие реформы провел Петр I?",
+                            solution: "Создание регулярной армии и флота, учреждение Сената и коллегий, введение подушной подати, изменение календаря, основание Петербурга.",
+                            methods: ["Анализ реформ", "Оценка деятельности правителей", "Изучение документов эпохи"]
+                        }
+                    ],
+                    9: [
+                        {
+                            title: "XX век: мировые войны, научно-техническая революция",
+                            description: "Первая и вторая мировая война. Холодная война. Научно-техническая революция.",
+                            example: "Задание: Каковы причины Второй мировой войны?",
+                            solution: "Несправедливые условия Версальского договора, мировой экономический кризис, приход к власти фашистов в Германии, политика умиротворения агрессора.",
+                            methods: ["Анализ причин и последствий войн", "Изучение хода военных действий", "Оценка научно-технического прогресса"]
+                        }
+                    ]
+                }
+            },
+            geography: {
+                id: "geography",
+                name: "География",
+                icon: "fas fa-globe-europe",
+                description: "Физическая и экономическая география",
+                classes: [5, 6, 7, 8, 9],
+                topics: {
+                    5: [
+                        {
+                            title: "План и карта",
+                            description: "Ориентирование на местности. Условные знаки. Масштаб. Чтение плана и карты.",
+                            example: "Задание: Определите расстояние на местности, если на карте масштаба 1:10000 расстояние между точками 5 см.",
+                            solution: "5 см × 10000 = 50000 см = 500 м.",
+                            methods: ["Работа с масштабом", "Чтение условных знаков", "Ориентирование по карте"]
+                        }
+                    ],
+                    6: [
+                        {
+                            title: "Литосфера, гидросфера, атмосфера",
+                            description: "Оболочки Земли. Строение земной коры. Воды суши и Мирового океана. Строение атмосферы.",
+                            example: "Задание: Какие бывают горные породы по происхождению?",
+                            solution: "Магматические (гранит, базальт), осадочные (песчаник, известняк, уголь), метаморфические (мрамор, гнейс).",
+                            methods: ["Изучение оболочек Земли", "Классификация горных пород", "Анализ климатических карт"]
+                        }
+                    ],
+                    7: [
+                        {
+                            title: "Материки и океаны",
+                            description: "Физическая география материков и океанов. Природные зоны Земли.",
+                            example: "Задание: Какой материк самый сухой на Земле?",
+                            solution: "Австралия - самый сухой материк, большая часть территории занята пустынями.",
+                            methods: ["Сравнение материков", "Изучение природных зон", "Работа с физической картой мира"]
+                        }
+                    ],
+                    8: [
+                        {
+                            title: "География России: природа, население",
+                            description: "Географическое положение России. Природные условия и ресурсы. Население России.",
+                            example: "Задание: Какие природные зоны есть в России?",
+                            solution: "Арктические пустыни, тундра, лесотундра, тайга, смешанные и широколиственные леса, лесостепи, степи, полупустыни, пустыни.",
+                            methods: ["Анализ географического положения", "Изучение природных зон", "Исследование населения"]
+                        }
+                    ],
+                    9: [
+                        {
+                            title: "Хозяйство России",
+                            description: "Отрасли хозяйства России: промышленность, сельское хозяйство, транспорт.",
+                            example: "Задание: Какие факторы влияют на размещение машиностроительных заводов?",
+                            solution: "Наличие квалифицированных кадров, научных центров, транспортных путей, потребителей продукции.",
+                            methods: ["Анализ факторов размещения", "Изучение отраслевой структуры", "Работа с экономическими картами"]
+                        }
+                    ]
+                }
+            },
+            english: {
+                id: "english",
+                name: "Английский язык",
+                icon: "fas fa-language",
+                description: "Грамматика, лексика, аудирование, разговорная речь",
+                classes: [2, 3, 4, 5, 6, 7, 8, 9],
+                topics: {
+                    2: [
+                        {
+                            title: "Английский алфавит и основные слова",
+                            description: "Изучение английского алфавита. Основные слова по темам: семья, животные, цвета.",
+                            example: "Задание: Назовите цвета на английском: красный, синий, зеленый, желтый.",
+                            solution: "Red, blue, green, yellow.",
+                            methods: ["Запоминание алфавита", "Изучение лексики по темам", "Простые диалоги"]
+                        }
+                    ],
+                    3: [
+                        {
+                            title: "Present Simple: утверждения, вопросы, отрицания",
+                            description: "Настоящее простое время. Утвердительные, вопросительные и отрицательные предложения.",
+                            example: "Задание: Составьте вопрос к предложению: She plays tennis every Sunday.",
+                            solution: "Does she play tennis every Sunday?",
+                            methods: ["Образование форм глагола", "Построение предложений", "Диалоги в Present Simple"]
+                        }
+                    ],
+                    4: [
+                        {
+                            title: "Множественное число существительных",
+                            description: "Образование множественного числа существительных. Исключения из правил.",
+                            example: "Задание: Образуйте множественное число: cat, box, child, man.",
+                            solution: "Cats, boxes, children, men.",
+                            methods: ["Запоминание правил", "Изучение исключений", "Упражнения на образование множественного числа"]
+                        }
+                    ],
+                    5: [
+                        {
+                            title: "Past Simple: правильные и неправильные глаголы",
+                            description: "Простое прошедшее время. Правильные глаголы с окончанием -ed. Неправильные глаголы.",
+                            example: "Задание: Поставьте глаголы в Past Simple: work, go, see, study.",
+                            solution: "Worked, went, saw, studied.",
+                            methods: ["Заучивание неправильных глаголов", "Построение предложений в Past Simple", "Пересказ событий"]
+                        }
+                    ],
+                    6: [
+                        {
+                            title: "Future Simple и модальные глаголы",
+                            description: "Простое будущее время. Модальные глаголы can, may, must, should.",
+                            example: "Задание: Составьте предложение с модальным глаголом can.",
+                            solution: "I can swim very well.",
+                            methods: ["Употребление Future Simple", "Изучение модальных глаголов", "Выражение возможности, необходимости, совета"]
+                        }
+                    ],
+                    7: [
+                        {
+                            title: "Present Continuous и Present Perfect",
+                            description: "Настоящее длительное и настоящее совершенное время. Употребление и различия.",
+                            example: "Задание: Выберите правильное время: She (is reading/has read) a book now.",
+                            solution: "She is reading a book now (действие в процессе).",
+                            methods: ["Сравнение времен", "Употребление в контексте", "Диалоги с разными временами"]
+                        }
+                    ],
+                    8: [
+                        {
+                            title: "Пассивный залог (Passive Voice)",
+                            description: "Образование пассивного залога. Употребление в различных временах.",
+                            example: "Задание: Перефразируйте в пассивный залог: They build houses here.",
+                            solution: "Houses are built here (by them).",
+                            methods: ["Образование пассивных конструкций", "Перевод из активного в пассивный залог", "Употребление в письменной речи"]
+                        }
+                    ],
+                    9: [
+                        {
+                            title: "Условные предложения (Conditionals)",
+                            description: "Типы условных предложений: нулевой, первый, второй, третий тип.",
+                            example: "Задание: Дополните предложение: If I had money, I ... (buy) a car.",
+                            solution: "If I had money, I would buy a car (Second Conditional).",
+                            methods: ["Изучение типов условных предложений", "Практика построения", "Использование в речи"]
+                        }
+                    ]
+                }
+            },
+            literature: {
+                id: "literature",
+                name: "Литература",
+                icon: "fas fa-book-open",
+                description: "Русская и зарубежная литература, анализ произведений",
+                classes: [5, 6, 7, 8, 9],
+                topics: {
+                    5: [
+                        {
+                            title: "Русские народные сказки",
+                            description: "Виды народных сказок: волшебные, бытовые, о животных. Композиция и герои сказок.",
+                            example: "Задание: Какие волшебные помощники встречаются в русских народных сказках?",
+                            solution: "Серый волк, Сивка-Бурка, Щука, Баба-Яга (иногда помогает).",
+                            methods: ["Анализ композиции сказок", "Характеристика героев", "Сравнение сказок разных народов"]
+                        }
+                    ],
+                    6: [
+                        {
+                            title: "Мифы Древней Греции",
+                            description: "Мифы о богах и героях. Олимпийские боги. Подвиги Геракла.",
+                            example: "Задание: Какие 12 подвигов совершил Геракл?",
+                            solution: "Немейский лев, Лернейская гидра, Стимфалийские птицы, Керинейская лань и др.",
+                            methods: ["Изучение мифологических сюжетов", "Характеристика богов и героев", "Сравнение мифов разных народов"]
+                        }
+                    ],
+                    7: [
+                        {
+                            title: "Древнерусская литература: 'Слово о полку Игореве'",
+                            description: "Памятник древнерусской литературы XII века. Историческая основа. Идейное содержание.",
+                            example: "Задание: Какова основная идея 'Слова о полку Игореве'?",
+                            solution: "Призыв к единству русских князей перед лицом внешней опасности.",
+                            methods: ["Историко-литературный анализ", "Изучение языка произведения", "Связь с историческим контекстом"]
+                        }
+                    ],
+                    8: [
+                        {
+                            title: "Литература XIX века: Пушкин, Лермонтов, Гоголь",
+                            description: "Золотой век русской литературы. Основные произведения и герои.",
+                            example: "Задание: Каковы основные темы лирики М.Ю. Лермонтова?",
+                            solution: "Одиночество, свобода, родина, природа, любовь, поэт и поэзия.",
+                            methods: ["Анализ лирических произведений", "Характеристика литературных героев", "Сравнение творчества писателей"]
+                        }
+                    ],
+                    9: [
+                        {
+                            title: "Литература XX века: Булгаков, Шолохов, Солженицын",
+                            description: "Сложные судьбы писателей XX века. Основные произведения и темы.",
+                            example: "Задание: Какова основная идея повести М.А. Булгакова 'Собачье сердце'?",
+                            solution: "Предупреждение об опасности вмешательства в естественный ход вещей, критика попыток искусственного создания 'нового человека'.",
+                            methods: ["Анализ проблематики произведений", "Изучение исторического контекста", "Интерпретация сложных текстов"]
+                        }
+                    ]
+                }
             }
         };
 
@@ -481,16 +1202,15 @@
             for (const subjectKey in subjectsDB) {
                 const subject = subjectsDB[subjectKey];
                 const subjectCard = document.createElement('div');
-                subjectCard.className = `subject-card subject-${subject.id}`;
+                subjectCard.className = `subject-card rgb-border`;
                 subjectCard.innerHTML = `
-                    <div class="subject-icon">
+                    <div class="subject-icon rgb-text">
                         <i class="${subject.icon}"></i>
                     </div>
-                    <h3 class="subject-title">${subject.name}</h3>
+                    <h3 class="subject-title rgb-text">${subject.name}</h3>
                     <p class="subject-desc">${subject.description}</p>
-                    <div class="subject-stats">
-                        <span><i class="fas fa-book"></i> ${subject.topicsCount} тем</span>
-                        <span><i class="fas fa-file-alt"></i> ${subject.resourcesCount} материалов</span>
+                    <div class="subject-classes">
+                        ${subject.classes.map(cls => `<span class="class-badge">${cls} класс</span>`).join('')}
                     </div>
                 `;
                 
@@ -504,117 +1224,105 @@
             const subject = subjectsDB[subjectKey];
             const contentArea = document.getElementById('contentArea');
             
-            // Генерация HTML для тем предмета
-            let topicsHTML = '';
-            subject.topics.forEach(topic => {
-                topicsHTML += `
-                    <div class="topic-item">
-                        <h3 class="topic-title">${topic.title}</h3>
-                        <p>${topic.explanation.substring(0, 150)}...</p>
-                        <button class="back-button" style="margin-top: 10px;" onclick="showTopicDetail('${subjectKey}', '${topic.title}')">Подробнее</button>
-                    </div>
-                `;
+            // Генерация кнопок классов
+            let classButtons = '';
+            subject.classes.forEach(cls => {
+                classButtons += `<button class="class-btn ${cls === 1 ? 'active' : ''}" data-class="${cls}">${cls} класс</button>`;
             });
             
-            // Генерация HTML для ресурсов
-            let resourcesHTML = '';
-            subject.resources.forEach(resource => {
-                resourcesHTML += `<span class="resource-item">${resource}</span>`;
-            });
+            // Генерация HTML для первого класса
+            const firstClass = subject.classes[0];
+            let topicsHTML = '';
+            if (subject.topics[firstClass]) {
+                subject.topics[firstClass].forEach(topic => {
+                    topicsHTML += generateTopicHTML(topic);
+                });
+            }
             
             contentArea.innerHTML = `
                 <div class="content-header">
-                    <button class="back-button" onclick="hideSubjectContent()"><i class="fas fa-arrow-left"></i> Назад к предметам</button>
-                    <h2 class="content-title">${subject.name}</h2>
-                    <div class="subject-icon">
+                    <button class="back-button" onclick="hideSubjectContent()"><i class="fas fa-arrow-left"></i> Все предметы</button>
+                    <h2 class="content-title rgb-text">${subject.name}</h2>
+                    <div class="subject-icon rgb-text">
                         <i class="${subject.icon}"></i>
                     </div>
                 </div>
                 
-                <p>${subject.description}. Изучите материалы ниже для углубленного понимания предмета.</p>
+                <p class="subject-desc">${subject.description}</p>
                 
-                <h3 style="margin: 30px 0 15px 0; color: #1a2a6c;">Темы по предмету</h3>
-                <div class="topics-list">
-                    ${topicsHTML}
+                <div class="class-selector" id="classSelector">
+                    ${classButtons}
                 </div>
                 
-                <div class="resources">
-                    <h3 class="resources-title">Дополнительные ресурсы</h3>
-                    <div class="resources-list">
-                        ${resourcesHTML}
-                    </div>
+                <div class="topics-container" id="topicsContainer">
+                    ${topicsHTML}
                 </div>
             `;
             
             contentArea.classList.add('active');
+            
+            // Добавляем обработчики для кнопок классов
+            document.querySelectorAll('.class-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const selectedClass = this.getAttribute('data-class');
+                    
+                    // Обновляем активную кнопку
+                    document.querySelectorAll('.class-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Обновляем темы
+                    updateTopics(subjectKey, selectedClass);
+                });
+            });
+            
             document.querySelector('.subjects-section').scrollIntoView({ behavior: 'smooth' });
         }
 
-        // Показать детальную информацию по теме
-        function showTopicDetail(subjectKey, topicTitle) {
+        // Обновить темы для выбранного класса
+        function updateTopics(subjectKey, classNum) {
             const subject = subjectsDB[subjectKey];
-            const topic = subject.topics.find(t => t.title === topicTitle);
-            const contentArea = document.getElementById('contentArea');
+            const topicsContainer = document.getElementById('topicsContainer');
             
-            // Генерация HTML для примеров
-            let examplesHTML = '';
-            topic.examples.forEach(example => {
-                examplesHTML += `
-                    <div class="example-item">
-                        <p><strong>Задача:</strong> ${example.problem}</p>
-                        <p><strong>Решение:</strong> ${example.solution}</p>
-                    </div>
-                `;
-            });
+            let topicsHTML = '';
+            if (subject.topics[classNum]) {
+                subject.topics[classNum].forEach(topic => {
+                    topicsHTML += generateTopicHTML(topic);
+                });
+            } else {
+                topicsHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-secondary);">Материалы для этого класса готовятся к публикации</p>';
+            }
             
-            // Генерация HTML для методов
-            let methodsHTML = '';
-            topic.methods.forEach(method => {
-                methodsHTML += `<span class="resource-item">${method}</span>`;
-            });
-            
-            // Генерация HTML для ресурсов темы
-            let topicResourcesHTML = '';
-            topic.resources.forEach(resource => {
-                topicResourcesHTML += `<span class="resource-item">${resource}</span>`;
-            });
-            
-            contentArea.innerHTML = `
-                <div class="content-header">
-                    <button class="back-button" onclick="showSubjectContent('${subjectKey}')"><i class="fas fa-arrow-left"></i> Назад к предмету</button>
-                    <h2 class="content-title">${topicTitle}</h2>
-                    <div class="subject-icon">
-                        <i class="${subject.icon}"></i>
-                    </div>
-                </div>
-                
-                <div class="explanation">
-                    <h3 class="explanation-title">Объяснение</h3>
-                    <p>${topic.explanation}</p>
-                </div>
-                
-                <div class="examples">
-                    <h3 class="examples-title">Примеры решения</h3>
-                    ${examplesHTML}
-                </div>
-                
-                <div style="margin-top: 30px;">
-                    <h3 class="resources-title">Методы решения</h3>
-                    <div class="resources-list">
-                        ${methodsHTML}
-                    </div>
-                </div>
-                
-                <div style="margin-top: 30px;">
-                    <h3 class="resources-title">Ресурсы по теме</h3>
-                    <div class="resources-list">
-                        ${topicResourcesHTML}
-                    </div>
+            topicsContainer.innerHTML = topicsHTML;
+        }
+
+        // Генерация HTML для темы
+        function generateTopicHTML(topic) {
+            return `
+                <div class="topic-card">
+                    <h3 class="topic-title">${topic.title}</h3>
+                    <p class="topic-desc">${topic.description}</p>
+                    
+                    ${topic.example ? `
+                        <div class="topic-example">
+                            <div class="example-title">Пример:</div>
+                            <div>${topic.example}</div>
+                        </div>
+                    ` : ''}
+                    
+                    ${topic.solution ? `
+                        <div class="solution">
+                            <div class="solution-title">Решение:</div>
+                            <div>${topic.solution}</div>
+                        </div>
+                    ` : ''}
+                    
+                    ${topic.methods ? `
+                        <div class="methods-list">
+                            ${topic.methods.map(method => `<span class="method-tag">${method}</span>`).join('')}
+                        </div>
+                    ` : ''}
                 </div>
             `;
-            
-            contentArea.classList.add('active');
-            contentArea.scrollIntoView({ behavior: 'smooth' });
         }
 
         // Скрыть контент и показать список предметов
@@ -645,18 +1353,24 @@
                     // Проверка на соответствие запросу в названии, описании или темах
                     const matchesName = subject.name.toLowerCase().includes(searchTerm);
                     const matchesDesc = subject.description.toLowerCase().includes(searchTerm);
+                    const matchesClass = subject.classes.some(cls => cls.toString().includes(searchTerm));
                     
-                    // Проверка тем предмета
+                    // Проверка тем предмета во всех классах
                     let matchesTopic = false;
-                    for (const topic of subject.topics) {
-                        if (topic.title.toLowerCase().includes(searchTerm) || 
-                            topic.explanation.toLowerCase().includes(searchTerm)) {
-                            matchesTopic = true;
-                            break;
+                    for (const classNum in subject.topics) {
+                        for (const topic of subject.topics[classNum]) {
+                            if (topic.title.toLowerCase().includes(searchTerm) || 
+                                topic.description.toLowerCase().includes(searchTerm) ||
+                                (topic.example && topic.example.toLowerCase().includes(searchTerm)) ||
+                                (topic.solution && topic.solution.toLowerCase().includes(searchTerm))) {
+                                matchesTopic = true;
+                                break;
+                            }
                         }
+                        if (matchesTopic) break;
                     }
                     
-                    if (matchesName || matchesDesc || matchesTopic) {
+                    if (matchesName || matchesDesc || matchesTopic || matchesClass) {
                         filteredSubjects[subjectKey] = subject;
                     }
                 }
@@ -666,23 +1380,22 @@
                 subjectsGrid.innerHTML = '';
                 
                 if (Object.keys(filteredSubjects).length === 0) {
-                    subjectsGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 30px; color: #666;">По вашему запросу ничего не найдено</p>';
+                    subjectsGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 50px; color: var(--text-secondary); font-size: 1.2rem;">По вашему запросу ничего не найдено. Попробуйте изменить поисковый запрос.</p>';
                     return;
                 }
                 
                 for (const subjectKey in filteredSubjects) {
                     const subject = filteredSubjects[subjectKey];
                     const subjectCard = document.createElement('div');
-                    subjectCard.className = `subject-card subject-${subject.id}`;
+                    subjectCard.className = `subject-card rgb-border`;
                     subjectCard.innerHTML = `
-                        <div class="subject-icon">
+                        <div class="subject-icon rgb-text">
                             <i class="${subject.icon}"></i>
                         </div>
-                        <h3 class="subject-title">${subject.name}</h3>
+                        <h3 class="subject-title rgb-text">${subject.name}</h3>
                         <p class="subject-desc">${subject.description}</p>
-                        <div class="subject-stats">
-                            <span><i class="fas fa-book"></i> ${subject.topicsCount} тем</span>
-                            <span><i class="fas fa-file-alt"></i> ${subject.resourcesCount} материалов</span>
+                        <div class="subject-classes">
+                            ${subject.classes.map(cls => `<span class="class-badge">${cls} класс</span>`).join('')}
                         </div>
                     `;
                     
@@ -695,7 +1408,7 @@
         // Сделаем функции доступными глобально для обработчиков событий в HTML
         window.showSubjectContent = showSubjectContent;
         window.hideSubjectContent = hideSubjectContent;
-        window.showTopicDetail = showTopicDetail;
+        window.updateTopics = updateTopics;
     </script>
 </body>
 </html>
